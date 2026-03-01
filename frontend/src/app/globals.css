@@ -31,7 +31,7 @@
 
   body {
     background: var(--color-background);
-    color: var(--color-foreground);
+    color: #ffffff;
     font-family: var(--font-sans);
     letter-spacing: -0.01em;
     -webkit-font-smoothing: antialiased;
@@ -43,6 +43,7 @@
   h4 {
     font-family: var(--font-display);
     letter-spacing: -0.04em;
+    color: #ffffff;
   }
 }
 
@@ -84,11 +85,46 @@
   }
 
   .button-premium {
-    @apply relative px-8 py-4 bg-white text-black font-bold rounded-2xl overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(255, 255, 255, 0.1)];
+    position: relative;
+    padding: 1rem 2rem;
+    background: white;
+    color: black;
+    font-weight: 700;
+    border-radius: 1rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+  }
+
+  .button-premium:hover {
+    transform: scale(1.05);
+  }
+
+  .button-premium:active {
+    transform: scale(0.95);
   }
 
   .button-glow {
-    @apply relative px-8 py-4 bg-cyan-500 text-black font-black rounded-2xl overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95 shadow-[0_0_40px_rgba(0, 242, 255, 0.3)] hover:shadow-[0_0_60px_rgba(0, 242, 255, 0.5)];
+    position: relative;
+    padding: 1rem 2rem;
+    background: #00f2ff;
+    color: black;
+    font-weight: 900;
+    border-radius: 1rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 40px rgba(0, 242, 255, 0.3);
+    cursor: pointer;
+  }
+
+  .button-glow:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 60px rgba(0, 242, 255, 0.5);
+  }
+
+  .button-glow:active {
+    transform: scale(0.95);
   }
 }
 

@@ -2,6 +2,7 @@
 
 import { Search, Filter, Shield, Zap, TrendingUp, ChevronRight, Globe, Layers } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 const MOCK_AGENTS = [
     { id: 'ECH-07', name: 'Echo Vanguard', owner: '0x42...f3a', level: 14, class: 'Guardian', stats: '8.4k Ops', status: 'Active' },

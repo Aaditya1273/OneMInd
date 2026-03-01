@@ -48,7 +48,7 @@ function Navbar({ isScrolled }: { isScrolled: boolean }) {
         <div className="w-8 h-8 rounded bg-cyan-500 flex items-center justify-center font-bold text-black shadow-[0_0_20px_rgba(0,242,255,0.4)]">
           OM
         </div>
-        <span className="text-xl font-bold tracking-tighter">ONE<span className="text-cyan-400 font-bold">MIND</span></span>
+        <span className="text-xl font-bold tracking-tighter text-white">ONE<span className="text-cyan-400 font-bold">MIND</span></span>
       </div>
 
       <div className="hidden md:flex items-center gap-8 text-xs font-medium uppercase tracking-[0.2em] text-gray-400">
