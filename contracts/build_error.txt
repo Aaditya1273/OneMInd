@@ -1,0 +1,50 @@
+cargo :     Updating git repository `https://github.com/one-chain-labs/onechain.git`
+At line:1 char:79
++ ... one_build"; cargo install --force --locked --git https://github.com/o ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (    Updating gi...s/onechain.git`:Stri 
+   ng) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  Installing one v1.1.1 (https://github.com/one-chain-labs/onechain.git#c7bdbfd5)
+    Updating crates.io index
+   Compiling proc-macro2 v1.0.94
+   Compiling unicode-ident v1.0.12
+   Compiling serde_core v1.0.228
+   Compiling serde v1.0.228
+   Compiling syn v1.0.107
+   Compiling version_check v0.9.4
+   Compiling autocfg v1.1.0
+   Compiling cfg-if v1.0.0
+   Compiling unicode-xid v0.2.4
+   Compiling libm v0.2.6
+   Compiling typenum v1.16.0
+   Compiling getrandom v0.2.15
+   Compiling thiserror v1.0.69
+error: linker `link.exe` not found
+  |
+  = note: program not found
+
+note: the msvc targets depend on the msvc linker but `link.exe` was not found
+
+note: please ensure that Visual Studio 2017 or later, or Build Tools for Visual 
+Studio were installed with the Visual C++ option.
+
+note: VS Code is a different product, and is not sufficient.
+
+   Compiling windows_x86_64_msvc v0.52.6
+error: could not compile `libm` (build script) due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `syn` (build script) due to 1 previous error
+error: could not compile `serde_core` (build script) due to 1 previous error
+error: could not compile `proc-macro2` (build script) due to 1 previous error
+error: could not compile `serde` (build script) due to 1 previous error
+error: could not compile `windows_x86_64_msvc` (build script) due to 1 previous 
+error
+error: could not compile `thiserror` (build script) due to 1 previous error
+error: could not compile `typenum` (build script) due to 1 previous error
+error: failed to compile `one v1.1.1 
+(https://github.com/one-chain-labs/onechain.git#c7bdbfd5)`, intermediate artifacts 
+can be found at `C:\Users\Aditya\AppData\Local\Temp\cargo_one_build`.
+To reuse those artifacts with a future compilation, set the environment variable 
+`CARGO_TARGET_DIR` to that path.
