@@ -145,19 +145,25 @@ function HeroSection({ account }: { account: any }) {
         </motion.div>
       </div>
 
-      {/* Hero Bottom Image Mock / Visual */}
+      {/* Hero Bottom Video Showcase */}
       <motion.div
         initial={{ opacity: 0, y: 100 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1, duration: 1 }}
         className="mt-24 w-full max-w-6xl glass-card aspect-video border-b-0 rounded-b-none p-4 pb-0 bg-gradient-to-t from-transparent to-white/5 mask-fade-out"
       >
-        <div className="w-full h-full rounded-t-xl bg-black/40 border-x border-t border-white/10 flex items-center justify-center overflow-hidden">
-          <div className="grid grid-cols-3 w-content gap-8 grayscale opacity-20">
-            <Brain className="w-32 h-32" />
-            <Shield className="w-32 h-32" />
-            <Activity className="w-32 h-32" />
-          </div>
+        <div className="w-full h-full rounded-t-xl bg-black/40 border-x border-t border-white/10 overflow-hidden relative">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover"
+          >
+            <source src="/lv_0_20260301200602.mp4" type="video/mp4" />
+          </video>
+          {/* Optional overlay gradient for better blending */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
         </div>
       </motion.div>
     </section>
