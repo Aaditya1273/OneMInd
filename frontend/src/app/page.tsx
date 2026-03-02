@@ -1,12 +1,13 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import { CustomConnectButton } from '@/components/ui/connect-button';
 import { useCurrentAccount } from '@mysten/dapp-kit';
 import Link from 'next/link';
 import { Brain, Shield, Zap, ChevronRight, Activity, Database, Globe, Layers, Lock, Cpu, Menu, X } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
+import Lenis from 'lenis';
 
 export default function LandingPage() {
   const account = useCurrentAccount();
@@ -16,6 +17,26 @@ export default function LandingPage() {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Initialize Lenis smooth scrolling
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+    });
+
+    function raf(time: number) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+
+    return () => {
+      lenis.destroy();
+    };
   }, []);
 
   return (
@@ -44,10 +65,12 @@ function Navbar({ isScrolled }: { isScrolled: boolean }) {
       "fixed top-0 inset-x-0 z-[100] transition-all duration-300 px-6 py-4 flex items-center justify-between",
       isScrolled ? "glass-header py-3" : "bg-transparent"
     )}>
-      <div className="flex items-center gap-2">
-        <div className="w-8 h-8 rounded bg-cyan-500 flex items-center justify-center font-bold text-black shadow-[0_0_20px_rgba(0,242,255,0.4)]">
-          OM
-        </div>
+      <div className="flex items-center gap-3">
+        <img 
+          src="/logo.png" 
+          alt="OneMind Logo" 
+          className="w-7 h-7 object-contain"
+        />
         <span className="text-xl font-bold tracking-tighter text-white">ONE<span className="text-cyan-400 font-bold">MIND</span></span>
       </div>
 
@@ -171,66 +194,94 @@ function HeroSection({ account }: { account: any }) {
 }
 
 function StatsStrip() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+
   return (
-    <div className="w-full border-y border-white/5 bg-white/[0.02] py-12 px-6">
+    <div ref={ref} className="w-full border-y border-white/5 bg-white/[0.02] py-12 px-6">
       <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
-        <StatItem label="Total Hybrid Agents" value="1,280+" />
-        <StatItem label="Daily Neural Cycles" value="142k" />
-        <StatItem label="Sovereign Assets Managed" value="$2.4M+" />
-        <StatItem label="avg. Latency" value="1.2s" color="text-cyan-400" />
+        <StatItem label="Total Hybrid Agents" value="1,280+" delay={0} isInView={isInView} />
+        <StatItem label="Daily Neural Cycles" value="142k" delay={0.1} isInView={isInView} />
+        <StatItem label="Sovereign Assets Managed" value="$2.4M+" delay={0.2} isInView={isInView} />
+        <StatItem label="avg. Latency" value="1.2s" color="text-cyan-400" delay={0.3} isInView={isInView} />
       </div>
     </div>
   );
 }
 
-function StatItem({ label, value, color = "text-white" }: { label: string, value: string, color?: string }) {
+function StatItem({ label, value, color = "text-white", delay = 0, isInView }: { label: string, value: string, color?: string, delay?: number, isInView: boolean }) {
   return (
-    <div className="flex flex-col gap-2">
+    <motion.div 
+      className="flex flex-col gap-2"
+      initial={{ opacity: 0, y: 30 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+      transition={{ duration: 0.6, delay, ease: "easeOut" }}
+    >
       <span className={cn("text-3xl md:text-4xl font-black tracking-tighter", color)}>{value}</span>
       <span className="text-[10px] uppercase tracking-[0.3em] text-gray-500">{label}</span>
-    </div>
+    </motion.div>
   );
 }
 
 function FeaturesSection() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
   return (
     <section id="features" className="py-32 px-6">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-24">
+        <motion.div 
+          className="text-center mb-24"
+          initial={{ opacity: 0, y: 50 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+          transition={{ duration: 0.8 }}
+        >
           <h2 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4 text-glow">CORE CAPABILITIES</h2>
           <p className="text-gray-400 max-w-2xl mx-auto text-lg">Our architecture merges the reasoning power of LLMs with the deterministic security of Move Smart Contracts.</p>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div ref={ref} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <FeatureCard
             icon={<Lock className="w-6 h-6 text-cyan-400" />}
             title="Scoped Session Keys"
             description="Grant your AI temporary, rule-bounded permissions to trade on your behalf without ever risking your root security."
+            delay={0}
+            isInView={isInView}
           />
           <FeatureCard
             icon={<Database className="w-6 h-6 text-purple-400" />}
             title="Persistent Neural Memory"
             description="Agents store their experiences on-chain, allowing them to learn and evolve their strategies over time."
+            delay={0.1}
+            isInView={isInView}
           />
           <FeatureCard
             icon={<Layers className="w-6 h-6 text-pink-400" />}
             title="Modular Strategy Engine"
             description="Easily plug in multiple LLM providers or custom trading scripts to define how your agent perceives the market."
+            delay={0.2}
+            isInView={isInView}
           />
           <FeatureCard
             icon={<Globe className="w-6 h-6 text-blue-400" />}
             title="Omni-Chain Awareness"
             description="Real-time indexing of global events allows agents to react to market shifts within milliseconds."
+            delay={0.3}
+            isInView={isInView}
           />
           <FeatureCard
             icon={<Cpu className="w-6 h-6 text-emerald-400" />}
             title="Autonomous Gas Management"
             description="Agents monitor their own energy and refill their gas tanks through smart treasury management."
+            delay={0.4}
+            isInView={isInView}
           />
           <FeatureCard
             icon={<Shield className="w-6 h-6 text-amber-400" />}
             title="Sovereign Settlement"
             description="All transactions settled on OneChain's high-throughput ledger with absolute finality."
+            delay={0.5}
+            isInView={isInView}
           />
         </div>
       </div>
@@ -250,12 +301,14 @@ function HowItWorksSection() {
             title="Spawn Your Agent"
             description="Mint a unique Vanguard Identity. Your Agent comes with its own Sovereign sub-wallet (Vault) pre-configured."
             icon={<Brain className="w-12 h-12" />}
+            image="/elrmets/1.jpeg"
           />
           <StepItem
             step="02"
             title="Authorize via Session Keys"
             description="Connect your off-chain AI brain (Gemini Pro) to the Agent's identity using crytographic session keys with custom expiry."
             icon={<Lock className="w-12 h-12 text-purple-400" />}
+            image="/elrmets/2.jpeg"
             reversed
           />
           <StepItem
@@ -263,6 +316,7 @@ function HowItWorksSection() {
             title="Achieve Autonomy"
             description="The Agent begins scanning the mempool, managing its treasury, and executing trades while you sleep."
             icon={<Activity className="w-12 h-12 text-cyan-400" />}
+            image="/elrmets/3.jpeg"
           />
         </div>
       </div>
@@ -311,8 +365,12 @@ function Footer() {
     <footer className="pt-20 pb-10 px-6 border-t border-white/5 bg-black">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-12">
         <div className="flex flex-col gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded bg-white flex items-center justify-center font-bold text-black text-[10px]">OM</div>
+          <div className="flex items-center gap-3">
+            <img 
+              src="/logo.png" 
+              alt="OneMind Logo" 
+              className="w-6 h-6 object-contain"
+            />
             <span className="text-white font-bold tracking-tighter italic">ONEMIND</span>
           </div>
           <p className="text-gray-500 text-xs max-w-[200px] leading-relaxed">
@@ -340,30 +398,59 @@ function Footer() {
 
 // --- Utils ---
 
-function FeatureCard({ icon, title, description }: { icon: any, title: string, description: string }) {
+function FeatureCard({ icon, title, description, delay = 0, isInView }: { icon: any, title: string, description: string, delay?: number, isInView: boolean }) {
   return (
-    <div className="glass-card p-10 hover:-translate-y-2 transition-all duration-500 group">
+    <motion.div 
+      className="glass-card p-10 hover:-translate-y-2 transition-all duration-500 group"
+      initial={{ opacity: 0, y: 50, scale: 0.95 }}
+      animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 50, scale: 0.95 }}
+      transition={{ duration: 0.6, delay, ease: "easeOut" }}
+    >
       <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center mb-6 group-hover:bg-cyan-500/10 transition-colors">
         {icon}
       </div>
       <h3 className="text-xl font-bold mb-4 tracking-tight">{title}</h3>
       <p className="text-gray-500 text-sm leading-relaxed group-hover:text-gray-300 transition-colors">{description}</p>
-    </div>
+    </motion.div>
   );
 }
 
-function StepItem({ step, title, description, icon, reversed = false }: { step: string, title: string, description: string, icon: any, reversed?: boolean }) {
+function StepItem({ step, title, description, icon, image, reversed = false }: { step: string, title: string, description: string, icon: any, image?: string, reversed?: boolean }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
   return (
-    <div className={cn("flex flex-col md:flex-row items-center gap-12 lg:gap-24", reversed && "md:flex-row-reverse")}>
-      <div className="flex-1 flex flex-col gap-4">
+    <div 
+      ref={ref}
+      className={cn("flex flex-col md:flex-row items-center gap-12 lg:gap-24", reversed && "md:flex-row-reverse")}
+    >
+      <motion.div 
+        className="flex-1 flex flex-col gap-4"
+        initial={{ opacity: 0, x: reversed ? 50 : -50 }}
+        animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: reversed ? 50 : -50 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
         <span className="text-6xl font-black text-white/5">{step}</span>
         <h3 className="text-3xl font-bold tracking-tight">{title}</h3>
         <p className="text-gray-400 text-lg leading-relaxed">{description}</p>
-      </div>
-      <div className="w-full md:w-[400px] h-[300px] glass-card flex items-center justify-center relative group">
-        <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-purple-500 opacity-0 group-hover:opacity-20 transition-opacity rounded-[inherit] pointer-events-none" />
-        {icon}
-      </div>
+      </motion.div>
+      <motion.div 
+        className="w-full md:w-[400px] h-[300px] glass-card flex items-center justify-center relative group overflow-hidden"
+        initial={{ opacity: 0, x: reversed ? -50 : 50, scale: 0.9 }}
+        animate={isInView ? { opacity: 1, x: 0, scale: 1 } : { opacity: 0, x: reversed ? -50 : 50, scale: 0.9 }}
+        transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+      >
+        <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-purple-500 opacity-0 group-hover:opacity-20 transition-opacity rounded-[inherit] pointer-events-none z-10" />
+        {image ? (
+          <img 
+            src={image} 
+            alt={title}
+            className="w-full h-full object-cover rounded-xl"
+          />
+        ) : (
+          icon
+        )}
+      </motion.div>
     </div>
   );
 }
