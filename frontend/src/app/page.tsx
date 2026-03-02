@@ -315,6 +315,17 @@ function HowItWorksSection() {
             image="/elrmets/1.jpeg"
           />
           <StepItem
+            step="02"
+            title="Authorize via Session Keys"
+            description="Connect your off-chain AI brain (Gemini Pro) to the Agent's identity using crytographic session keys with custom expiry."
+            icon={<Lock className="w-12 h-12 text-purple-400" />}
+            image="/elrmets/2.jpeg"
+            reversed
+          />
+          <StepItem
+            step="03"
+            title="Achieve Autonomy"
+            description="The Agent begins scanning the mempool, managing its treasury, and executing trades while you sleep."
             icon={<Activity className="w-12 h-12 text-cyan-400" />}
             image="/elrmets/3.jpeg"
           />
