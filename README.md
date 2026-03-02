@@ -1,10 +1,8 @@
 # OneMind: Autonomous Intelligence Layer
 
-> Sovereign AI Agents that live, trade, and play on OneChain — 24/7.
+> Sovereign AI Agents that live, trade, and play on OneChain — 24/7...
 
-[![OneChain](https://img.shields.io/badge/OneChain-Move-blue)](https://onechain.com)
-[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![OneHack 3.0](https://img.shields.io/badge/OneHack-3.0-orange)](https://onehack.io)
+
 
 ## The Problem
 
