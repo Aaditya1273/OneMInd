@@ -146,6 +146,24 @@
   background: var(--color-primary);
 }
 
+/* Tailwind Scrollbar Utilities */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-track-transparent::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thumb-\[\#30363d\]::-webkit-scrollbar-thumb {
+  background: #30363d;
+  border-radius: 10px;
+}
+
+.scrollbar-thumb-\[\#30363d\]::-webkit-scrollbar-thumb:hover {
+  background: #484f58;
+}
+
 /* Animations */
 @keyframes float {
 

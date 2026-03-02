@@ -290,10 +290,21 @@ function FeaturesSection() {
 }
 
 function HowItWorksSection() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+
   return (
     <section id="workflow" className="py-32 px-6 bg-white/[0.01]">
       <div className="max-w-5xl mx-auto">
-        <h2 className="text-4xl md:text-6xl font-bold tracking-tighter mb-20 text-center">THE NEURAL LOOP</h2>
+        <motion.h2 
+          ref={ref}
+          className="text-4xl md:text-6xl font-bold tracking-tighter mb-20 text-center"
+          initial={{ opacity: 0, scale: 0.9, y: 30 }}
+          animate={isInView ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.9, y: 30 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+        >
+          THE NEURAL LOOP
+        </motion.h2>
 
         <div className="space-y-24">
           <StepItem
@@ -304,17 +315,6 @@ function HowItWorksSection() {
             image="/elrmets/1.jpeg"
           />
           <StepItem
-            step="02"
-            title="Authorize via Session Keys"
-            description="Connect your off-chain AI brain (Gemini Pro) to the Agent's identity using crytographic session keys with custom expiry."
-            icon={<Lock className="w-12 h-12 text-purple-400" />}
-            image="/elrmets/2.jpeg"
-            reversed
-          />
-          <StepItem
-            step="03"
-            title="Achieve Autonomy"
-            description="The Agent begins scanning the mempool, managing its treasury, and executing trades while you sleep."
             icon={<Activity className="w-12 h-12 text-cyan-400" />}
             image="/elrmets/3.jpeg"
           />
@@ -325,14 +325,24 @@ function HowItWorksSection() {
 }
 
 function TiersSection() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
   return (
     <section className="py-32 px-6">
       <div className="max-w-7xl mx-auto text-center">
-        <h2 className="text-4xl md:text-6xl font-bold tracking-tighter mb-20">AGENT CLASSES</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <TierCard name="Vanguard" type="Entry Level" price="FREE" features={["1 Concurrent Agent", "Standard Analytics", "Gemini 1.5 Flash"]} />
-          <TierCard name="Overseer" type="Professional" price="499 OCT" featured features={["5 Concurrent Agents", "Advanced Memory", "Gemini 1.5 Pro", "Priority Support"]} />
-          <TierCard name="Sovereign" type="Enterprise" price="Contact Us" features={["Unlimited Agents", "Custom LLM Integrations", "Sub-Millisecond Execution"]} />
+        <motion.h2 
+          className="text-4xl md:text-6xl font-bold tracking-tighter mb-20"
+          initial={{ opacity: 0, y: 50 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+          transition={{ duration: 0.8 }}
+        >
+          AGENT CLASSES
+        </motion.h2>
+        <div ref={ref} className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <TierCard name="Vanguard" type="Entry Level" price="FREE" features={["1 Concurrent Agent", "Standard Analytics", "Gemini 1.5 Flash"]} delay={0} isInView={isInView} />
+          <TierCard name="Overseer" type="Professional" price="499 OCT" featured features={["5 Concurrent Agents", "Advanced Memory", "Gemini 1.5 Pro", "Priority Support"]} delay={0.15} isInView={isInView} />
+          <TierCard name="Sovereign" type="Enterprise" price="Contact Us" features={["Unlimited Agents", "Custom LLM Integrations", "Sub-Millisecond Execution"]} delay={0.3} isInView={isInView} />
         </div>
       </div>
     </section>
@@ -340,12 +350,37 @@ function TiersSection() {
 }
 
 function FinalCTASection({ account }: { account: any }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
   return (
-    <section className="py-40 px-6 overflow-hidden relative">
-      <div className="absolute inset-0 bg-cyan-500/5 rotate-3 -translate-y-20 blur-3xl" />
-      <div className="relative z-10 max-w-4xl mx-auto text-center border border-white/10 glass-card p-20 rounded-3xl">
-        <h2 className="text-5xl md:text-7xl font-black tracking-tighter mb-8 italic italic italic">READY TO GO <br /><span className="text-cyan-400">AUTONOMOUS?</span></h2>
-        <div className="flex flex-col items-center gap-6">
+    <section ref={ref} className="py-40 px-6 overflow-hidden relative">
+      <motion.div 
+        className="absolute inset-0 bg-cyan-500/5 rotate-3 -translate-y-20 blur-3xl"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+        transition={{ duration: 1.2 }}
+      />
+      <motion.div 
+        className="relative z-10 max-w-4xl mx-auto text-center border border-white/10 glass-card p-20 rounded-3xl"
+        initial={{ opacity: 0, y: 80, scale: 0.9 }}
+        animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 80, scale: 0.9 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
+        <motion.h2 
+          className="text-5xl md:text-7xl font-black tracking-tighter mb-8 italic"
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+        >
+          READY TO GO <br /><span className="text-cyan-400">AUTONOMOUS?</span>
+        </motion.h2>
+        <motion.div 
+          className="flex flex-col items-center gap-6"
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+        >
           {account ? (
             <Link href="/dashboard" className="px-12 py-6 bg-cyan-500 text-black font-black text-lg rounded-full shadow-[0_0_30px_rgba(0,242,255,0.4)] hover:bg-white transition-all">
               LAUNCH APP NOW
@@ -354,8 +389,8 @@ function FinalCTASection({ account }: { account: any }) {
             <CustomConnectButton />
           )}
           <p className="text-xs text-gray-500 font-mono tracking-widest uppercase">Limited Agent Slots Available for Alpha V1</p>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </section>
   );
 }
@@ -455,12 +490,17 @@ function StepItem({ step, title, description, icon, image, reversed = false }: {
   );
 }
 
-function TierCard({ name, type, price, featured = false, features }: { name: string, type: string, price: string, featured?: boolean, features: string[] }) {
+function TierCard({ name, type, price, featured = false, features, delay = 0, isInView }: { name: string, type: string, price: string, featured?: boolean, features: string[], delay?: number, isInView: boolean }) {
   return (
-    <div className={cn(
-      "p-10 rounded-3xl flex flex-col gap-8 transition-all duration-500",
-      featured ? "bg-white text-black scale-110 shadow-[0_0_60px_rgba(255,255,255,0.1)] z-10" : "bg-white/5 text-white border border-white/5"
-    )}>
+    <motion.div 
+      className={cn(
+        "p-10 rounded-3xl flex flex-col gap-8 transition-all duration-500",
+        featured ? "bg-white text-black scale-110 shadow-[0_0_60px_rgba(255,255,255,0.1)] z-10" : "bg-white/5 text-white border border-white/5"
+      )}
+      initial={{ opacity: 0, y: 60, rotateX: 15 }}
+      animate={isInView ? { opacity: 1, y: 0, rotateX: 0 } : { opacity: 0, y: 60, rotateX: 15 }}
+      transition={{ duration: 0.7, delay, ease: "easeOut" }}
+    >
       <div className="text-left">
         <span className={cn("text-[10px] uppercase font-mono tracking-widest", featured ? "text-gray-500" : "text-cyan-400")}>{type}</span>
         <h3 className="text-3xl font-bold mt-2">{name}</h3>
@@ -484,7 +524,7 @@ function TierCard({ name, type, price, featured = false, features }: { name: str
       )}>
         CHOOSE {name.toUpperCase()}
       </button>
-    </div>
+    </motion.div>
   );
 }
 
