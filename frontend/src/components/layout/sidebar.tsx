@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
+import { SettingsModal } from '@/components/dashboard/settings-modal';
 
 const MENU_ITEMS = [
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard, desc: 'Command Center' },
@@ -26,6 +27,7 @@ const SECONDARY_ITEMS = [
 export function Sidebar() {
     const pathname = usePathname();
     const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
     return (
         <aside
@@ -127,14 +129,24 @@ export function Sidebar() {
 
             {/* Footer */}
             <div className="border-t border-[#21262d] p-2 flex flex-col gap-0.5">
-                {SECONDARY_ITEMS.map(item => (
-                    <Link key={item.name} href={item.href}>
-                        <div className="flex items-center gap-3 px-2 py-2 rounded-md text-[#8b949e] hover:text-[#e6edf3] hover:bg-[#161b22] transition-all">
-                            <item.icon className="w-4 h-4 flex-shrink-0" />
-                            {!isCollapsed && <span className="text-sm font-medium">{item.name}</span>}
-                        </div>
-                    </Link>
-                ))}
+                {SECONDARY_ITEMS.map(item => {
+                    if (item.name === 'Settings') {
+                        return (
+                            <button key={item.name} onClick={() => setIsSettingsOpen(true)} className="flex items-center gap-3 px-2 py-2 rounded-md text-[#8b949e] hover:text-[#e6edf3] hover:bg-[#161b22] transition-all w-full text-left">
+                                <item.icon className="w-4 h-4 flex-shrink-0" />
+                                {!isCollapsed && <span className="text-sm font-medium">{item.name}</span>}
+                            </button>
+                        );
+                    }
+                    return (
+                        <Link key={item.name} href={item.href}>
+                            <div className="flex items-center gap-3 px-2 py-2 rounded-md text-[#8b949e] hover:text-[#e6edf3] hover:bg-[#161b22] transition-all">
+                                <item.icon className="w-4 h-4 flex-shrink-0" />
+                                {!isCollapsed && <span className="text-sm font-medium">{item.name}</span>}
+                            </div>
+                        </Link>
+                    );
+                })}
                 <button
                     onClick={() => setIsCollapsed(!isCollapsed)}
                     className="flex items-center gap-3 px-2 py-2 rounded-md text-[#8b949e] hover:text-[#e6edf3] hover:bg-[#161b22] transition-all"
@@ -143,6 +155,8 @@ export function Sidebar() {
                     {!isCollapsed && <span className="text-sm font-medium">Collapse</span>}
                 </button>
             </div>
+
+            <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
         </aside>
     );
 }

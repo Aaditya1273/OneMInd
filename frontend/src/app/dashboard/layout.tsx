@@ -1,7 +1,7 @@
 'use client';
 
 import { Sidebar } from '@/components/layout/sidebar';
-import { useCurrentAccount } from '@mysten/dapp-kit';
+import { useCurrentAccount, ConnectButton } from '@mysten/dapp-kit';
 import { redirect } from 'next/navigation';
 import { useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -32,15 +32,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     </div>
 
                     <div className="flex items-center gap-4">
-                        <div className="flex flex-col items-end">
-                            <span className="text-[10px] text-[#8b949e] uppercase tracking-wider font-semibold">Neural ID</span>
-                            <span className="text-xs font-mono text-[#e6edf3]">
-                                {account.address.slice(0, 10)}...{account.address.slice(-6)}
-                            </span>
-                        </div>
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#1f6feb] to-[#388bfd] flex items-center justify-center text-white text-[10px] font-bold">
-                            AI
-                        </div>
+                        <ConnectButton className="!bg-[#161b22] hover:!bg-[#21262d] !border !border-[#30363d] !text-[#e6edf3] !transition-colors !rounded-lg" />
                     </div>
                 </header>
 
