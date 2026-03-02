@@ -2,6 +2,8 @@
 
 import { ShieldCheck, Vote, Users, ChevronRight, Scale, Gavel } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useState } from 'react';
+import { ProposalDetailsModal, SubmitProposalModal, DelegateSupportModal } from '@/components/dashboard/governance-modals';
 
 const PROPOSALS = [
     { title: 'OIP-12: Expand Vanguard Protocol to Sui Mainnet', status: 'Voting', votes: '14.2M / 20M', ends: '2 days', category: 'Expansion' },
@@ -16,6 +18,10 @@ const STATUS_BADGE: Record<string, string> = {
 };
 
 export default function GovernancePage() {
+    const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
+    const [isDelegateModalOpen, setIsDelegateModalOpen] = useState(false);
+    const [selectedProposal, setSelectedProposal] = useState<any | null>(null);
+
     return (
         <div className="flex flex-col gap-6">
             {/* Page Header */}
@@ -24,7 +30,10 @@ export default function GovernancePage() {
                     <h1 className="text-2xl font-bold text-[#e6edf3]">Neural Council</h1>
                     <p className="text-sm text-[#8b949e] mt-1">Decentralized governance for the OneMind ecosystem.</p>
                 </div>
-                <button className="px-4 py-2.5 bg-[#238636] hover:bg-[#2ea043] text-white font-semibold text-sm rounded-lg transition-colors">
+                <button
+                    onClick={() => setIsSubmitModalOpen(true)}
+                    className="px-4 py-2.5 bg-[#238636] hover:bg-[#2ea043] text-white font-semibold text-sm rounded-lg transition-colors"
+                >
                     Submit Proposal
                 </button>
             </div>
@@ -59,7 +68,10 @@ export default function GovernancePage() {
                     {/* Delegate Card */}
                     <div className="bg-[#161b22] border border-[#21262d] rounded-xl p-5">
                         <h3 className="text-sm font-semibold text-[#e6edf3] mb-4">Delegate Support</h3>
-                        <div className="flex items-center gap-3 p-3 bg-[#0d1117] border border-[#21262d] hover:border-[#30363d] rounded-lg cursor-pointer transition-colors">
+                        <div
+                            onClick={() => setIsDelegateModalOpen(true)}
+                            className="flex items-center gap-3 p-3 bg-[#0d1117] border border-[#21262d] hover:border-[#30363d] rounded-lg cursor-pointer transition-colors"
+                        >
                             <div className="w-9 h-9 rounded-lg bg-[#bc8cff1a] border border-[#bc8cff33] flex items-center justify-center flex-shrink-0">
                                 <Users className="w-4 h-4 text-[#bc8cff]" />
                             </div>
@@ -108,11 +120,17 @@ export default function GovernancePage() {
                                 </div>
 
                                 <div className="flex items-center gap-2 flex-shrink-0">
-                                    <button className="px-4 py-2 border border-[#30363d] text-[#c9d1d9] font-semibold text-xs rounded-lg hover:bg-[#21262d] transition-colors">
+                                    <button
+                                        onClick={() => setSelectedProposal(proposal)}
+                                        className="px-4 py-2 border border-[#30363d] text-[#c9d1d9] font-semibold text-xs rounded-lg hover:bg-[#21262d] transition-colors"
+                                    >
                                         Details
                                     </button>
                                     {proposal.status === 'Voting' && (
-                                        <button className="px-5 py-2 bg-[#1f6feb] hover:bg-[#388bfd] text-white font-bold text-xs rounded-lg transition-colors">
+                                        <button
+                                            onClick={() => setSelectedProposal(proposal)}
+                                            className="px-5 py-2 bg-[#1f6feb] hover:bg-[#388bfd] text-white font-bold text-xs rounded-lg transition-colors"
+                                        >
                                             Vote
                                         </button>
                                     )}
@@ -122,6 +140,23 @@ export default function GovernancePage() {
                     ))}
                 </div>
             </div>
+
+            {/* Modals */}
+            <SubmitProposalModal
+                isOpen={isSubmitModalOpen}
+                onClose={() => setIsSubmitModalOpen(false)}
+            />
+
+            <DelegateSupportModal
+                isOpen={isDelegateModalOpen}
+                onClose={() => setIsDelegateModalOpen(false)}
+            />
+
+            <ProposalDetailsModal
+                isOpen={selectedProposal !== null}
+                onClose={() => setSelectedProposal(null)}
+                proposal={selectedProposal}
+            />
         </div>
     );
 }
