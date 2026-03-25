@@ -7,7 +7,7 @@ module onemind::main {
 
     // --- Public Functions ---
 
-    public entry fun spawn_agent(
+    public fun spawn_agent(
         registry: &mut GlobalRegistry,
         name: String,
         ctx: &mut TxContext

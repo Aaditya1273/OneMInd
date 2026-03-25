@@ -53,7 +53,17 @@ export default function AgentsPage() {
     );
 }
 
-function AgentCard({ name, status, level, energy, brain, ops, isMain = false }: any) {
+interface AgentProps {
+    name: string;
+    status: string;
+    level: number;
+    energy: number;
+    brain: string;
+    ops: string;
+    isMain?: boolean;
+}
+
+function AgentCard({ name, status, level, energy, brain, ops, isMain = false }: AgentProps) {
     const isHealthy = status === 'Operational';
 
     return (

@@ -10,7 +10,7 @@ build/*
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
-
+/onechain_repo
 # testing
 /coverage
 

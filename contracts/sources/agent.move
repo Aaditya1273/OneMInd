@@ -2,7 +2,6 @@ module onemind::agent {
     use std::string::String;
     use one::event;
 
-    const EInvalidName: u64 = 0;
 
     // --- Structs ---
 
@@ -61,7 +60,7 @@ module onemind::agent {
     }
 
     /// Update the agent's memory hash (brain synchronization).
-    public fun update_memory(agent: &mut Agent, new_memory: String, ctx: &mut TxContext) {
+    public fun update_memory(agent: &mut Agent, new_memory: String, _ctx: &mut TxContext) {
         // Validation: Only the owner or an authorized session (handled by access_control) can update
         // (In this modular design, access_control calls this function)
         agent.memory_hash = new_memory;

@@ -5,11 +5,11 @@ import { Terminal } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 
 const MOCK_LOGS = [
-    { type: 'thought', message: 'Analyzing market depth for OCT/USDT pair...', time: '14:20:01' },
-    { type: 'action', message: 'Initiating deposit of 500 OCT into agent vault.', time: '14:20:05' },
+    { type: 'thought', message: 'Analyzing market depth for ONE/USDT pair...', time: '14:20:01' },
+    { type: 'action', message: 'Initiating deposit of 500 ONE into agent vault.', time: '14:20:05' },
     { type: 'status', message: 'Neural memory synchronized with IPFS hash: QmX...', time: '14:20:12' },
     { type: 'thought', message: 'Energy levels sufficient for next autonomous cycle.', time: '14:21:00' },
-    { type: 'action', message: 'Executing smart swap: 10 OCT -> 0.45 USDT', time: '14:22:45' },
+    { type: 'action', message: 'Executing smart swap: 10 ONE -> 0.45 USDT', time: '14:22:45' },
     { type: 'success', message: 'Transaction confirmed. TX: 0x4f2...78a', time: '14:23:02' },
 ];
 
@@ -58,7 +58,7 @@ export function NeuralFeed() {
             </div>
 
             {/* Log Stream - Fixed height with scroll */}
-            <div 
+            <div
                 ref={scrollRef}
                 className="flex-1 overflow-y-auto p-4 font-mono text-xs space-y-3 bg-[#0d1117] scrollbar-thin scrollbar-thumb-[#30363d] scrollbar-track-transparent hover:scrollbar-thumb-[#484f58]"
                 style={{ maxHeight: 'calc(100% - 44px - 60px)' }}

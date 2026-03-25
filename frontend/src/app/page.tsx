@@ -66,9 +66,9 @@ function Navbar({ isScrolled }: { isScrolled: boolean }) {
       isScrolled ? "glass-header py-3" : "bg-transparent"
     )}>
       <div className="flex items-center gap-3">
-        <img 
-          src="/logo.png" 
-          alt="OneMind Logo" 
+        <img
+          src="/logo.png"
+          alt="OneMind Logo"
           className="w-7 h-7 object-contain"
         />
         <span className="text-xl font-bold tracking-tighter text-white">ONE<span className="text-cyan-400 font-bold">MIND</span></span>
@@ -168,6 +168,16 @@ function HeroSection({ account }: { account: any }) {
         </motion.div>
       </div>
 
+      {/* Floating Asset 4 - Neural Hub Background */}
+      <motion.div
+        initial={{ opacity: 0, x: 150, scale: 0.8 }}
+        animate={{ opacity: 0.4, x: 0, scale: 1 }}
+        transition={{ delay: 1.2, duration: 1.5, ease: "easeOut" }}
+        className="absolute -right-20 top-20 w-[600px] h-[600px] pointer-events-none hidden lg:block select-none grayscale-[0.5] opacity-20 blur-[1px] transition-all"
+      >
+        <img src="/elrmets/4.png" alt="Infrastructure Hub" className="w-full h-full object-contain" />
+      </motion.div>
+
       {/* Hero Bottom Video Showcase */}
       <motion.div
         initial={{ opacity: 0, y: 100 }}
@@ -211,7 +221,7 @@ function StatsStrip() {
 
 function StatItem({ label, value, color = "text-white", delay = 0, isInView }: { label: string, value: string, color?: string, delay?: number, isInView: boolean }) {
   return (
-    <motion.div 
+    <motion.div
       className="flex flex-col gap-2"
       initial={{ opacity: 0, y: 30 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
@@ -230,7 +240,7 @@ function FeaturesSection() {
   return (
     <section id="features" className="py-32 px-6">
       <div className="max-w-7xl mx-auto">
-        <motion.div 
+        <motion.div
           className="text-center mb-24"
           initial={{ opacity: 0, y: 50 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
@@ -296,7 +306,7 @@ function HowItWorksSection() {
   return (
     <section id="workflow" className="py-32 px-6 bg-white/[0.01]">
       <div className="max-w-5xl mx-auto">
-        <motion.h2 
+        <motion.h2
           ref={ref}
           className="text-4xl md:text-6xl font-bold tracking-tighter mb-20 text-center"
           initial={{ opacity: 0, scale: 0.9, y: 30 }}
@@ -312,14 +322,14 @@ function HowItWorksSection() {
             title="Spawn Your Agent"
             description="Mint a unique Vanguard Identity. Your Agent comes with its own Sovereign sub-wallet (Vault) pre-configured."
             icon={<Brain className="w-12 h-12" />}
-            image="/elrmets/1.jpeg"
+            image="/elrmets/1.png"
           />
           <StepItem
             step="02"
             title="Authorize via Session Keys"
             description="Connect your off-chain AI brain (Gemini Pro) to the Agent's identity using crytographic session keys with custom expiry."
             icon={<Lock className="w-12 h-12 text-purple-400" />}
-            image="/elrmets/2.jpeg"
+            image="/elrmets/2.png"
             reversed
           />
           <StepItem
@@ -327,7 +337,7 @@ function HowItWorksSection() {
             title="Achieve Autonomy"
             description="The Agent begins scanning the mempool, managing its treasury, and executing trades while you sleep."
             icon={<Activity className="w-12 h-12 text-cyan-400" />}
-            image="/elrmets/3.jpeg"
+            image="/elrmets/3.png"
           />
         </div>
       </div>
@@ -342,7 +352,7 @@ function TiersSection() {
   return (
     <section className="py-32 px-6">
       <div className="max-w-7xl mx-auto text-center">
-        <motion.h2 
+        <motion.h2
           className="text-4xl md:text-6xl font-bold tracking-tighter mb-20"
           initial={{ opacity: 0, y: 50 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
@@ -352,7 +362,7 @@ function TiersSection() {
         </motion.h2>
         <div ref={ref} className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <TierCard name="Vanguard" type="Entry Level" price="FREE" features={["1 Concurrent Agent", "Standard Analytics", "Gemini 1.5 Flash"]} delay={0} isInView={isInView} />
-          <TierCard name="Overseer" type="Professional" price="499 OCT" featured features={["5 Concurrent Agents", "Advanced Memory", "Gemini 1.5 Pro", "Priority Support"]} delay={0.15} isInView={isInView} />
+          <TierCard name="Overseer" type="Professional" price="499 ONE" featured features={["5 Concurrent Agents", "Advanced Memory", "Gemini 1.5 Pro", "Priority Support"]} delay={0.15} isInView={isInView} />
           <TierCard name="Sovereign" type="Enterprise" price="Contact Us" features={["Unlimited Agents", "Custom LLM Integrations", "Sub-Millisecond Execution"]} delay={0.3} isInView={isInView} />
         </div>
       </div>
@@ -366,19 +376,19 @@ function FinalCTASection({ account }: { account: any }) {
 
   return (
     <section ref={ref} className="py-40 px-6 overflow-hidden relative">
-      <motion.div 
+      <motion.div
         className="absolute inset-0 bg-cyan-500/5 rotate-3 -translate-y-20 blur-3xl"
         initial={{ opacity: 0, scale: 0.8 }}
         animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
         transition={{ duration: 1.2 }}
       />
-      <motion.div 
+      <motion.div
         className="relative z-10 max-w-4xl mx-auto text-center border border-white/10 glass-card p-20 rounded-3xl"
         initial={{ opacity: 0, y: 80, scale: 0.9 }}
         animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 80, scale: 0.9 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
-        <motion.h2 
+        <motion.h2
           className="text-5xl md:text-7xl font-black tracking-tighter mb-8 italic"
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
@@ -386,7 +396,7 @@ function FinalCTASection({ account }: { account: any }) {
         >
           READY TO GO <br /><span className="text-cyan-400">AUTONOMOUS?</span>
         </motion.h2>
-        <motion.div 
+        <motion.div
           className="flex flex-col items-center gap-6"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
@@ -412,9 +422,9 @@ function Footer() {
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-12">
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-3">
-            <img 
-              src="/logo.png" 
-              alt="OneMind Logo" 
+            <img
+              src="/logo.png"
+              alt="OneMind Logo"
               className="w-6 h-6 object-contain"
             />
             <span className="text-white font-bold tracking-tighter italic">ONEMIND</span>
@@ -446,7 +456,7 @@ function Footer() {
 
 function FeatureCard({ icon, title, description, delay = 0, isInView }: { icon: any, title: string, description: string, delay?: number, isInView: boolean }) {
   return (
-    <motion.div 
+    <motion.div
       className="glass-card p-10 hover:-translate-y-2 transition-all duration-500 group"
       initial={{ opacity: 0, y: 50, scale: 0.95 }}
       animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 50, scale: 0.95 }}
@@ -466,11 +476,11 @@ function StepItem({ step, title, description, icon, image, reversed = false }: {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <div 
+    <div
       ref={ref}
       className={cn("flex flex-col md:flex-row items-center gap-12 lg:gap-24", reversed && "md:flex-row-reverse")}
     >
-      <motion.div 
+      <motion.div
         className="flex-1 flex flex-col gap-4"
         initial={{ opacity: 0, x: reversed ? 50 : -50 }}
         animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: reversed ? 50 : -50 }}
@@ -480,7 +490,7 @@ function StepItem({ step, title, description, icon, image, reversed = false }: {
         <h3 className="text-3xl font-bold tracking-tight">{title}</h3>
         <p className="text-gray-400 text-lg leading-relaxed">{description}</p>
       </motion.div>
-      <motion.div 
+      <motion.div
         className="w-full md:w-[400px] h-[300px] glass-card flex items-center justify-center relative group overflow-hidden"
         initial={{ opacity: 0, x: reversed ? -50 : 50, scale: 0.9 }}
         animate={isInView ? { opacity: 1, x: 0, scale: 1 } : { opacity: 0, x: reversed ? -50 : 50, scale: 0.9 }}
@@ -488,8 +498,8 @@ function StepItem({ step, title, description, icon, image, reversed = false }: {
       >
         <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-purple-500 opacity-0 group-hover:opacity-20 transition-opacity rounded-[inherit] pointer-events-none z-10" />
         {image ? (
-          <img 
-            src={image} 
+          <img
+            src={image}
             alt={title}
             className="w-full h-full object-cover rounded-xl"
           />
@@ -503,7 +513,7 @@ function StepItem({ step, title, description, icon, image, reversed = false }: {
 
 function TierCard({ name, type, price, featured = false, features, delay = 0, isInView }: { name: string, type: string, price: string, featured?: boolean, features: string[], delay?: number, isInView: boolean }) {
   return (
-    <motion.div 
+    <motion.div
       className={cn(
         "p-10 rounded-3xl flex flex-col gap-8 transition-all duration-500",
         featured ? "bg-white text-black scale-110 shadow-[0_0_60px_rgba(255,255,255,0.1)] z-10" : "bg-white/5 text-white border border-white/5"

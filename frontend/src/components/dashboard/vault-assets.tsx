@@ -22,7 +22,7 @@ export function VaultAssets() {
                     <div className="text-[10px] text-[#8b949e] mb-2 font-mono uppercase tracking-wider">Total Sovereign Balance</div>
                     <div className="flex items-baseline gap-2">
                         <span className="text-3xl font-bold tracking-tight text-[#e6edf3] font-mono">1,482.00</span>
-                        <span className="text-sm text-[#58a6ff] font-mono font-semibold">OCT</span>
+                        <span className="text-sm text-[#58a6ff] font-mono font-semibold">ONE</span>
                     </div>
                     <div className="text-[11px] text-[#8b949e] mt-2 flex items-center gap-1 font-mono">
                         <TrendingUp className="w-3 h-3 text-[#3fb950]" />
@@ -64,7 +64,7 @@ export function VaultAssets() {
                     </div>
 
                     <div className="w-full space-y-3">
-                        <AssetRow name="OCT (Native)" amount="1,482" percent={70} color="bg-[#58a6ff]" />
+                        <AssetRow name="ONE (Native)" amount="1,482" percent={70} color="bg-[#58a6ff]" />
                         <AssetRow name="MindToken" amount="420" percent={20} color="bg-[#bc8cff]" />
                         <AssetRow name="Staked One" amount="12" percent={10} color="bg-[#3fb950]" />
                     </div>

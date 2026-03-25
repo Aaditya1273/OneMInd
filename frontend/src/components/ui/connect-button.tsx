@@ -1,9 +1,14 @@
 'use client';
 
-import { ConnectButton as SuiConnectButton } from '@mysten/dapp-kit';
+import dynamic from 'next/dynamic';
+
+const OneConnectButton = dynamic(
+    () => import('@mysten/dapp-kit').then((mod) => mod.ConnectButton),
+    { ssr: false }
+);
 
 export function CustomConnectButton() {
     return (
-        <SuiConnectButton />
+        <OneConnectButton />
     );
 }

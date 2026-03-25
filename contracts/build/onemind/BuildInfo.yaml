@@ -5,14 +5,15 @@ compiled_package_info:
     one: "0000000000000000000000000000000000000000000000000000000000000002"
     onemind: "0000000000000000000000000000000000000000000000000000000000000000"
     std: "0000000000000000000000000000000000000000000000000000000000000001"
-  source_digest: 634D626B5EA734A964B64B254125CDDD22EB2AE41876FCD421C6DC928AB42EC3
+  source_digest: 8BD565C9079B3CB92E241A656F203F528A46B01E55D97176324979F8DF77A497
   build_flags:
     dev_mode: false
     test_mode: false
     generate_docs: false
+    save_disassembly: false
     install_dir: ~
     force_recompilation: false
-    lock_file: ".\\Move.lock"
+    lock_file: "./Move.lock"
     fetch_deps_only: false
     skip_fetch_latest_git_deps: false
     default_flavor: one
@@ -25,6 +26,49 @@ compiled_package_info:
     lint_flag:
       no_lint: false
       lint: false
+    modes: []
+    implicit_dependencies:
+      Bridge:
+        Internal:
+          kind:
+            Git:
+              git_url: "https://github.com/one-chain-labs/onechain.git"
+              git_rev: 613eda102ec09662c8d7f5c56f0e47b7453e2822
+              subdir: crates/sui-framework/packages/bridge
+          subst: ~
+          digest: ~
+          dep_override: true
+      MoveStdlib:
+        Internal:
+          kind:
+            Git:
+              git_url: "https://github.com/one-chain-labs/onechain.git"
+              git_rev: 613eda102ec09662c8d7f5c56f0e47b7453e2822
+              subdir: crates/sui-framework/packages/move-stdlib
+          subst: ~
+          digest: ~
+          dep_override: true
+      One:
+        Internal:
+          kind:
+            Git:
+              git_url: "https://github.com/one-chain-labs/onechain.git"
+              git_rev: 613eda102ec09662c8d7f5c56f0e47b7453e2822
+              subdir: crates/sui-framework/packages/one-framework
+          subst: ~
+          digest: ~
+          dep_override: true
+      OneSystem:
+        Internal:
+          kind:
+            Git:
+              git_url: "https://github.com/one-chain-labs/onechain.git"
+              git_rev: 613eda102ec09662c8d7f5c56f0e47b7453e2822
+              subdir: crates/sui-framework/packages/one-system
+          subst: ~
+          digest: ~
+          dep_override: true
+    force_lock_file: false
 dependencies:
   - MoveStdlib
   - One

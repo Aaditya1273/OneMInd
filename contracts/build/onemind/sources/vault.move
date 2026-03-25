@@ -1,6 +1,6 @@
 module onemind::vault {
     use one::coin::{Self, Coin};
-    use one::bag::{Self, Bag};
+    use one::bag::Bag;
     use one::event;
 
     // --- Errors ---

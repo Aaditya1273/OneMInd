@@ -187,7 +187,7 @@ export function DelegateSupportModal({ isOpen, onClose }: { isOpen: boolean, onC
 
             <div className="p-6 space-y-5">
                 <p className="text-sm text-[#8b949e] leading-relaxed">
-                    Choose an entity to represent your vOM voting weight in council decisions. You can change your delegate at any time.
+                    Choose an entity to represent your vONE voting weight in council decisions. You can change your delegate at any time.
                 </p>
 
                 <div className="space-y-3">

@@ -9,12 +9,12 @@ export default function VaultPage() {
             {/* Page Header */}
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-2xl font-bold text-[#e6edf3]">Sovereign Reserves</h1>
+                    <h2 className="text-lg font-bold text-[#e6edf3] font-mono tracking-tight uppercase">Deposit ONE</h2>
                     <p className="text-sm text-[#8b949e] mt-1">Manage the multi-asset treasury secured by your agent squad.</p>
                 </div>
                 <div className="flex gap-3">
                     <button className="px-4 py-2.5 border border-[#30363d] text-[#c9d1d9] font-semibold text-sm rounded-lg hover:bg-[#21262d] transition-colors">
-                        Deposit OCT
+                        Deposit ONE
                     </button>
                     <button className="px-4 py-2.5 bg-[#238636] hover:bg-[#2ea043] text-white font-semibold text-sm rounded-lg transition-colors">
                         Withdraw All
@@ -34,7 +34,7 @@ export default function VaultPage() {
                         </div>
                         <div className="flex items-baseline gap-3 mb-3">
                             <span className="text-5xl font-bold tracking-tight text-[#e6edf3]">12,482.00</span>
-                            <span className="text-xl text-[#58a6ff] font-mono font-medium">OCT</span>
+                            <span className="text-xl text-[#58a6ff] font-mono font-medium">ONE</span>
                         </div>
                         <div className="flex items-center gap-3 text-sm text-[#8b949e] mb-6">
                             <span className="text-[#3fb950] font-semibold">+2.4%</span>
@@ -44,9 +44,9 @@ export default function VaultPage() {
                         </div>
 
                         <div className="grid grid-cols-3 gap-4">
-                            <BalanceMetric label="Available for AI" value="8,402.00" sub="OCT" />
-                            <BalanceMetric label="Locked Staking" value="4,000.00" sub="OCT" color="text-[#bc8cff]" />
-                            <BalanceMetric label="Pending Growth" value="80.14" sub="OCT" color="text-[#3fb950]" />
+                            <BalanceMetric label="Available for AI" value="8,402.00" sub="ONE" />
+                            <BalanceMetric label="Locked Staking" value="4,000.00" sub="ONE" color="text-[#bc8cff]" />
+                            <BalanceMetric label="Pending Growth" value="80.14" sub="ONE" color="text-[#3fb950]" />
                         </div>
                     </div>
 
@@ -60,10 +60,10 @@ export default function VaultPage() {
                             <button className="text-xs text-[#58a6ff] hover:underline font-medium">View All on Explorer</button>
                         </div>
                         <div className="divide-y divide-[#21262d]">
-                            <TxRow type="in" amount="+500.00" asset="OCT" date="2 mins ago" label="Neural Trade: Buy" />
-                            <TxRow type="out" amount="-12.10" asset="OCT" date="14 mins ago" label="Gas Deposit: ECHO-07" />
-                            <TxRow type="in" amount="+142.92" asset="OCT" date="1 hour ago" label="Vault Yield Distribution" />
-                            <TxRow type="in" amount="+1,000.00" asset="OCT" date="4 hours ago" label="Direct User Deposit" />
+                            <TxRow type="in" amount="+500.00" asset="ONE" date="2 mins ago" label="Neural Trade: Buy" />
+                            <TxRow type="out" amount="-12.10" asset="ONE" date="14 mins ago" label="Gas Deposit: ECHO-07" />
+                            <TxRow type="in" amount="+142.92" asset="ONE" date="1 hour ago" label="Vault Yield Distribution" />
+                            <TxRow type="in" amount="+1,000.00" asset="ONE" date="4 hours ago" label="Direct User Deposit" />
                         </div>
                     </div>
                 </div>
@@ -74,7 +74,7 @@ export default function VaultPage() {
                     <div className="bg-[#161b22] border border-[#21262d] rounded-xl p-5">
                         <h3 className="text-sm font-semibold text-[#e6edf3] mb-4">Asset Diversification</h3>
                         <div className="space-y-4">
-                            <DiversificationItem name="Native OCT" percent={70} color="bg-[#58a6ff]" />
+                            <DiversificationItem name="Native ONE" percent={70} color="bg-[#58a6ff]" />
                             <DiversificationItem name="MindNodes (NFT)" percent={20} color="bg-[#bc8cff]" />
                             <DiversificationItem name="In-Game Assets" percent={10} color="bg-[#3fb950]" />
                         </div>
@@ -100,7 +100,7 @@ export default function VaultPage() {
     );
 }
 
-function BalanceMetric({ label, value, sub, color = 'text-[#e6edf3]' }: any) {
+function BalanceMetric({ label, value, sub, color = 'text-[#e6edf3]' }: { label: string, value: string, sub: string, color?: string }) {
     return (
         <div className="bg-[#0d1117] border border-[#21262d] p-4 rounded-lg">
             <div className="text-[11px] text-[#8b949e] mb-1 font-medium">{label}</div>
@@ -111,7 +111,7 @@ function BalanceMetric({ label, value, sub, color = 'text-[#e6edf3]' }: any) {
     );
 }
 
-function TxRow({ type, amount, asset, date, label }: any) {
+function TxRow({ type, amount, asset, date, label }: { type: 'in' | 'out', amount: string, asset: string, date: string, label: string }) {
     const isIn = type === 'in';
     return (
         <div className="px-5 py-4 flex items-center gap-4 hover:bg-[#1c2128] transition-colors">
@@ -135,7 +135,7 @@ function TxRow({ type, amount, asset, date, label }: any) {
     );
 }
 
-function DiversificationItem({ name, percent, color }: any) {
+function DiversificationItem({ name, percent, color }: { name: string, percent: number, color: string }) {
     return (
         <div className="flex flex-col gap-1.5">
             <div className="flex justify-between items-center">
