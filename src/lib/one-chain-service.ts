@@ -1,39 +1,15 @@
-/**
- * OneChain Service - High Fidelity Mock for 'Aha! Demo'
- * 
- * Note: We use a robust mock for the OneClient to ensure 
- * complete stability for the hackathon presentation while 
- * maintaining the specific 'OneClient' branding requested.
- */
-
-// We keep the Transaction import for future real integration
+// Real Sui SDK imports
+import { SuiClient } from '@mysten/sui/client';
 import { Transaction } from '@mysten/sui/transactions';
 
-export class OneClient {
-    private endpoint: string;
-
-    constructor(endpoint: string = 'https://rpc-testnet.onelabs.cc:443') {
-        this.endpoint = endpoint;
-        console.log(`[OneClient] Initialized on: ${this.endpoint}`);
-    }
-
-    // Mocking the getCoins functionality for the demo
-    async getCoins({ owner, coinType }: { owner: string; coinType: string }) {
-        console.log(`[OneClient] Fetching ${coinType} for ${owner}`);
-        // Return realistic mock data to satisfy the UI
-        return {
-            data: [
-                { balance: '1482000000', coinType: '0x2::one_chain::OCT' },
-                { balance: '420000000', coinType: '0x3::one_dex::MIND' }
-            ]
-        };
-    }
-}
-
-export const oneClient = new OneClient();
+// Initialize the real OneClient (wrapped SuiClient)
+export const oneClient = new SuiClient({
+    url: process.env.NEXT_PUBLIC_ONE_CHAIN_RPC || 'https://rpc-testnet.onelabs.cc:443'
+});
 
 export const OneChainService = {
-    PACKAGE_ID: '0x8d6b9d62d29e4198305c6c649987fb08170c06020584288d75fa74391a876798',
+    PACKAGE_ID: process.env.NEXT_PUBLIC_PACKAGE_ID || '0x86e7c9fde70f6867c364d9846257ef2566ea267d66dbc33271410e24dbfeb8af',
+    REGISTRY_ID: process.env.NEXT_PUBLIC_REGISTRY_ID || '0xee678d03b49e4fb7f6a8299cbe4888fe228adecba8ce93d217fe47f44519386b',
 
     async getAgentBalance(address: string) {
         try {
@@ -56,6 +32,43 @@ export const OneChainService = {
 
     async enterOnePlay(agentId: string, bet: number) {
         console.log(`[OneChain] Agent ${agentId} entering OnePlay HashGame with ${bet} MIND...`);
+        // Real implementation would create a PTB for the game entry
         return { success: true, txHash: '0x' + Math.random().toString(16).slice(2) };
+    },
+
+    /**
+     * Fetch all agents from the GlobalRegistry.
+     */
+    async fetchRegistryAgents() {
+        try {
+            const registry = await oneClient.getObject({
+                id: this.REGISTRY_ID,
+                options: { showContent: true }
+            });
+
+            // In a real Sui/OneChain contract, agents are stored in a dynamic field or table
+            // This is a simplified fetch for the demo object state
+            return (registry.data?.content as any)?.fields?.agents || [];
+        } catch (error) {
+            console.error('Failed to fetch registry agents:', error);
+            return [];
+        }
+    },
+
+    /**
+     * Query live events from the package.
+     */
+    async fetchEcosystemEvents() {
+        try {
+            const events = await oneClient.queryEvents({
+                query: { MoveModule: { package: this.PACKAGE_ID, module: 'agent_logic' } },
+                limit: 10,
+                order: 'descending'
+            });
+            return events.data;
+        } catch (error) {
+            console.error('Failed to query ecosystem events:', error);
+            return [];
+        }
     }
 };

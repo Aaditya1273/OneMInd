@@ -20,7 +20,7 @@ MoveStdlib = { local = "../onechain_repo/crates/sui-framework/packages/move-stdl
 # Override = { local = "../conflicting/version", override = true }
 
 [addresses]
-onemind = "0x0"
+onemind = "0x86e7c9fde70f6867c364d9846257ef2566ea267d66dbc33271410e24dbfeb8af"
 
 # Named addresses will be accessible in Move as `@name`. They're also exported:
 # for example, `std = "0x1"` is exported by the Standard Library.

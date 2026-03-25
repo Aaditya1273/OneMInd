@@ -22,6 +22,7 @@ module onemind::mock_dex {
     }
 
     /// Place a new order on the mock DEX.
+    #[allow(lint(self_transfer))]
     public fun place_order(amount_a: u64, amount_b: u64, ctx: &mut TxContext) {
         let owner = ctx.sender();
         let order = Order { 

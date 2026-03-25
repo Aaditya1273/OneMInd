@@ -7,6 +7,7 @@ module onemind::main {
 
     // --- Public Functions ---
 
+    #[allow(lint(self_transfer))]
     public fun spawn_agent(
         registry: &mut GlobalRegistry,
         name: String,

@@ -18,6 +18,7 @@ module onemind::strategy_manager {
     }
 
     /// Create and transfer a StrategyManager to the sender.
+    #[allow(lint(self_transfer))]
     public fun init_manager(ctx: &mut TxContext) {
         let owner = ctx.sender();
         let manager = StrategyManager {
