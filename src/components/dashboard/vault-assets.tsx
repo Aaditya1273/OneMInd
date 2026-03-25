@@ -15,12 +15,12 @@ export function VaultAssets() {
 
                 <div className="flex justify-between items-start mb-10">
                     <h3 className="text-[11px] font-black text-white/20 flex items-center gap-2 uppercase tracking-[0.25em]">
-                        <Landmark className="w-4 h-4 text-purple-400" />
-                        Sovereign Vault
+                        <Landmark className="w-4 h-4 text-cyan-400" />
+                        Sovereign OneVault
                     </h3>
-                    <span className="text-[10px] text-emerald-400 bg-emerald-400/10 border border-emerald-400/20 px-3 py-1.5 rounded-full font-black flex items-center gap-1.5 uppercase tracking-widest shadow-[0_0_15px_rgba(52,211,153,0.15)]">
+                    <span className="text-[10px] text-cyan-400 bg-cyan-400/10 border border-cyan-400/20 px-3 py-1.5 rounded-full font-black flex items-center gap-1.5 uppercase tracking-widest shadow-[0_0_15px_rgba(6,182,212,0.15)]">
                         <ShieldCheck className="w-4 h-4" />
-                        Secured
+                        OneChain Sync
                     </span>
                 </div>
 
@@ -37,12 +37,22 @@ export function VaultAssets() {
                 </div>
 
                 <div className="flex flex-col gap-4">
+                    <div className="flex items-center justify-between px-2 mb-2">
+                        <div className="flex flex-col">
+                            <span className="text-[9px] text-white/20 font-black uppercase tracking-widest">OneDEX Spread</span>
+                            <span className="text-[11px] text-emerald-400 font-black tracking-tighter">+0.82% Arb</span>
+                        </div>
+                        <div className="flex flex-col text-right">
+                            <span className="text-[9px] text-white/20 font-black uppercase tracking-widest">OnePlay Win Rate</span>
+                            <span className="text-[11px] text-purple-400 font-black tracking-tighter">74.2%</span>
+                        </div>
+                    </div>
                     <button className="w-full py-4 px-8 bg-white text-black font-black text-[13px] rounded-full hover:bg-cyan-400 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 uppercase tracking-widest shadow-[0_20px_40px_rgba(255,255,255,0.15)]">
-                        Withdraw
+                        Optimize Yield
                         <ArrowUpRight className="w-5 h-5" />
                     </button>
                     <button className="w-full py-4 px-8 border border-white/5 text-white/40 font-black text-[13px] rounded-full hover:bg-white/5 hover:text-white transition-all uppercase tracking-widest">
-                        View Records
+                        Ecosystem Explorer
                     </button>
                 </div>
             </div>

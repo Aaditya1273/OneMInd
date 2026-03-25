@@ -6,17 +6,19 @@ import { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 
 const MOCK_LOGS = [
-    { type: 'thought', message: 'Analyzing market depth for ONE/USDT pair...', time: '14:20:01' },
-    { type: 'action', message: 'Initiating deposit of 500 ONE into agent vault.', time: '14:20:05' },
-    { type: 'status', message: 'Neural memory synchronized with IPFS hash: QmX...', time: '14:20:12' },
-    { type: 'thought', message: 'Energy levels sufficient for next autonomous cycle.', time: '14:21:00' },
-    { type: 'action', message: 'Executing smart swap: 10 ONE -> 0.45 USDT', time: '14:22:45' },
-    { type: 'success', message: 'Transaction confirmed. TX: 0x4f2...78a', time: '14:23:02' },
+    { type: 'thought', message: 'Analyzing market depth for ONE/MIND pair on OneDEX...', time: '14:20:01' },
+    { type: 'action', message: 'Detecting price discrepancy: 1.05 ONE vs 1.10 ONE on secondary liquidity pools.', time: '14:20:05' },
+    { type: 'trade', message: 'Executing autonomous swap via OneClient: Swapping 500 ONE for 550 MIND.', time: '14:20:12' },
+    { type: 'play', message: 'Successfully acquired Game Item [ECHO-SHIELD]. Transitioning to OnePlay...', time: '14:21:00' },
+    { type: 'action', message: 'Entering [HASH-GAME] round #4829 with 50 MIND bet.', time: '14:22:45' },
+    { type: 'success', message: 'Game concluded. Reward: 120 MIND. TX: 0x4f2...78a', time: '14:23:02' },
 ];
 
 const TYPE_COLORS: Record<string, string> = {
     thought: 'text-purple-400',
     action: 'text-cyan-400',
+    trade: 'text-orange-400',
+    play: 'text-pink-400',
     success: 'text-emerald-400',
     status: 'text-white/20',
 };
