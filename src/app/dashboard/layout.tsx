@@ -1,14 +1,17 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { SettingsModal } from '@/components/dashboard/settings-modal';
+
 import { Sidebar } from '@/components/layout/sidebar';
 import { useCurrentAccount, ConnectButton } from '@mysten/dapp-kit';
 import { redirect, usePathname } from 'next/navigation';
-import { useEffect } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const account = useCurrentAccount();
     const pathname = usePathname();
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
     useEffect(() => {
         if (!account) {
@@ -28,7 +31,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 pointer-events-none mix-blend-overlay" />
             </div>
 
-            <Sidebar />
+            <Sidebar onSettingsClick={() => setIsSettingsOpen(true)} />
+            <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
             <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden relative z-10">
                 {/* Top Header */}
                 <header className="h-16 glass-frosted flex items-center justify-between px-8 sticky top-0 z-50 flex-shrink-0 border-b border-white/5">

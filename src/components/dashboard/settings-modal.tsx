@@ -122,14 +122,20 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                                     </AnimatePresence>
                                 </div>
 
-                                <div className="flex-1 overflow-y-auto p-10 no-scrollbar">
+                                <div className="flex-1 overflow-y-auto p-10 no-scrollbar pb-32">
                                     <AnimatePresence mode="wait">
                                         <motion.div
                                             key={activeTab}
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            exit={{ opacity: 0, y: -10 }}
-                                            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                                            initial={{ opacity: 0, y: 15, scale: 0.98, filter: 'blur(10px)' }}
+                                            animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+                                            exit={{ opacity: 0, y: -15, scale: 0.98, filter: 'blur(10px)' }}
+                                            transition={{
+                                                type: 'spring',
+                                                damping: 30,
+                                                stiffness: 100,
+                                                mass: 0.8,
+                                                restDelta: 0.001
+                                            }}
                                             className="space-y-10"
                                         >
                                             {activeTab === 'general' && (

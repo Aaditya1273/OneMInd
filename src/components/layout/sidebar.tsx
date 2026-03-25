@@ -9,7 +9,6 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
-import { SettingsModal } from '@/components/dashboard/settings-modal';
 
 const MENU_ITEMS = [
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard, desc: 'Command Center' },
@@ -24,10 +23,9 @@ const SECONDARY_ITEMS = [
     { name: 'Settings', href: '#', icon: Settings },
 ];
 
-export function Sidebar() {
+export function Sidebar({ onSettingsClick }: { onSettingsClick: () => void }) {
     const pathname = usePathname();
     const [isCollapsed, setIsCollapsed] = useState(false);
-    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
     return (
         <aside
@@ -60,7 +58,7 @@ export function Sidebar() {
             {/* Navigation */}
             <nav className="flex-1 flex flex-col gap-1 p-4 pt-6 overflow-y-auto no-scrollbar">
                 {!isCollapsed && (
-                    <div className="text-[10px] text-white/20 uppercase tracking-[0.25em] font-black px-3 mb-4">
+                    <div className="text-[11px] text-white/20 uppercase tracking-[0.25em] font-black px-3 mb-4">
                         Navigation
                     </div>
                 )}
@@ -97,7 +95,7 @@ export function Sidebar() {
                                             exit={{ opacity: 0, x: -5 }}
                                             className="flex flex-col min-w-0"
                                         >
-                                            <span className={cn('text-[13px] font-black tracking-tighter whitespace-nowrap leading-tight', isActive ? 'text-white' : 'text-inherit')}>
+                                            <span className={cn('text-[15px] font-black tracking-tighter whitespace-nowrap leading-tight', isActive ? 'text-white' : 'text-inherit')}>
                                                 {item.name}
                                             </span>
                                         </motion.div>
@@ -140,11 +138,11 @@ export function Sidebar() {
                     return (
                         <button
                             key={item.name}
-                            onClick={() => isSettings && setIsSettingsOpen(true)}
+                            onClick={() => isSettings && onSettingsClick()}
                             className="flex items-center gap-4 px-3 py-3 rounded-xl text-white/30 hover:text-white hover:bg-white/[0.02] transition-all w-full text-left group"
                         >
                             <item.icon className="w-5 h-5 flex-shrink-0 stroke-[2.5]" />
-                            {!isCollapsed && <span className="text-[13px] font-black tracking-tighter">{item.name}</span>}
+                            {!isCollapsed && <span className="text-[14px] font-black tracking-tighter">{item.name}</span>}
                         </button>
                     );
                 })}
@@ -156,8 +154,6 @@ export function Sidebar() {
                     {!isCollapsed && <span className="text-sm font-medium">Collapse</span>}
                 </button>
             </div>
-
-            <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
         </aside>
     );
 }

@@ -8,9 +8,6 @@ export function AgentStats() {
         <div className="flex flex-col gap-8 h-full">
             {/* Agent Identity Card */}
             <div className="glass-card p-10 group relative overflow-hidden h-[460px] flex flex-col justify-center transition-all duration-500">
-                <div className="absolute top-0 right-0 p-10 opacity-5 group-hover:opacity-10 transition-opacity">
-                    <Cpu className="w-28 h-28" />
-                </div>
 
                 <div className="flex items-center gap-6 mb-10">
                     <div className="w-24 h-24 rounded-3xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center flex-shrink-0 shadow-[0_0_30px_rgba(6,182,212,0.15)] group-hover:scale-105 transition-transform duration-500">
@@ -18,9 +15,9 @@ export function AgentStats() {
                     </div>
                     <div>
                         <h2 className="text-4xl font-black text-white tracking-tighter leading-tight mb-2">ECHO-7</h2>
-                        <div className="flex items-center gap-3">
-                            <span className="text-[11px] font-black text-cyan-400 bg-cyan-400/10 border border-cyan-400/20 px-3 py-1.5 rounded-full uppercase tracking-widest shadow-[0_0_15px_rgba(6,182,212,0.1)]">Level 1</span>
-                            <span className="text-[11px] text-white/50 font-black uppercase tracking-[0.25em]">Vanguard</span>
+                        <div className="flex items-center gap-6">
+                            <span className="text-[11px] font-black text-cyan-400 bg-cyan-400/10 border border-cyan-400/20 px-4 py-1.5 rounded-full uppercase tracking-widest shadow-[0_0_15px_rgba(6,182,212,0.1)] whitespace-nowrap">Level 1</span>
+                            <span className="text-[9px] text-white/40 font-black uppercase tracking-[0.25em]">Vanguard</span>
                         </div>
                     </div>
                 </div>
