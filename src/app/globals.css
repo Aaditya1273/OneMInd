@@ -189,6 +189,20 @@
   animation: float 8s ease-in-out infinite;
 }
 
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 12s linear infinite;
+}
+
 @keyframes pulse-ring {
   0% {
     transform: scale(0.8);
