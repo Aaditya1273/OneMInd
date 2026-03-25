@@ -100,110 +100,87 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                                 </div>
                             </div>
 
-                            {/* Content Area */}
-                            <div className="flex-1 flex flex-col min-w-0 bg-black/20">
+                            {/* Content Area - ANIMATIONS REMOVED PER USER REQUEST */}
+                            <div className="flex-1 flex flex-col min-w-0 bg-black/20 relative">
                                 <div className="h-24 border-b border-white/5 flex items-center px-10 flex-shrink-0">
-                                    <AnimatePresence mode="wait">
-                                        <motion.div
-                                            key={activeTab}
-                                            initial={{ opacity: 0, x: -10 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            exit={{ opacity: 0, x: 10 }}
-                                            className="flex flex-col"
-                                        >
-                                            <h3 className="text-3xl font-black text-white tracking-tighter uppercase">
-                                                {TABS.find(t => t.id === activeTab)?.label} Settings
-                                            </h3>
-                                            <div className="flex items-center gap-2 mt-1">
-                                                <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-                                                <span className="text-[9px] text-white/40 font-black uppercase tracking-widest">Awaiting Command Input</span>
-                                            </div>
-                                        </motion.div>
-                                    </AnimatePresence>
+                                    <div className="flex flex-col">
+                                        <h3 className="text-3xl font-black text-white tracking-tighter uppercase">
+                                            {TABS.find(t => t.id === activeTab)?.label} Settings
+                                        </h3>
+                                        <div className="flex items-center gap-2 mt-1">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+                                            <span className="text-[9px] text-white/40 font-black uppercase tracking-widest">Awaiting Command Input</span>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div className="flex-1 overflow-y-auto p-10 no-scrollbar pb-32">
-                                    <AnimatePresence mode="wait">
-                                        <motion.div
-                                            key={activeTab}
-                                            initial={{ opacity: 0, y: 15, scale: 0.98, filter: 'blur(10px)' }}
-                                            animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
-                                            exit={{ opacity: 0, y: -15, scale: 0.98, filter: 'blur(10px)' }}
-                                            transition={{
-                                                type: 'spring',
-                                                damping: 30,
-                                                stiffness: 100,
-                                                mass: 0.8,
-                                                restDelta: 0.001
-                                            }}
-                                            className="space-y-10"
-                                        >
-                                            {activeTab === 'general' && (
-                                                <div className="space-y-8 max-w-2xl">
-                                                    <SettingGroup label="Neural Interface">
-                                                        <InputField label="Display Agent ID" defaultValue="SECURE_NODE_01" icon={<Activity className="w-4 h-4 text-cyan-400" />} />
-                                                        <InputField label="Node Key Hash" defaultValue="0x72...f9e1" icon={<ShieldCheck className="w-4 h-4 text-purple-400" />} readOnly />
-                                                    </SettingGroup>
+                                    <div className="space-y-10">
+                                        {activeTab === 'general' && (
+                                            <div className="space-y-8 max-w-2xl">
+                                                <SettingGroup label="Neural Interface">
+                                                    <InputField label="Display Agent ID" defaultValue="SECURE_NODE_01" icon={<Activity className="w-4 h-4 text-cyan-400" />} />
+                                                    <InputField label="Node Key Hash" defaultValue="0x72...f9e1" icon={<ShieldCheck className="w-4 h-4 text-purple-400" />} readOnly />
+                                                </SettingGroup>
 
-                                                    <SettingGroup label="Time & Local">
-                                                        <div className="grid grid-cols-2 gap-6">
-                                                            <SelectField label="Epoch Sync" options={['UTC (Coordinated)', 'Local Neural Link', 'Stellar Standard']} />
-                                                            <SelectField label="Telemetry Resolution" options={['64-bit Ultra', '32-bit Standard', 'Optimized High']} />
-                                                        </div>
-                                                    </SettingGroup>
-
-                                                    <div className="pt-4 flex justify-end">
-                                                        <button className="px-10 py-4 bg-white text-black font-black text-xs rounded-full hover:bg-cyan-400 hover:scale-105 transition-all shadow-[0_20px_40px_rgba(255,255,255,0.1)] uppercase tracking-widest">
-                                                            Update Core Matrix
-                                                        </button>
+                                                <SettingGroup label="Time & Local">
+                                                    <div className="grid grid-cols-2 gap-6">
+                                                        <SelectField label="Epoch Sync" options={['UTC (Coordinated)', 'Local Neural Link', 'Stellar Standard']} />
+                                                        <SelectField label="Telemetry Resolution" options={['64-bit Ultra', '32-bit Standard', 'Optimized High']} />
                                                     </div>
-                                                </div>
-                                            )}
+                                                </SettingGroup>
 
-                                            {activeTab === 'security' && (
-                                                <div className="space-y-6 max-w-2xl">
-                                                    <SecurityCard
-                                                        icon={<Shield className="w-6 h-6 text-emerald-400" />}
-                                                        title="Two-Factor Encryption"
-                                                        desc="Multi-signature verification for all autonomous withdrawals."
-                                                        action="Enable Vault Guard"
-                                                    />
-                                                    <SecurityCard
-                                                        icon={<Zap className="w-6 h-6 text-cyan-400" />}
-                                                        title="Instant KillSwitch"
-                                                        desc="Immediately terminate all neural links if compromised."
-                                                        action="Armed"
-                                                        enabled
-                                                    />
-                                                    <SecurityCard
-                                                        icon={<Activity className="w-6 h-6 text-purple-400" />}
-                                                        title="Session Transparency"
-                                                        desc="Maintain a public ledger of all configuration changes."
-                                                        action="Auditing Live"
-                                                        enabled
-                                                    />
+                                                <div className="pt-4 flex justify-end">
+                                                    <button className="px-10 py-4 bg-white text-black font-black text-xs rounded-full hover:bg-cyan-400 hover:scale-105 transition-all shadow-[0_20px_40px_rgba(255,255,255,0.1)] uppercase tracking-widest">
+                                                        Update Core Matrix
+                                                    </button>
                                                 </div>
-                                            )}
+                                            </div>
+                                        )}
 
-                                            {activeTab !== 'general' && activeTab !== 'security' && (
-                                                <div className="flex flex-col items-center justify-center py-20 text-center max-w-md mx-auto">
-                                                    <div className="w-20 h-20 rounded-3xl bg-white/[0.02] border border-white/5 flex items-center justify-center mb-8 shadow-2xl relative group">
-                                                        <div className="absolute inset-0 bg-cyan-400/10 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-                                                        <Settings className="w-10 h-10 text-white/20 animate-spin-slow" />
-                                                    </div>
-                                                    <h4 className="text-2xl font-black text-white tracking-tighter uppercase mb-4">Module Initializing</h4>
-                                                    <p className="text-sm text-white/40 leading-relaxed font-medium tracking-tight">
-                                                        The <span className="text-cyan-400">{activeTab}</span> preference layer is currently recalibrating for version 2.0 deployment.
-                                                    </p>
-                                                    <div className="mt-8 flex gap-3">
-                                                        <div className="w-3 h-3 rounded-full bg-cyan-500 animate-bounce" />
-                                                        <div className="w-3 h-3 rounded-full bg-cyan-500 animate-bounce [animation-delay:0.2s]" />
-                                                        <div className="w-3 h-3 rounded-full bg-cyan-500 animate-bounce [animation-delay:0.4s]" />
-                                                    </div>
+                                        {activeTab === 'security' && (
+                                            <div className="space-y-6 max-w-2xl">
+                                                <SecurityCard
+                                                    icon={<Shield className="w-6 h-6 text-emerald-400" />}
+                                                    title="Two-Factor Encryption"
+                                                    desc="Multi-signature verification for all autonomous withdrawals."
+                                                    action="Enable Vault Guard"
+                                                />
+                                                <SecurityCard
+                                                    icon={<Zap className="w-6 h-6 text-cyan-400" />}
+                                                    title="Instant KillSwitch"
+                                                    desc="Immediately terminate all neural links if compromised."
+                                                    action="Armed"
+                                                    enabled
+                                                />
+                                                <SecurityCard
+                                                    icon={<Activity className="w-6 h-6 text-purple-400" />}
+                                                    title="Session Transparency"
+                                                    desc="Maintain a public ledger of all configuration changes."
+                                                    action="Auditing Live"
+                                                    enabled
+                                                />
+                                            </div>
+                                        )}
+
+                                        {activeTab !== 'general' && activeTab !== 'security' && (
+                                            <div className="flex flex-col items-center justify-center py-20 text-center max-w-md mx-auto">
+                                                <div className="w-20 h-20 rounded-3xl bg-white/[0.02] border border-white/5 flex items-center justify-center mb-8 shadow-2xl relative group">
+                                                    <div className="absolute inset-0 bg-cyan-400/10 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+                                                    <Settings className="w-10 h-10 text-white/20 animate-spin-slow" />
                                                 </div>
-                                            )}
-                                        </motion.div>
-                                    </AnimatePresence>
+                                                <h4 className="text-2xl font-black text-white tracking-tighter uppercase mb-4">Module Initializing</h4>
+                                                <p className="text-sm text-white/40 leading-relaxed font-medium tracking-tight">
+                                                    The <span className="text-cyan-400">{activeTab}</span> preference layer is currently recalibrating for version 2.0 deployment.
+                                                </p>
+                                                <div className="mt-8 flex gap-3">
+                                                    <div className="w-3 h-3 rounded-full bg-cyan-500 animate-bounce" />
+                                                    <div className="w-3 h-3 rounded-full bg-cyan-500 animate-bounce [animation-delay:0.2s]" />
+                                                    <div className="w-3 h-3 rounded-full bg-cyan-500 animate-bounce [animation-delay:0.4s]" />
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         </motion.div>

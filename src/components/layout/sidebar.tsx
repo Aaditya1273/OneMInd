@@ -71,15 +71,21 @@ export function Sidebar({ onSettingsClick }: { onSettingsClick: () => void }) {
                         <Link key={item.name} href={item.href}>
                             <div className={cn(
                                 'relative flex items-center gap-4 px-3 py-3 rounded-xl transition-all duration-300 cursor-pointer group',
-                                isActive
-                                    ? 'bg-white/5 text-white shadow-[inset_0_0_20px_rgba(255,255,255,0.02)] border border-white/5'
-                                    : 'text-white/40 hover:text-white hover:bg-white/[0.02]'
+                                isActive ? 'text-white' : 'text-white/40 hover:text-white hover:bg-white/[0.005]'
                             )}>
                                 {isActive && (
-                                    <motion.div
-                                        layoutId="active-nav"
-                                        className="absolute left-[-4px] top-1/4 bottom-1/4 w-1 bg-cyan-400 rounded-r-full shadow-[0_0_15px_rgba(6,182,212,0.5)]"
-                                    />
+                                    <>
+                                        <motion.div
+                                            layoutId="active-nav-bg"
+                                            transition={{ type: 'spring', damping: 30, stiffness: 150 }}
+                                            className="absolute inset-0 bg-white/5 border border-white/5 rounded-xl shadow-[inset_0_0_20px_rgba(255,255,255,0.02)]"
+                                        />
+                                        <motion.div
+                                            layoutId="active-nav-indicator"
+                                            transition={{ type: 'spring', damping: 30, stiffness: 150 }}
+                                            className="absolute left-[-4px] top-1/4 bottom-1/4 w-1 bg-cyan-400 rounded-r-full shadow-[0_0_15px_rgba(6,182,212,0.5)] z-10"
+                                        />
+                                    </>
                                 )}
                                 <div className={cn(
                                     'w-5 h-5 flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover:scale-110',
