@@ -5,6 +5,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Cpu, Zap, Shield, Sparkles, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/components/ui/toast-context';
+import { useSignAndExecuteTransaction, useCurrentAccount } from '@mysten/dapp-kit';
+import { Transaction } from '@mysten/sui/transactions';
+import { OneChainService } from '@/lib/one-chain-service';
 
 interface SpawnAgentModalProps {
     isOpen: boolean;
@@ -21,24 +24,54 @@ export function SpawnAgentModal({ isOpen, onClose }: SpawnAgentModalProps) {
     const [name, setName] = useState('');
     const [selectedArch, setSelectedArch] = useState('vanguard');
     const [isSpawning, setIsSpawning] = useState(false);
+    const { mutate: signAndExecute } = useSignAndExecuteTransaction();
+    const account = useCurrentAccount();
     const { showToast } = useToast();
 
     const handleSpawn = async () => {
+        if (!account) {
+            showToast('Please connect your wallet first', 'error');
+            return;
+        }
         if (!name) {
             showToast('Agent Name is Required', 'error');
             return;
         }
 
         setIsSpawning(true);
-        showToast(`Initializing ${name} on OneChain...`, 'loading');
+        showToast(`Requesting Synthesis for ${name}...`, 'loading');
 
-        // Simulate OneChain Transaction
-        await new Promise(r => setTimeout(r, 2000));
+        try {
+            const tx = new Transaction();
+            tx.moveCall({
+                target: `${OneChainService.PACKAGE_ID}::main::spawn_agent`,
+                arguments: [
+                    tx.object(OneChainService.REGISTRY_ID),
+                    tx.pure.string(name),
+                ],
+            });
 
-        showToast(`${name} Successfully Synthesized!`, 'success');
-        setIsSpawning(false);
-        onClose();
-        setName('');
+            signAndExecute(
+                { transaction: tx },
+                {
+                    onSuccess: (result) => {
+                        showToast(`${name} Successfully Synthesized!`, 'success');
+                        console.log('Spawn success:', result);
+                        setIsSpawning(false);
+                        onClose();
+                        setName('');
+                    },
+                    onError: (error) => {
+                        showToast('Synthesis Failed: ' + error.message, 'error');
+                        console.error('Spawn error:', error);
+                        setIsSpawning(false);
+                    },
+                }
+            );
+        } catch (error: any) {
+            showToast('Transaction Error: ' + error.message, 'error');
+            setIsSpawning(false);
+        }
     };
 
     return (
