@@ -17,10 +17,15 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
         const id = Math.random().toString(36).substring(2, 9);
         setToasts(prev => [...prev, { id, message, type, digest }]);
 
-        if (type !== 'loading') {
+        if (type === 'loading') {
+            // Safety auto-dismiss for loading after 10s to prevent stuck UI
             setTimeout(() => {
                 setToasts(prev => prev.filter(t => t.id !== id));
-            }, 6000); // Increased to 6s for explorer link visibility
+            }, 10000);
+        } else {
+            setTimeout(() => {
+                setToasts(prev => prev.filter(t => t.id !== id));
+            }, 6000); // 6s for success/error visibility
         }
     }, []);
 

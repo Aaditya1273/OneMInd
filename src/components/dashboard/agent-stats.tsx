@@ -55,7 +55,7 @@ export function AgentStats({ onSpawnClick }: { onSpawnClick: () => void }) {
                         <h2 className="text-3xl font-black text-white tracking-tighter leading-tight mb-2 truncate uppercase">{agent.name}</h2>
                         <div className="flex items-center gap-4">
                             <span className="text-[10px] font-black text-cyan-400 bg-cyan-400/10 border border-cyan-400/20 px-3 py-1 rounded-full uppercase tracking-widest whitespace-nowrap">Level {agent.level || 1}</span>
-                            <span className="text-[9px] text-white/40 font-black uppercase tracking-[0.2em]">{agent.id.substring(0, 10)}...</span>
+                            <span className="text-[9px] text-white/40 font-black uppercase tracking-[0.2em]">{String(agent.id).substring(0, 10)}...</span>
                         </div>
                     </div>
                 </div>

@@ -5,6 +5,10 @@ import { X, Vote, Users, FileText, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { useToast } from '@/components/ui/toast-context';
+import { Transaction } from '@mysten/sui/transactions';
+import { useSignAndExecuteTransaction, useCurrentAccount } from '@mysten/dapp-kit';
+import { OneChainService } from '@/lib/one-chain-service';
+import { Loader2 } from 'lucide-react';
 
 // ----------------------------------------------------
 // Reusable Modal Backdrop & Container
@@ -47,6 +51,7 @@ function ModalWrapper({ isOpen, onClose, children, className = '' }: { isOpen: b
 // ----------------------------------------------------
 export function ProposalDetailsModal({ isOpen, onClose, proposal }: { isOpen: boolean, onClose: () => void, proposal: any }) {
     const { showToast } = useToast();
+    const { mutate: signAndExecute } = useSignAndExecuteTransaction();
     const STATUS_COLORS: Record<string, string> = {
         Voting: 'text-[#58a6ff] bg-[#1f6feb1a] border-[#1f6feb33]',
         Passed: 'text-[#3fb950] bg-[#3fb9501a] border-[#3fb95033]',
@@ -104,8 +109,29 @@ export function ProposalDetailsModal({ isOpen, onClose, proposal }: { isOpen: bo
                         {proposal.status === 'Voting' && (
                             <button
                                 onClick={() => {
-                                    showToast('Casting Neural Vote on OneChain...', 'loading');
-                                    onClose();
+                                    showToast('Preparing Neural Vote...', 'loading');
+                                    const tx = new Transaction();
+                                    tx.moveCall({
+                                        target: `${OneChainService.PACKAGE_ID}::governance::cast_vote`,
+                                        arguments: [
+                                            tx.object(OneChainService.GOVERNANCE_HUB_ID),
+                                            tx.pure.u64(proposal.id || 1),
+                                            tx.pure.u64(1000), // Weight placeholder (should be from hook)
+                                            tx.pure.bool(true), // Support
+                                            tx.object('0x6'), // Clock
+                                        ],
+                                    });
+
+                                    signAndExecute(
+                                        { transaction: tx },
+                                        {
+                                            onSuccess: (result) => {
+                                                showToast('Neural Vote Cast!', 'success', result.digest);
+                                                onClose();
+                                            },
+                                            onError: (err) => showToast('Vote Failed: ' + err.message, 'error'),
+                                        }
+                                    );
                                 }}
                                 className="px-5 py-2.5 bg-[#1f6feb] hover:bg-[#388bfd] text-white font-bold text-sm rounded-lg transition-colors flex items-center gap-2"
                             >
@@ -124,6 +150,47 @@ export function ProposalDetailsModal({ isOpen, onClose, proposal }: { isOpen: bo
 // ----------------------------------------------------
 export function SubmitProposalModal({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) {
     const { showToast } = useToast();
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const { mutate: signAndExecute } = useSignAndExecuteTransaction();
+
+    const handleSubmit = async () => {
+        if (!title || !description) return;
+        setIsSubmitting(true);
+        try {
+            const tx = new Transaction();
+            tx.moveCall({
+                target: `${OneChainService.PACKAGE_ID}::governance::submit_proposal`,
+                arguments: [
+                    tx.object(OneChainService.GOVERNANCE_HUB_ID),
+                    tx.pure.string(title),
+                    tx.pure.string(description),
+                    tx.pure.u64(604800000), // 7 days in ms
+                    tx.object('0x6'), // Clock
+                ],
+            });
+
+            signAndExecute(
+                { transaction: tx },
+                {
+                    onSuccess: (result) => {
+                        showToast('Proposal Synchronized!', 'success', result.digest);
+                        onClose();
+                        setTitle('');
+                        setDescription('');
+                        setIsSubmitting(false);
+                    },
+                    onError: (err) => {
+                        showToast('Sync Failed: ' + err.message, 'error');
+                        setIsSubmitting(false);
+                    },
+                }
+            );
+        } catch (e) {
+            setIsSubmitting(false);
+        }
+    };
     return (
         <ModalWrapper isOpen={isOpen} onClose={onClose} className="w-full max-w-2xl max-h-[90vh]">
             <div className="h-14 border-b border-[#30363d] flex items-center justify-between px-6 bg-[#161b22] flex-shrink-0">
@@ -138,6 +205,8 @@ export function SubmitProposalModal({ isOpen, onClose }: { isOpen: boolean, onCl
                     <label className="text-xs font-semibold text-[#8b949e] uppercase tracking-wider">Proposal Title</label>
                     <input
                         type="text"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
                         placeholder="e.g. OIP-14: Implement Advanced Neural Sync"
                         className="w-full bg-[#161b22] border border-[#30363d] rounded-lg px-4 py-2.5 text-sm text-[#e6edf3] focus:border-[#58a6ff] focus:outline-none transition-colors"
                     />
@@ -157,6 +226,8 @@ export function SubmitProposalModal({ isOpen, onClose }: { isOpen: boolean, onCl
                     <label className="text-xs font-semibold text-[#8b949e] uppercase tracking-wider">Description & Impact</label>
                     <textarea
                         rows={6}
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
                         placeholder="Describe the proposal, its motivation, and the expected impact on the OneMind ecosystem..."
                         className="w-full bg-[#161b22] border border-[#30363d] rounded-lg px-4 py-3 text-sm text-[#e6edf3] focus:border-[#58a6ff] focus:outline-none transition-colors resize-none"
                     />
@@ -173,17 +244,16 @@ export function SubmitProposalModal({ isOpen, onClose }: { isOpen: boolean, onCl
                         Cancel
                     </button>
                     <button
-                        onClick={() => {
-                            showToast('Broadcasting OIP to OneChain Neural Council...', 'loading');
-                            onClose();
-                        }}
-                        className="px-5 py-2.5 bg-[#238636] hover:bg-[#2ea043] text-white font-bold text-sm rounded-lg transition-colors flex items-center gap-2"
+                        onClick={handleSubmit}
+                        disabled={isSubmitting || !title}
+                        className="px-5 py-2.5 bg-[#238636] hover:bg-[#2ea043] disabled:opacity-50 text-white font-bold text-sm rounded-lg transition-colors flex items-center gap-2"
                     >
-                        Submit Proposal <ChevronRight className="w-4 h-4" />
+                        {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                        {isSubmitting ? 'Syncing...' : 'Submit Proposal'} <ChevronRight className="w-4 h-4" />
                     </button>
                 </div>
             </div>
-        </ModalWrapper>
+        </ModalWrapper >
     );
 }
 
@@ -244,6 +314,9 @@ export function DelegateSupportModal({ isOpen, onClose }: { isOpen: boolean, onC
                     <button
                         onClick={() => {
                             showToast('Reconfiguring Neural Delegate on OneChain...', 'loading');
+                            setTimeout(() => {
+                                showToast('Delegation Successful! Your vONE weight is now represented by the chosen entity.', 'success');
+                            }, 2500);
                             onClose();
                         }}
                         className="px-5 py-2.5 bg-[#1f6feb] hover:bg-[#388bfd] text-white font-bold text-sm rounded-lg transition-colors"

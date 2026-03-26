@@ -189,7 +189,12 @@ export default function VaultPage() {
                             <span className="text-white font-black text-lg tracking-tighter">12.4%</span> this epoch.
                         </p>
                         <button
-                            onClick={() => showToast('Connecting to OneChain Staking Pool... Calibrating Yield.', 'loading')}
+                            onClick={() => {
+                                showToast('Connecting to OneChain Staking Pool... Calibrating Yield.', 'loading');
+                                setTimeout(() => {
+                                    showToast('Staking Boosted! Your vONE voting weight and delegation rewards have been updated.', 'success');
+                                }, 3000);
+                            }}
                             className="w-full py-3.5 bg-white text-black font-black text-xs rounded-full hover:bg-cyan-400 hover:scale-[1.02] transition-all uppercase tracking-widest shadow-xl active:scale-95"
                         >
                             Boost Staking

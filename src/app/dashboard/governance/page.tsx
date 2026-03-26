@@ -1,6 +1,6 @@
 'use client';
 
-import { ShieldCheck, Vote, Users, ChevronRight, Scale, Gavel } from 'lucide-react';
+import { ShieldCheck, Vote, Users, ChevronRight, Scale, Gavel, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
@@ -8,9 +8,9 @@ import { ProposalDetailsModal, SubmitProposalModal, DelegateSupportModal } from 
 import { useToast } from '@/components/ui/toast-context';
 
 import { useCurrentAccount } from '@mysten/dapp-kit';
-import { useOneBalance } from '@/hooks/use-one-chain';
+import { useOneBalance, useProposals } from '@/hooks/use-one-chain';
 
-const PROPOSALS: Proposal[] = [
+const ARCHIVE_PROPOSALS: Proposal[] = [
     { title: 'OIP-12: Expand Vanguard Protocol to OneChain Mainnet', status: 'Passed', votes: '14.2M / 20M', ends: 'Ended', category: 'Archive' },
     { title: 'OIP-11: Upgrade Neural Core to Gemini 2.0', status: 'Passed', votes: '18.1M / 18M', ends: 'Ended', category: 'Archive' },
     { title: 'OIP-10: Adjust Staking Rewards for Level 20+ Agents', status: 'Rejected', votes: '4.2M / 10M', ends: 'Ended', category: 'Archive' },
@@ -37,8 +37,13 @@ export default function GovernancePage() {
 
     const account = useCurrentAccount();
     const { balance } = useOneBalance(account?.address);
+    const { proposals: onChainProposals, loading } = useProposals();
     const { showToast } = useToast();
+
     const votingWeight = (Number(balance) / 1e9).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    // Combine real proposals with archive
+    const allProposals = [...onChainProposals, ...ARCHIVE_PROPOSALS];
 
     return (
         <div className="flex flex-col gap-10">
@@ -114,16 +119,20 @@ export default function GovernancePage() {
                 <div className="lg:col-span-8 flex flex-col gap-6">
                     <div className="flex items-center gap-3 mb-2">
                         <Gavel className="w-4 h-4 text-white/40" />
-                        <h2 className="text-sm font-black text-white uppercase tracking-[0.2em]">Historical Archive</h2>
+                        <h2 className="text-sm font-black text-white uppercase tracking-[0.2em]">Neural Governance Queue</h2>
                         <span className="text-[10px] bg-white/5 text-white/80 px-2.5 py-0.5 rounded-full font-black ml-2 border border-white/5">
-                            {PROPOSALS.length}
+                            {allProposals.length}
                         </span>
+                        {loading && <Loader2 className="w-3 h-3 text-cyan-400 animate-spin ml-2" />}
                     </div>
 
-                    {PROPOSALS.map((proposal) => (
+                    {allProposals.map((proposal, idx) => (
                         <div
-                            key={proposal.title}
-                            className="glass-card p-8 group hover:bg-white/[0.04] cursor-pointer"
+                            key={proposal.id || proposal.title}
+                            className={cn(
+                                "glass-card p-8 group transition-all cursor-pointer",
+                                proposal.status === 'Voting' ? "border-cyan-400/20 bg-cyan-400/[0.02] hover:bg-cyan-400/[0.05]" : "hover:bg-white/[0.04]"
+                            )}
                         >
                             <div className="flex flex-col md:flex-row md:items-center gap-8">
                                 <div className="flex-1 min-w-0">

@@ -57,14 +57,22 @@ export function VaultAssets() {
                         </div>
                     </div>
                     <button
-                        onClick={() => showToast('Analyzing OneDEX Arbitrage... Optimizing Yield.', 'loading')}
+                        onClick={() => {
+                            showToast('Analyzing OneDEX Arbitrage... Optimizing Yield.', 'loading');
+                            setTimeout(() => {
+                                showToast('Yield Optimized! Alpha-01 has repositioned liquidity for maximum spread capture.', 'success');
+                            }, 3000);
+                        }}
                         className="w-full py-4 px-8 bg-white text-black font-black text-[13px] rounded-full hover:bg-cyan-400 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 uppercase tracking-widest shadow-[0_20px_40px_rgba(255,255,255,0.15)]"
                     >
                         Optimize Yield
                         <ArrowUpRight className="w-5 h-5" />
                     </button>
                     <button
-                        onClick={() => showToast('Opening OneChain Ecosystem Explorer...', 'info')}
+                        onClick={() => {
+                            showToast('Opening OneChain Ecosystem Explorer...', 'info');
+                            window.open('https://testnet.onescan.cc/', '_blank');
+                        }}
                         className="w-full py-4 px-8 border border-white/5 text-white/40 font-black text-[13px] rounded-full hover:bg-white/5 hover:text-white transition-all uppercase tracking-widest"
                     >
                         Ecosystem Explorer

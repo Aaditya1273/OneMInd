@@ -46,17 +46,26 @@ export function useRegistryAgents() {
 }
 
 export function useMyAgents(address?: string) {
-    const { agents, loading } = useRegistryAgents();
     const [myAgents, setMyAgents] = useState<any[]>([]);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        if (!address || !Array.isArray(agents)) {
+        if (!address) {
             setMyAgents([]);
             return;
         }
-        const filtered = (agents || []).filter(a => a.owner === address);
-        setMyAgents(filtered);
-    }, [agents, address]);
+
+        const fetchMyAgents = async () => {
+            setLoading(true);
+            const list = await OneChainService.fetchOwnedObjects(address, 'agent::Agent');
+            setMyAgents(list);
+            setLoading(false);
+        };
+
+        fetchMyAgents();
+        const interval = setInterval(fetchMyAgents, 15000); // 15s refresh
+        return () => clearInterval(interval);
+    }, [address]);
 
     return { myAgents, loading };
 }
@@ -91,7 +100,7 @@ export function useRegistryStats() {
         totalAgents: isArray ? agents.length : 0,
         totalOps: isArray ? (agents.length * 1.5).toFixed(1) + "M" : "0.0M",
         efficiency: "99.4%",
-        networkHash: (isArray && agents.length > 0) ? agents[0].id.substring(0, 8) : "0x00...00"
+        networkHash: (isArray && agents.length > 0) ? String(agents[0].id).substring(0, 8) : "0x00...00"
     };
 
     return { stats, loading };
@@ -115,4 +124,24 @@ export function useEcosystemEvents() {
     }, []);
 
     return { events, loading };
+}
+
+export function useProposals() {
+    const [proposals, setProposals] = useState<any[]>([]);
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        const fetchProposals = async () => {
+            setLoading(true);
+            const list = await OneChainService.fetchProposals();
+            setProposals(list);
+            setLoading(false);
+        };
+
+        fetchProposals();
+        const interval = setInterval(fetchProposals, 30000); // 30s refresh
+        return () => clearInterval(interval);
+    }, []);
+
+    return { proposals, loading };
 }

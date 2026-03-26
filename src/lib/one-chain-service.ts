@@ -9,8 +9,9 @@ export const oneClient = new OneClient({
 });
 
 export const OneChainService = {
-    PACKAGE_ID: process.env.NEXT_PUBLIC_PACKAGE_ID || '0x86e7c9fde70f6867c364d9846257ef2566ea267d66dbc33271410e24dbfeb8af',
-    REGISTRY_ID: process.env.NEXT_PUBLIC_REGISTRY_ID || '0xee678d03b49e4fb7f6a8299cbe4888fe228adecba8ce93d217fe47f44519386b',
+    PACKAGE_ID: process.env.NEXT_PUBLIC_PACKAGE_ID || '',
+    REGISTRY_ID: process.env.NEXT_PUBLIC_REGISTRY_ID || '',
+    GOVERNANCE_HUB_ID: process.env.NEXT_PUBLIC_GOVERNANCE_HUB_ID || '',
 
     async getAgentBalance(address: string) {
         if (!address) return BigInt(0);
@@ -45,17 +46,28 @@ export const OneChainService = {
      */
     async fetchRegistryAgents() {
         try {
-            const registry = await oneClient.getObject({
-                id: this.REGISTRY_ID,
-                options: { showContent: true }
+            const events = await oneClient.queryEvents({
+                query: { MoveModule: { package: this.PACKAGE_ID, module: 'agent' } },
+                limit: 50,
+                order: 'descending'
             });
 
-            // In a real Sui/OneChain contract, agents are stored in a dynamic field or table
-            // This is a simplified fetch for the demo object state
-            const agents = (registry.data?.content as any)?.fields?.agents;
-            return Array.isArray(agents) ? agents : [];
+            // Filter for AgentCreatedEvent and map to a standard object
+            // OneChain/Sui event names are module::Type
+            return events.data
+                .filter(ev => ev.type.endsWith('::AgentCreatedEvent'))
+                .map(ev => {
+                    const parsed = ev.parsedJson as any;
+                    return {
+                        id: String(parsed.agent_id?.id || parsed.agent_id || ''),
+                        name: parsed.name,
+                        owner: parsed.owner,
+                        level: 1,
+                        xp: 0
+                    };
+                });
         } catch (error) {
-            console.error('Failed to fetch registry agents:', error);
+            console.warn('[OneChain] Failed to fetch registry events:', error);
             return [];
         }
     },
@@ -65,17 +77,28 @@ export const OneChainService = {
      */
     async fetchOwnedObjects(address: string, typeSuffix: string) {
         try {
+            if (!oneClient) throw new Error('OneClient not initialized');
             const objects = await oneClient.getOwnedObjects({
                 owner: address,
                 filter: {
                     StructType: `${this.PACKAGE_ID}::${typeSuffix}`
                 },
-                options: { showContent: true }
+                options: { showContent: true, showDisplay: true }
             });
             if (!objects || !Array.isArray(objects.data)) return [];
-            return objects.data.map(obj => obj.data);
-        } catch (error) {
-            console.error(`Failed to fetch owned objects for ${typeSuffix}:`, error);
+
+            return objects.data.map(obj => {
+                const content = obj.data?.content as any;
+                if (!content || !content.fields) return null;
+                return {
+                    id: String(obj.data?.objectId || ''),
+                    ...content.fields,
+                    // Ensure nested ID objects from Move are flattened
+                    agent_id: content.fields.agent_id ? String(content.fields.agent_id?.id || content.fields.agent_id) : undefined
+                };
+            }).filter(Boolean);
+        } catch (error: any) {
+            console.warn(`[OneChain] Owned objects fetch failed for ${typeSuffix}: ${error.message}`);
             return [];
         }
     },
@@ -86,14 +109,44 @@ export const OneChainService = {
     async fetchEcosystemEvents() {
         try {
             const events = await oneClient.queryEvents({
-                query: { MoveModule: { package: this.PACKAGE_ID, module: 'agent_logic' } },
+                query: { MoveModule: { package: this.PACKAGE_ID, module: 'main' } },
                 limit: 10,
                 order: 'descending'
             });
             return events.data;
         } catch (error) {
-            console.error('Failed to query ecosystem events:', error);
+            console.error('Failed to fetch ecosystem events:', error);
             return [];
         }
-    }
+    },
+
+    /**
+     * Governance: Fetch all proposals via events
+     */
+    async fetchProposals() {
+        try {
+            const events = await oneClient.queryEvents({
+                query: { MoveModule: { package: this.PACKAGE_ID, module: 'governance' } },
+                limit: 20,
+                order: 'descending'
+            });
+
+            return events.data
+                .filter(ev => ev.type.endsWith('::ProposalCreated'))
+                .map(ev => {
+                    const parsed = ev.parsedJson as any;
+                    return {
+                        id: parsed.proposal_id,
+                        title: parsed.title,
+                        status: 'Voting',
+                        votes: '0 / 10M',
+                        ends: '7 Days',
+                        category: 'Archive'
+                    };
+                });
+        } catch (error) {
+            console.warn('[OneChain] Failed to fetch proposals:', error);
+            return [];
+        }
+    },
 };
