@@ -8,6 +8,7 @@
   NEXT_PUBLIC_GOVERNANCE_HUB_ID = "0x60d6179257cce69f721fdcfd1f6eadda0369e9c26c23a36cc047c029d922ba6b"
   NEXT_PUBLIC_RPC_URL = "https://rpc-testnet.onelabs.cc"
   NODE_VERSION = "20"
+  GIT_SUBMODULE_FETCH = "false"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
