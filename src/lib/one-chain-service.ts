@@ -1,10 +1,11 @@
-// Real Sui SDK imports
-import { SuiClient } from '@mysten/sui/client';
+// Real OneChain SDK imports (Forked from Sui)
+import { SuiJsonRpcClient as OneClient } from '@mysten/sui/jsonRpc';
 import { Transaction } from '@mysten/sui/transactions';
 
-// Initialize the real OneClient (wrapped SuiClient)
-export const oneClient = new SuiClient({
-    url: process.env.NEXT_PUBLIC_ONE_CHAIN_RPC || 'https://rpc-testnet.onelabs.cc:443'
+// Initialize the real OneClient
+export const oneClient = new OneClient({
+    url: process.env.NEXT_PUBLIC_ONE_CHAIN_RPC || 'https://rpc-testnet.onelabs.cc:443',
+    network: 'testnet'
 });
 
 export const OneChainService = {
@@ -15,9 +16,9 @@ export const OneChainService = {
         try {
             const coins = await oneClient.getCoins({
                 owner: address,
-                coinType: '0x2::one_chain::OCT'
+                coinType: '0x2::oct::OCT'
             });
-            return coins.data.reduce((acc, coin) => acc + BigInt(coin.balance), BigInt(0));
+            return coins.data.reduce((acc: bigint, coin: any) => acc + BigInt(coin.balance), BigInt(0));
         } catch (error) {
             console.error('Failed to fetch OneChain balance:', error);
             return BigInt(0);
