@@ -4,15 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Terminal } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
-
-const MOCK_LOGS = [
-    { type: 'thought', message: 'Analyzing market depth for ONE/MIND pair on OneDEX...', time: '14:20:01' },
-    { type: 'action', message: 'Detecting price discrepancy: 1.05 ONE vs 1.10 ONE on secondary liquidity pools.', time: '14:20:05' },
-    { type: 'trade', message: 'Executing autonomous swap via OneClient: Swapping 500 ONE for 550 MIND.', time: '14:20:12' },
-    { type: 'play', message: 'Successfully acquired Game Item [ECHO-SHIELD]. Transitioning to OnePlay...', time: '14:21:00' },
-    { type: 'action', message: 'Entering [HASH-GAME] round #4829 with 50 MIND bet.', time: '14:22:45' },
-    { type: 'success', message: 'Game concluded. Reward: 120 MIND. TX: 0x4f2...78a', time: '14:23:02' },
-];
+import { useEcosystemEvents } from '@/hooks/use-one-chain';
 
 const TYPE_COLORS: Record<string, string> = {
     thought: 'text-purple-400',
@@ -24,7 +16,8 @@ const TYPE_COLORS: Record<string, string> = {
 };
 
 export function NeuralFeed() {
-    const [logs, setLogs] = useState(MOCK_LOGS);
+    const { events, loading } = useEcosystemEvents();
+    const [logs, setLogs] = useState<{ type: string; message: string; time: string }[]>([]);
     const scrollRef = useRef<HTMLDivElement>(null);
 
     // Auto-scroll to bottom when new logs appear
@@ -35,6 +28,17 @@ export function NeuralFeed() {
     }, [logs]);
 
     useEffect(() => {
+        if (events && events.length > 0) {
+            const mappedEvents = events.map(event => ({
+                type: event.type.split('::').pop()?.toLowerCase() || 'status',
+                message: `OneChain Event: ${JSON.stringify(event.parsedJson)}`,
+                time: new Date(Number(event.timestampMs)).toLocaleTimeString('en-US', { hour12: false })
+            }));
+            setLogs(prev => [...prev.slice(-10), ...mappedEvents]);
+        }
+    }, [events]);
+
+    useEffect(() => {
         const interval = setInterval(() => {
             const newLog = {
                 type: Math.random() > 0.5 ? 'thought' : 'status',
@@ -42,7 +46,7 @@ export function NeuralFeed() {
                 time: new Date().toLocaleTimeString('en-US', { hour12: false })
             };
             setLogs(prev => [...prev.slice(-12), newLog]);
-        }, 5000);
+        }, 8000);
         return () => clearInterval(interval);
     }, []);
 

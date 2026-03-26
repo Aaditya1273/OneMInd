@@ -3,8 +3,15 @@
 import { ArrowUpRight, TrendingUp, Landmark, ShieldCheck, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { useCurrentAccount } from '@mysten/dapp-kit';
+import { useOneBalance } from '@/hooks/use-one-chain';
 
 export function VaultAssets() {
+    const account = useCurrentAccount();
+    const { balance, loading } = useOneBalance(account?.address);
+
+    const displayBalance = account ? (Number(balance) / 1e9).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "1,482.00";
+
     return (
         <div className="flex flex-col gap-8 h-full">
             {/* Sovereign Vault Card */}
@@ -27,7 +34,7 @@ export function VaultAssets() {
                 <div className="mb-10">
                     <div className="text-[11px] text-white/40 mb-3 font-black uppercase tracking-[0.25em]">Liquid Assets</div>
                     <div className="flex items-baseline gap-4 flex-wrap">
-                        <span className="text-5xl font-black tracking-tighter text-white uppercase">1,482.00</span>
+                        <span className="text-5xl font-black tracking-tighter text-white uppercase">{displayBalance}</span>
                         <span className="text-base text-cyan-400 font-black tracking-widest uppercase">ONE</span>
                     </div>
                     <div className="text-[12px] text-white/60 mt-4 flex items-center gap-2 font-medium tracking-tight">
@@ -80,12 +87,12 @@ export function VaultAssets() {
                             />
                         </svg>
                         <div className="absolute inset-0 flex flex-col items-center justify-center">
-                            <span className="text-2xl font-black text-white tracking-tighter">72%</span>
+                            <span className="text-2xl font-black text-white tracking-tighter">{account ? "100%" : "72%"}</span>
                         </div>
                     </div>
 
                     <div className="flex-1 space-y-3">
-                        <AssetRow name="ONE" amount="1,482" percent={70} color="bg-cyan-400" />
+                        <AssetRow name="ONE" amount={account ? displayBalance : "1,482"} percent={account ? 100 : 70} color="bg-cyan-400" />
                         <AssetRow name="Mind" amount="420" percent={20} color="bg-purple-500" />
                         <AssetRow name="Staked" amount="12" percent={10} color="bg-emerald-400" />
                     </div>
