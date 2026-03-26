@@ -4,6 +4,9 @@ module onemind::main {
     use onemind::vault;
     use onemind::access_control;
     use onemind::registry::{Self, GlobalRegistry};
+    use onemind::mock_dex;
+    use one::event;
+    use one::clock::{Self, Clock};
 
     // --- Public Functions ---
 
@@ -25,6 +28,47 @@ module onemind::main {
         
         one::transfer::public_transfer(agent_obj, owner);
         one::transfer::public_transfer(vault_obj, owner);
-        one::transfer::public_transfer(ac_obj, owner);
+    one::transfer::public_transfer(ac_obj, owner);
+    }
+
+    // --- Neural Connectivity ---
+
+    public struct LinkEstablished has copy, drop {
+        linker: address,
+        agent_id: ID,
+        timestamp: u64,
+    }
+
+    public fun link_agent(
+        agent_id: ID,
+        clock: &Clock,
+        ctx: &mut TxContext
+    ) {
+        let linker = ctx.sender();
+        event::emit(LinkEstablished {
+            linker,
+            agent_id,
+            timestamp: clock::timestamp_ms(clock),
+        });
+    public struct YieldOptimized has copy, drop {
+        agent_id: ID,
+        spread_captured: u64,
+        timestamp: u64,
+    }
+
+    public fun optimize_yield(
+        agent_id: ID,
+        spread: u64,
+        clock: &Clock,
+        ctx: &mut TxContext
+    ) {
+        // Mock DEX interaction
+        mock_dex::place_order(spread, 1000, ctx);
+        
+        event::emit(YieldOptimized {
+            agent_id,
+            spread_captured: spread,
+            timestamp: clock::timestamp_ms(clock),
+        });
     }
 }

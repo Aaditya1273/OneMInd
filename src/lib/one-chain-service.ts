@@ -46,26 +46,23 @@ export const OneChainService = {
      */
     async fetchRegistryAgents() {
         try {
+            if (!oneClient) throw new Error('OneClient not initialized');
             const events = await oneClient.queryEvents({
-                query: { MoveModule: { package: this.PACKAGE_ID, module: 'agent' } },
+                query: { MoveEventType: `${this.PACKAGE_ID}::agent::AgentCreatedEvent` },
                 limit: 50,
                 order: 'descending'
             });
 
-            // Filter for AgentCreatedEvent and map to a standard object
-            // OneChain/Sui event names are module::Type
-            return events.data
-                .filter(ev => ev.type.endsWith('::AgentCreatedEvent'))
-                .map(ev => {
-                    const parsed = ev.parsedJson as any;
-                    return {
-                        id: String(parsed.agent_id?.id || parsed.agent_id || ''),
-                        name: parsed.name,
-                        owner: parsed.owner,
-                        level: 1,
-                        xp: 0
-                    };
-                });
+            return events.data.map(ev => {
+                const parsed = ev.parsedJson as any;
+                return {
+                    id: String(parsed.agent_id?.id || parsed.agent_id || ''),
+                    name: parsed.name,
+                    owner: parsed.owner,
+                    level: 1,
+                    xp: 0
+                };
+            });
         } catch (error) {
             console.warn('[OneChain] Failed to fetch registry events:', error);
             return [];

@@ -4,6 +4,9 @@ import { Search, Filter, Shield, Zap, TrendingUp, ChevronRight, Globe, Layers, L
 import { cn } from '@/lib/utils';
 import { useRegistryAgents, useRegistryStats } from '@/hooks/use-one-chain';
 import { useToast } from '@/components/ui/toast-context';
+import { useState } from 'react';
+import { AgentDetailsModal, NeuralLinkModal } from '@/components/dashboard/registry-modals';
+import { motion } from 'framer-motion';
 
 const STATUS_STYLES: Record<string, string> = {
     Active: 'text-[#3fb950] bg-[#3fb9501a] border border-[#3fb95033]',
@@ -15,12 +18,21 @@ export default function RegistryPage() {
     const { agents, loading: agentsLoading } = useRegistryAgents();
     const { stats, loading: statsLoading } = useRegistryStats();
     const { showToast } = useToast();
+    const [selectedAgent, setSelectedAgent] = useState<any>(null);
+    const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+    const [isLinkOpen, setIsLinkOpen] = useState(false);
 
     if (agentsLoading && agents.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center h-[600px] gap-6">
-                <Loader2 className="w-12 h-12 text-cyan-400 animate-spin" />
-                <div className="text-sm font-black text-white/40 uppercase tracking-[0.2em]">Synchronizing Registry...</div>
+                <div className="relative">
+                    <div className="w-24 h-24 rounded-full border border-cyan-400/20 animate-ping absolute inset-0" />
+                    <Loader2 className="w-12 h-12 text-cyan-400 animate-spin relative z-10" />
+                </div>
+                <div className="flex flex-col items-center gap-2">
+                    <div className="text-sm font-black text-white uppercase tracking-[0.2em] animate-pulse">Synchronizing Neural Registry</div>
+                    <div className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em]">Accessing OneChain Ledger...</div>
+                </div>
             </div>
         )
     }
@@ -102,13 +114,21 @@ export default function RegistryPage() {
                                         <td className="px-8 py-5 text-right">
                                             <div className="flex items-center gap-3 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <button
-                                                    onClick={() => showToast(`Opening Data Stream for ${agent.name}...`, 'info')}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setSelectedAgent(agent);
+                                                        setIsDetailsOpen(true);
+                                                    }}
                                                     className="px-4 py-1.5 border border-white/5 text-white/40 hover:text-white font-black text-[10px] rounded-full hover:bg-white/10 transition-all uppercase tracking-widest"
                                                 >
                                                     Details
                                                 </button>
                                                 <button
-                                                    onClick={() => showToast(`Syncing ${agent.name} with your Neural Squad...`, 'loading')}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setSelectedAgent(agent);
+                                                        setIsLinkOpen(true);
+                                                    }}
                                                     className="px-4 py-1.5 bg-cyan-400 text-black font-black text-[10px] rounded-full hover:scale-105 transition-all shadow-[0_10px_20px_rgba(6,182,212,0.2)] uppercase tracking-widest"
                                                 >
                                                     Connect
@@ -132,6 +152,18 @@ export default function RegistryPage() {
                     </table>
                 </div>
             </div>
+
+            <AgentDetailsModal
+                isOpen={isDetailsOpen}
+                onClose={() => setIsDetailsOpen(false)}
+                agent={selectedAgent}
+            />
+
+            <NeuralLinkModal
+                isOpen={isLinkOpen}
+                onClose={() => setIsLinkOpen(false)}
+                agent={selectedAgent}
+            />
         </div>
     );
 }

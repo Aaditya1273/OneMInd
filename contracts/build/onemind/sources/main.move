@@ -4,6 +4,8 @@ module onemind::main {
     use onemind::vault;
     use onemind::access_control;
     use onemind::registry::{Self, GlobalRegistry};
+    use one::event;
+    use one::clock::{Self, Clock};
 
     // --- Public Functions ---
 
@@ -25,6 +27,27 @@ module onemind::main {
         
         one::transfer::public_transfer(agent_obj, owner);
         one::transfer::public_transfer(vault_obj, owner);
-        one::transfer::public_transfer(ac_obj, owner);
+    one::transfer::public_transfer(ac_obj, owner);
+    }
+
+    // --- Neural Connectivity ---
+
+    public struct LinkEstablished has copy, drop {
+        linker: address,
+        agent_id: ID,
+        timestamp: u64,
+    }
+
+    public fun link_agent(
+        agent_id: ID,
+        clock: &Clock,
+        ctx: &mut TxContext
+    ) {
+        let linker = ctx.sender();
+        event::emit(LinkEstablished {
+            linker,
+            agent_id,
+            timestamp: clock::timestamp_ms(clock),
+        });
     }
 }

@@ -118,7 +118,7 @@ function AgentCard({ name, status, level, energy, brain, ops, isMain = false }: 
     return (
         <div className={cn(
             'glass-card group transition-all relative overflow-hidden',
-            isMain ? 'ring-1 ring-cyan-400/30' : ''
+            isMain ? 'group-hover:ring-1 group-hover:ring-cyan-400/30' : ''
         )}>
             {/* Card Header */}
             <div className="px-8 py-5 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
