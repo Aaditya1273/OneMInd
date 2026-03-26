@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 import { OneChainService } from '@/lib/one-chain-service';
 
@@ -31,7 +33,7 @@ export function useRegistryAgents() {
         const fetchAgents = async () => {
             setLoading(true);
             const list = await OneChainService.fetchRegistryAgents();
-            setAgents(list);
+            setAgents(Array.isArray(list) ? list : []);
             setLoading(false);
         };
 
@@ -48,11 +50,11 @@ export function useMyAgents(address?: string) {
     const [myAgents, setMyAgents] = useState<any[]>([]);
 
     useEffect(() => {
-        if (!address) {
+        if (!address || !Array.isArray(agents)) {
             setMyAgents([]);
             return;
         }
-        const filtered = agents.filter(a => a.owner === address);
+        const filtered = (agents || []).filter(a => a.owner === address);
         setMyAgents(filtered);
     }, [agents, address]);
 
@@ -61,12 +63,13 @@ export function useMyAgents(address?: string) {
 
 export function useRegistryStats() {
     const { agents, loading } = useRegistryAgents();
+    const isArray = Array.isArray(agents);
 
     const stats = {
-        totalAgents: agents.length,
-        totalOps: (agents.length * 1.5).toFixed(1) + "M", // Heuristic for demo
+        totalAgents: isArray ? agents.length : 0,
+        totalOps: isArray ? (agents.length * 1.5).toFixed(1) + "M" : "0.0M",
         efficiency: "99.4%",
-        networkHash: agents.length > 0 ? agents[0].id.substring(0, 8) : "0x00...00"
+        networkHash: (isArray && agents.length > 0) ? agents[0].id.substring(0, 8) : "0x00...00"
     };
 
     return { stats, loading };

@@ -72,37 +72,48 @@ export default function RegistryPage() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/5">
-                            {agents.map((agent: any) => (
-                                <tr key={agent.id} className="hover:bg-cyan-400/[0.02] transition-colors group cursor-pointer">
-                                    <td className="px-8 py-5">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-xl bg-white/[0.03] border border-white/5 group-hover:border-cyan-400/30 flex items-center justify-center transition-all flex-shrink-0 shadow-inner">
-                                                <Shield className="w-5 h-5 text-cyan-400/40 group-hover:text-cyan-400 group-hover:scale-110 transition-all" />
+                            {Array.isArray(agents) && agents.length > 0 ? (
+                                agents.map((agent: any) => (
+                                    <tr key={agent.id} className="hover:bg-cyan-400/[0.02] transition-colors group cursor-pointer">
+                                        <td className="px-8 py-5">
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-10 h-10 rounded-xl bg-white/[0.03] border border-white/5 group-hover:border-cyan-400/30 flex items-center justify-center transition-all flex-shrink-0 shadow-inner">
+                                                    <Shield className="w-5 h-5 text-cyan-400/40 group-hover:text-cyan-400 group-hover:scale-110 transition-all" />
+                                                </div>
+                                                <div>
+                                                    <div className="font-black text-base text-white tracking-tighter uppercase group-hover:text-cyan-400 transition-colors">{agent.name}</div>
+                                                    <div className="text-[10px] text-white/30 font-black uppercase tracking-widest">{agent.id.substring(0, 10)}...</div>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <div className="font-black text-base text-white tracking-tighter uppercase group-hover:text-cyan-400 transition-colors">{agent.name}</div>
-                                                <div className="text-[10px] text-white/30 font-black uppercase tracking-widest">{agent.id.substring(0, 10)}...</div>
-                                            </div>
+                                        </td>
+                                        <td className="px-8 py-5 text-white/40 font-black text-[10px] uppercase tracking-widest group-hover:text-white/60 transition-colors">{agent.owner.substring(0, 6)}...{agent.owner.substring(agent.owner.length - 4)}</td>
+                                        <td className="px-8 py-5">
+                                            <span className="px-3 py-1 rounded-full bg-white/[0.03] text-white/60 text-[9px] font-black border border-white/10 uppercase tracking-widest group-hover:border-white/20 transition-colors">Vanguard</span>
+                                        </td>
+                                        <td className="px-8 py-5 text-center text-white font-black text-base tracking-tighter group-hover:text-cyan-400 transition-colors">{agent.level || 1}</td>
+                                        <td className="px-8 py-5 text-white/60 font-black text-[10px] uppercase tracking-widest group-hover:text-white transition-colors">{agent.stats || "1.2k Ops"}</td>
+                                        <td className="px-8 py-5">
+                                            <span className={cn('text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest border transition-all', STATUS_STYLES["Active"])}>
+                                                Active
+                                            </span>
+                                        </td>
+                                        <td className="px-8 py-5 text-right">
+                                            <button className="p-2 text-white/30 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-full transition-all active:scale-95">
+                                                <ChevronRight className="w-4 h-4" />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={7} className="px-8 py-20 text-center">
+                                        <div className="flex flex-col items-center gap-4">
+                                            <div className="w-12 h-12 rounded-full border-2 border-dashed border-white/10 animate-spin" />
+                                            <div className="text-xs font-black text-white/20 uppercase tracking-[0.2em]">Scanning OneChain Registry...</div>
                                         </div>
                                     </td>
-                                    <td className="px-8 py-5 text-white/40 font-black text-[10px] uppercase tracking-widest group-hover:text-white/60 transition-colors">{agent.owner.substring(0, 6)}...{agent.owner.substring(agent.owner.length - 4)}</td>
-                                    <td className="px-8 py-5">
-                                        <span className="px-3 py-1 rounded-full bg-white/[0.03] text-white/60 text-[9px] font-black border border-white/10 uppercase tracking-widest group-hover:border-white/20 transition-colors">Vanguard</span>
-                                    </td>
-                                    <td className="px-8 py-5 text-center text-white font-black text-base tracking-tighter group-hover:text-cyan-400 transition-colors">{agent.level || 1}</td>
-                                    <td className="px-8 py-5 text-white/60 font-black text-[10px] uppercase tracking-widest group-hover:text-white transition-colors">{agent.stats || "1.2k Ops"}</td>
-                                    <td className="px-8 py-5">
-                                        <span className={cn('text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest border transition-all', STATUS_STYLES["Active"])}>
-                                            Active
-                                        </span>
-                                    </td>
-                                    <td className="px-8 py-5 text-right">
-                                        <button className="p-2 text-white/30 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-full transition-all active:scale-95">
-                                            <ChevronRight className="w-5 h-5" />
-                                        </button>
-                                    </td>
                                 </tr>
-                            ))}
+                            )}
                         </tbody>
                     </table>
                 </div>

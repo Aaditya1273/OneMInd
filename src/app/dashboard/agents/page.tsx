@@ -1,3 +1,5 @@
+'use client';
+
 import { Plus, Cpu, MoreHorizontal, ArrowUpRight, ArrowDownLeft, TrendingUp, History, ShieldCheck, Landmark, Zap, Loader2, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
@@ -53,18 +55,20 @@ export default function AgentsPage() {
 
             {/* Agent Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {myAgents.map((agent: any, index: number) => (
-                    <AgentCard
-                        key={agent.id}
-                        name={agent.name}
-                        status="Operational"
-                        level={agent.level || 1}
-                        energy={100 - (index * 5)}
-                        brain="Gemini 1.5 Pro"
-                        ops={agent.stats || "1.2k"}
-                        isMain={index === 0}
-                    />
-                ))}
+                {Array.isArray(myAgents) && myAgents.length > 0 ? (
+                    myAgents.map((agent: any, index: number) => (
+                        <AgentCard
+                            key={agent.id}
+                            name={agent.name}
+                            status="Operational"
+                            level={agent.level || 1}
+                            energy={100 - (index * 5)}
+                            brain="Gemini 1.5 Pro"
+                            ops={agent.stats || "1.2k"}
+                            isMain={index === 0}
+                        />
+                    ))
+                ) : null}
 
                 {/* Spawn Slot */}
                 <button className="border-2 border-dashed border-white/5 hover:border-cyan-400/30 rounded-[2rem] p-10 flex flex-col items-center justify-center gap-6 transition-all group min-h-[380px] bg-white/[0.01] hover:bg-white/[0.03] active:scale-[0.98]">

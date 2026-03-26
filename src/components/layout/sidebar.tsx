@@ -5,10 +5,12 @@ import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
     LayoutDashboard, Search, Users, Landmark, ShieldCheck,
-    BookOpen, Settings, ChevronLeft, BrainCircuit, Activity
+    BookOpen, Settings, ChevronLeft, BrainCircuit, Activity, Loader2
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
+import { useCurrentAccount } from '@mysten/dapp-kit';
+import { useMyAgents } from '@/hooks/use-one-chain';
 
 const MENU_ITEMS = [
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard, desc: 'Command Center' },
@@ -26,6 +28,10 @@ const SECONDARY_ITEMS = [
 export function Sidebar({ onSettingsClick }: { onSettingsClick: () => void }) {
     const pathname = usePathname();
     const [isCollapsed, setIsCollapsed] = useState(false);
+    const account = useCurrentAccount();
+    const { myAgents, loading } = useMyAgents(account?.address);
+
+    const activeAgent = myAgents[0];
 
     return (
         <aside
@@ -124,14 +130,22 @@ export function Sidebar({ onSettingsClick }: { onSettingsClick: () => void }) {
                     >
                         <div className="flex items-center gap-3 mb-2">
                             <div className="relative">
-                                <div className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.5)]" />
-                                <div className="absolute inset-0 w-2 h-2 rounded-full bg-cyan-400 animate-ping opacity-40" />
+                                <div className={cn('w-2 h-2 rounded-full shadow-[0_0_10px_rgba(6,182,212,0.5)]', activeAgent ? 'bg-cyan-400' : 'bg-white/20')} />
+                                {activeAgent && <div className="absolute inset-0 w-2 h-2 rounded-full bg-cyan-400 animate-ping opacity-40" />}
                             </div>
-                            <span className="text-[11px] font-black text-white tracking-tight uppercase">Neural Link Active</span>
+                            <span className="text-[11px] font-black text-white tracking-tight uppercase">
+                                {loading ? 'Seeking Link...' : activeAgent ? 'Neural Link Active' : 'Vault Offline'}
+                            </span>
                         </div>
                         <div className="flex items-center gap-2 text-white/30">
-                            <Activity className="w-3 h-3 flex-shrink-0" />
-                            <span className="text-[10px] font-mono tracking-wider truncate">ECHO-07 · 14.2k Ops</span>
+                            {loading ? (
+                                <Loader2 className="w-3 h-3 animate-spin" />
+                            ) : (
+                                <Activity className="w-3 h-3 flex-shrink-0" />
+                            )}
+                            <span className="text-[10px] font-mono tracking-wider truncate uppercase">
+                                {loading ? 'Calibrating...' : activeAgent ? `${activeAgent.name.substring(0, 10)} · ${activeAgent.stats || 'Oper.'}` : 'No Vanguard Detected'}
+                            </span>
                         </div>
                     </motion.div>
                 )}

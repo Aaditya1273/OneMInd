@@ -1,10 +1,18 @@
 'use client';
 
-import { ArrowUpRight, ArrowDownLeft, TrendingUp, History, ShieldCheck, Landmark, Zap } from 'lucide-react';
+import { ArrowUpRight, ArrowDownLeft, TrendingUp, History, ShieldCheck, Landmark, Zap, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
+import { useCurrentAccount } from '@mysten/dapp-kit';
+import { useOneBalance, useEcosystemEvents } from '@/hooks/use-one-chain';
 
 export default function VaultPage() {
+    const account = useCurrentAccount();
+    const { balance, loading: balanceLoading } = useOneBalance(account?.address);
+    const { events, loading: eventsLoading } = useEcosystemEvents();
+
+    const formattedBalance = (Number(balance) / 1e9).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const usdValue = (Number(balance) / 1e9 * 1.14).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     return (
         <div className="flex flex-col gap-10">
             {/* Page Header */}
@@ -39,25 +47,25 @@ export default function VaultPage() {
                         </div>
 
                         <div className="flex items-baseline gap-4 mb-4">
-                            <span className="text-7xl font-black tracking-tighter text-white uppercase">12,482.00</span>
+                            <span className="text-7xl font-black tracking-tighter text-white uppercase">{formattedBalance}</span>
                             <span className="text-xl text-cyan-400 font-black tracking-[0.2em] uppercase">ONE</span>
                         </div>
 
                         <div className="flex items-center gap-5 text-xs text-white/60 mb-10 font-bold tracking-tight">
                             <span className="text-emerald-400 flex items-center gap-1.5 group-hover:scale-110 transition-transform">
                                 <TrendingUp className="w-4 h-4" />
-                                +2.4%
+                                +0.0%
                             </span>
                             <span className="opacity-40">/</span>
-                            <span>last epoch comparison</span>
+                            <span>live network sync</span>
                             <div className="w-px h-3 bg-white/10 mx-2" />
-                            <span className="font-mono text-white/40 bg-white/[0.03] px-2 py-0.5 rounded border border-white/5 tracking-tighter uppercase">≈ $14,210.42 USD</span>
+                            <span className="font-mono text-white/40 bg-white/[0.03] px-2 py-0.5 rounded border border-white/5 tracking-tighter uppercase">≈ ${usdValue} USD</span>
                         </div>
 
                         <div className="grid grid-cols-3 gap-6">
-                            <BalanceMetric label="Available for AI" value="8,402.00" sub="ONE" />
-                            <BalanceMetric label="Locked Staking" value="4,000.00" sub="ONE" color="text-purple-400" />
-                            <BalanceMetric label="Pending Growth" value="80.14" sub="ONE" color="text-emerald-400" />
+                            <BalanceMetric label="Available for AI" value={formattedBalance} sub="ONE" />
+                            <BalanceMetric label="Locked Staking" value="0.00" sub="ONE" color="text-purple-400" />
+                            <BalanceMetric label="Pending Growth" value="0.00" sub="ONE" color="text-emerald-400" />
                         </div>
                     </div>
 
@@ -71,10 +79,22 @@ export default function VaultPage() {
                             <button className="text-[10px] text-cyan-400 hover:text-white transition-colors font-black uppercase tracking-widest border-b border-cyan-400/30 hover:border-white">View Explorer</button>
                         </div>
                         <div className="divide-y divide-white/5">
-                            <TxRow type="in" amount="+500.00" asset="ONE" date="2 mins ago" label="Neural Trade: Buy" />
-                            <TxRow type="out" amount="-12.10" asset="ONE" date="14 mins ago" label="Gas Deposit: ECHO-07" />
-                            <TxRow type="in" amount="+142.92" asset="ONE" date="1 hour ago" label="Vault Yield Distribution" />
-                            <TxRow type="in" amount="+1,000.00" asset="ONE" date="4 hours ago" label="Direct User Deposit" />
+                            {events.length > 0 ? (
+                                events.map((event: any) => (
+                                    <TxRow
+                                        key={event.id.txDigest}
+                                        type="in"
+                                        amount={(Number(event.parsedJson?.amount || 0) / 1e9).toFixed(2)}
+                                        asset="ONE"
+                                        date="Just now"
+                                        label={event.type.split('::').pop() || "Network Event"}
+                                    />
+                                ))
+                            ) : (
+                                <div className="p-12 text-center">
+                                    <div className="text-xs font-black text-white/20 uppercase tracking-[0.2em]">No Transaction History Detected</div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

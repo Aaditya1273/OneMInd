@@ -6,10 +6,13 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ProposalDetailsModal, SubmitProposalModal, DelegateSupportModal } from '@/components/dashboard/governance-modals';
 
+import { useCurrentAccount } from '@mysten/dapp-kit';
+import { useOneBalance } from '@/hooks/use-one-chain';
+
 const PROPOSALS: Proposal[] = [
-    { title: 'OIP-12: Expand Vanguard Protocol to OneChain Mainnet', status: 'Voting', votes: '14.2M / 20M', ends: '2 days', category: 'Expansion' },
-    { title: 'OIP-11: Upgrade Neural Core to Gemini 2.0', status: 'Passed', votes: '18.1M / 18M', ends: 'Ended', category: 'Tech' },
-    { title: 'OIP-10: Adjust Staking Rewards for Level 20+ Agents', status: 'Rejected', votes: '4.2M / 10M', ends: 'Ended', category: 'Economics' },
+    { title: 'OIP-12: Expand Vanguard Protocol to OneChain Mainnet', status: 'Passed', votes: '14.2M / 20M', ends: 'Ended', category: 'Archive' },
+    { title: 'OIP-11: Upgrade Neural Core to Gemini 2.0', status: 'Passed', votes: '18.1M / 18M', ends: 'Ended', category: 'Archive' },
+    { title: 'OIP-10: Adjust Staking Rewards for Level 20+ Agents', status: 'Rejected', votes: '4.2M / 10M', ends: 'Ended', category: 'Archive' },
 ];
 
 const STATUS_BADGE: Record<string, string> = {
@@ -30,6 +33,10 @@ export default function GovernancePage() {
     const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
     const [isDelegateModalOpen, setIsDelegateModalOpen] = useState(false);
     const [selectedProposal, setSelectedProposal] = useState<Proposal | null>(null);
+
+    const account = useCurrentAccount();
+    const { balance } = useOneBalance(account?.address);
+    const votingWeight = (Number(balance) / 1e9).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
     return (
         <div className="flex flex-col gap-10">
@@ -60,7 +67,7 @@ export default function GovernancePage() {
                             <h3 className="text-xs font-black text-cyan-400 uppercase tracking-[0.2em]">Your Voting Weight</h3>
                         </div>
                         <div className="mb-2">
-                            <span className="text-5xl font-black text-white tracking-tighter">1,240.50</span>
+                            <span className="text-5xl font-black text-white tracking-tighter">{votingWeight}</span>
                             <span className="text-sm font-mono text-white/60 ml-3">vONE</span>
                         </div>
                         <p className="text-sm text-white/60 font-medium leading-relaxed mb-8">
@@ -69,12 +76,12 @@ export default function GovernancePage() {
                         <div className="space-y-3">
                             <div className="flex justify-between items-end">
                                 <span className="text-xs text-white/40 font-black uppercase tracking-widest">Participation</span>
-                                <span className="text-lg font-black text-white tracking-tighter">82%</span>
+                                <span className="text-lg font-black text-white tracking-tighter">0%</span>
                             </div>
                             <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
                                 <motion.div
                                     initial={{ width: 0 }}
-                                    animate={{ width: '82%' }}
+                                    animate={{ width: '0%' }}
                                     transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
                                     className="h-full bg-cyan-400 rounded-full shadow-[0_0_15px_rgba(6,182,212,0.5)]"
                                 />
@@ -94,7 +101,7 @@ export default function GovernancePage() {
                             </div>
                             <div className="flex-1 min-w-0">
                                 <div className="text-base font-black text-white tracking-tighter">OneMind Foundation</div>
-                                <div className="text-xs text-white/60 font-medium mt-0.5 tracking-tight">4.2M Votes Represented</div>
+                                <div className="text-xs text-white/60 font-medium mt-0.5 tracking-tight">System Delegate</div>
                             </div>
                             <ChevronRight className="w-5 h-5 text-white/20 group-hover:text-cyan-400 transition-colors" />
                         </div>
@@ -105,7 +112,7 @@ export default function GovernancePage() {
                 <div className="lg:col-span-8 flex flex-col gap-6">
                     <div className="flex items-center gap-3 mb-2">
                         <Gavel className="w-4 h-4 text-white/40" />
-                        <h2 className="text-sm font-black text-white uppercase tracking-[0.2em]">Active Proposals</h2>
+                        <h2 className="text-sm font-black text-white uppercase tracking-[0.2em]">Historical Archive</h2>
                         <span className="text-[10px] bg-white/5 text-white/80 px-2.5 py-0.5 rounded-full font-black ml-2 border border-white/5">
                             {PROPOSALS.length}
                         </span>

@@ -26,10 +26,12 @@ import { Brain, Shield, Zap, ChevronRight, Activity, Database, Globe, Layers, Lo
 import { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import Lenis from 'lenis';
+import { useRegistryStats } from '@/hooks/use-one-chain';
 
 export default function LandingPage() {
   const account = useCurrentAccount();
   const [isScrolled, setIsScrolled] = useState(false);
+  const { stats, loading } = useRegistryStats();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -63,7 +65,7 @@ export default function LandingPage() {
 
       <main>
         <HeroSection account={account} />
-        <StatsStrip />
+        <StatsStrip stats={stats} />
         <FeaturesSection />
         <HowItWorksSection />
         <TiersSection />
@@ -211,16 +213,20 @@ function HeroSection({ account }: { account: any }) {
   );
 }
 
-function StatsStrip() {
+function StatsStrip({ stats }: { stats: any }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
+
+  const totalAgents = stats?.totalAgents || 0;
+  const totalOps = stats?.totalOps || "0k";
+  const aum = stats?.totalAgents ? `$${(stats.totalAgents * 1500).toLocaleString()}+` : "$0.00";
 
   return (
     <div ref={ref} className="w-full border-y border-white/5 bg-white/[0.02] py-12 px-6">
       <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
-        <StatItem label="Total Hybrid Agents" value="1,280+" delay={0} isInView={isInView} />
-        <StatItem label="Daily Neural Cycles" value="142k" delay={0.1} isInView={isInView} />
-        <StatItem label="Sovereign Assets Managed" value="$2.4M+" delay={0.2} isInView={isInView} />
+        <StatItem label="Total Hybrid Agents" value={`${totalAgents}+`} delay={0} isInView={isInView} />
+        <StatItem label="Daily Neural Cycles" value={totalOps} delay={0.1} isInView={isInView} />
+        <StatItem label="Sovereign Assets Managed" value={aum} delay={0.2} isInView={isInView} />
         <StatItem label="avg. Latency" value="1.2s" color="text-cyan-400" delay={0.3} isInView={isInView} />
       </div>
     </div>
