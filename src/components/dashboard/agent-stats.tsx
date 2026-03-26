@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useCurrentAccount } from '@mysten/dapp-kit';
 import { useMyAgents } from '@/hooks/use-one-chain';
 
-export function AgentStats() {
+export function AgentStats({ onSpawnClick }: { onSpawnClick: () => void }) {
     const account = useCurrentAccount();
     const { myAgents, loading } = useMyAgents(account?.address);
 
@@ -30,7 +30,10 @@ export function AgentStats() {
                     <p className="text-[11px] text-white/40 font-bold uppercase tracking-widest mb-10 max-w-[200px] mx-auto leading-relaxed">
                         Deploy your first agent to initialize telemetry.
                     </p>
-                    <button className="w-full py-4 px-8 bg-white text-black font-black text-[11px] rounded-full hover:bg-cyan-400 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 uppercase tracking-widest shadow-[0_20px_40px_rgba(255,255,255,0.1)]">
+                    <button
+                        onClick={onSpawnClick}
+                        className="w-full py-4 px-8 bg-white text-black font-black text-[11px] rounded-full hover:bg-cyan-400 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 uppercase tracking-widest shadow-[0_20px_40px_rgba(255,255,255,0.1)]"
+                    >
                         <Plus className="w-4 h-4" />
                         Spawn Agent
                     </button>

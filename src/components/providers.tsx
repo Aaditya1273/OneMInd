@@ -4,6 +4,8 @@ import { createNetworkConfig, SuiClientProvider as OneClientProvider, WalletProv
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import '@mysten/dapp-kit/dist/index.css';
 
+import { ToastProvider } from './ui/toast-context';
+
 const { networkConfig } = createNetworkConfig({
 	testnet: {
 		url: 'https://rpc-testnet.onelabs.cc:443',
@@ -22,7 +24,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
 		<QueryClientProvider client={queryClient}>
 			<OneClientProvider networks={networkConfig} defaultNetwork="testnet">
 				<WalletProvider autoConnect>
-					{children}
+					<ToastProvider>
+						{children}
+					</ToastProvider>
 				</WalletProvider>
 			</OneClientProvider>
 		</QueryClientProvider>

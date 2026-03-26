@@ -1,14 +1,15 @@
-'use client';
-
+import React, { useState } from 'react';
 import { Plus, Cpu, MoreHorizontal, ArrowUpRight, ArrowDownLeft, TrendingUp, History, ShieldCheck, Landmark, Zap, Loader2, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { useCurrentAccount } from '@mysten/dapp-kit';
 import { useMyAgents } from '@/hooks/use-one-chain';
+import { SpawnAgentModal } from '@/components/dashboard/spawn-modal';
 
 export default function AgentsPage() {
     const account = useCurrentAccount();
     const { myAgents, loading } = useMyAgents(account?.address);
+    const [isSpawnModalOpen, setIsSpawnModalOpen] = useState(false);
 
     if (loading && myAgents.length === 0) {
         return (
@@ -32,7 +33,10 @@ export default function AgentsPage() {
                 <p className="text-lg text-white/40 font-medium tracking-tight mb-12 max-w-md mx-auto leading-relaxed">
                     Your wallet is connected, but your squad is currently offline. Synchronize with the OneChain Registry to deploy your first autonomous agent.
                 </p>
-                <button className="flex items-center gap-4 px-12 py-5 bg-white text-black font-black text-base rounded-full hover:bg-cyan-400 hover:scale-105 transition-all shadow-[0_30px_60px_rgba(255,255,255,0.15)] uppercase tracking-[0.2em]">
+                <button
+                    onClick={() => setIsSpawnModalOpen(true)}
+                    className="flex items-center gap-4 px-12 py-5 bg-white text-black font-black text-base rounded-full hover:bg-cyan-400 hover:scale-105 transition-all shadow-[0_30px_60px_rgba(255,255,255,0.15)] uppercase tracking-[0.2em]"
+                >
                     <Plus className="w-6 h-6" />
                     Make your 1st strategy agent
                 </button>
@@ -47,7 +51,10 @@ export default function AgentsPage() {
                     <h1 className="text-5xl font-black tracking-tighter text-white mb-2">My Squad</h1>
                     <p className="text-base text-white/60 font-medium tracking-tight">Deploy and manage your personal vanguard of AI agents.</p>
                 </div>
-                <button className="flex items-center gap-3 px-8 py-3 bg-white text-black font-black text-sm rounded-full hover:bg-cyan-400 hover:scale-105 transition-all shadow-[0_20px_40px_rgba(255,255,255,0.1)] uppercase tracking-widest">
+                <button
+                    onClick={() => setIsSpawnModalOpen(true)}
+                    className="flex items-center gap-3 px-8 py-3 bg-white text-black font-black text-sm rounded-full hover:bg-cyan-400 hover:scale-105 transition-all shadow-[0_20px_40px_rgba(255,255,255,0.1)] uppercase tracking-widest"
+                >
                     <Plus className="w-5 h-5" />
                     Spawn Agent
                 </button>
@@ -71,7 +78,10 @@ export default function AgentsPage() {
                 ) : null}
 
                 {/* Spawn Slot */}
-                <button className="border-2 border-dashed border-white/5 hover:border-cyan-400/30 rounded-[2rem] p-10 flex flex-col items-center justify-center gap-6 transition-all group min-h-[380px] bg-white/[0.01] hover:bg-white/[0.03] active:scale-[0.98]">
+                <button
+                    onClick={() => setIsSpawnModalOpen(true)}
+                    className="border-2 border-dashed border-white/5 hover:border-cyan-400/30 rounded-[2rem] p-10 flex flex-col items-center justify-center gap-6 transition-all group min-h-[380px] bg-white/[0.01] hover:bg-white/[0.03] active:scale-[0.98]"
+                >
                     <div className="w-20 h-20 rounded-full bg-white/[0.03] border border-white/5 group-hover:border-cyan-400/30 flex items-center justify-center transition-all shadow-inner">
                         <Plus className="w-10 h-10 text-white/10 group-hover:text-cyan-400 transition-all group-hover:scale-110" />
                     </div>
@@ -81,6 +91,11 @@ export default function AgentsPage() {
                     </div>
                 </button>
             </div>
+
+            <SpawnAgentModal
+                isOpen={isSpawnModalOpen}
+                onClose={() => setIsSpawnModalOpen(false)}
+            />
         </div>
     );
 }

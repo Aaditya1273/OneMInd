@@ -4,12 +4,13 @@ import { ArrowUpRight, ArrowDownLeft, TrendingUp, History, ShieldCheck, Landmark
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { useCurrentAccount } from '@mysten/dapp-kit';
-import { useOneBalance, useEcosystemEvents } from '@/hooks/use-one-chain';
+import { useOneBalance, useEcosystemEvents, useToast } from '@/hooks/use-one-chain';
 
 export default function VaultPage() {
     const account = useCurrentAccount();
     const { balance, loading: balanceLoading } = useOneBalance(account?.address);
     const { events, loading: eventsLoading } = useEcosystemEvents();
+    const { showToast } = useToast();
 
     const formattedBalance = (Number(balance) / 1e9).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const usdValue = (Number(balance) / 1e9 * 1.14).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });

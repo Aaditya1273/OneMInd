@@ -5,10 +5,12 @@ import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useCurrentAccount } from '@mysten/dapp-kit';
 import { useOneBalance } from '@/hooks/use-one-chain';
+import { useToast } from '@/components/ui/toast-context';
 
 export function VaultAssets() {
     const account = useCurrentAccount();
     const { balance, loading } = useOneBalance(account?.address);
+    const { showToast } = useToast();
 
     const displayBalance = account ? (Number(balance) / 1e9).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "1,482.00";
 
@@ -54,11 +56,17 @@ export function VaultAssets() {
                             <span className="text-[11px] text-purple-400 font-black tracking-tighter">74.2%</span>
                         </div>
                     </div>
-                    <button className="w-full py-4 px-8 bg-white text-black font-black text-[13px] rounded-full hover:bg-cyan-400 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 uppercase tracking-widest shadow-[0_20px_40px_rgba(255,255,255,0.15)]">
+                    <button
+                        onClick={() => showToast('Analyzing OneDEX Arbitrage... Optimizing Yield.', 'loading')}
+                        className="w-full py-4 px-8 bg-white text-black font-black text-[13px] rounded-full hover:bg-cyan-400 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 uppercase tracking-widest shadow-[0_20px_40px_rgba(255,255,255,0.15)]"
+                    >
                         Optimize Yield
                         <ArrowUpRight className="w-5 h-5" />
                     </button>
-                    <button className="w-full py-4 px-8 border border-white/5 text-white/40 font-black text-[13px] rounded-full hover:bg-white/5 hover:text-white transition-all uppercase tracking-widest">
+                    <button
+                        onClick={() => showToast('Opening OneChain Ecosystem Explorer...', 'info')}
+                        className="w-full py-4 px-8 border border-white/5 text-white/40 font-black text-[13px] rounded-full hover:bg-white/5 hover:text-white transition-all uppercase tracking-widest"
+                    >
                         Ecosystem Explorer
                     </button>
                 </div>

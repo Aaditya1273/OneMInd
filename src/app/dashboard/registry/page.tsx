@@ -3,6 +3,7 @@
 import { Search, Filter, Shield, Zap, TrendingUp, ChevronRight, Globe, Layers, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useRegistryAgents, useRegistryStats } from '@/hooks/use-one-chain';
+import { useToast } from '@/components/ui/toast-context';
 
 const STATUS_STYLES: Record<string, string> = {
     Active: 'text-[#3fb950] bg-[#3fb9501a] border border-[#3fb95033]',
@@ -13,6 +14,7 @@ const STATUS_STYLES: Record<string, string> = {
 export default function RegistryPage() {
     const { agents, loading: agentsLoading } = useRegistryAgents();
     const { stats, loading: statsLoading } = useRegistryStats();
+    const { showToast } = useToast();
 
     if (agentsLoading && agents.length === 0) {
         return (
@@ -98,9 +100,21 @@ export default function RegistryPage() {
                                             </span>
                                         </td>
                                         <td className="px-8 py-5 text-right">
-                                            <button className="p-2 text-white/30 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-full transition-all active:scale-95">
-                                                <ChevronRight className="w-4 h-4" />
-                                            </button>
+                                            <div className="flex items-center gap-3 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <button
+                                                    onClick={() => showToast(`Opening Data Stream for ${agent.name}...`, 'info')}
+                                                    className="px-4 py-1.5 border border-white/5 text-white/40 hover:text-white font-black text-[10px] rounded-full hover:bg-white/10 transition-all uppercase tracking-widest"
+                                                >
+                                                    Details
+                                                </button>
+                                                <button
+                                                    onClick={() => showToast(`Syncing ${agent.name} with your Neural Squad...`, 'loading')}
+                                                    className="px-4 py-1.5 bg-cyan-400 text-black font-black text-[10px] rounded-full hover:scale-105 transition-all shadow-[0_10px_20px_rgba(6,182,212,0.2)] uppercase tracking-widest"
+                                                >
+                                                    Connect
+                                                </button>
+                                            </div>
+                                            <ChevronRight className="w-4 h-4 text-white/20 group-hover:hidden ml-auto" />
                                         </td>
                                     </tr>
                                 ))
