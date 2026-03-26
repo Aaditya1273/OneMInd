@@ -5,22 +5,22 @@ import { AnimatePresence } from 'framer-motion';
 import { Toast } from './toast';
 
 interface ToastContextType {
-    showToast: (message: string, type?: 'success' | 'error' | 'info' | 'loading') => void;
+    showToast: (message: string, type?: 'success' | 'error' | 'info' | 'loading', digest?: string) => void;
 }
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {
-    const [toasts, setToasts] = useState<{ id: string; message: string; type: any }[]>([]);
+    const [toasts, setToasts] = useState<{ id: string; message: string; type: any; digest?: string }[]>([]);
 
-    const showToast = useCallback((message: string, type: any = 'info') => {
+    const showToast = useCallback((message: string, type: any = 'info', digest?: string) => {
         const id = Math.random().toString(36).substring(2, 9);
-        setToasts(prev => [...prev, { id, message, type }]);
+        setToasts(prev => [...prev, { id, message, type, digest }]);
 
         if (type !== 'loading') {
             setTimeout(() => {
                 setToasts(prev => prev.filter(t => t.id !== id));
-            }, 4000);
+            }, 6000); // Increased to 6s for explorer link visibility
         }
     }, []);
 
@@ -34,6 +34,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
                             key={toast.id}
                             message={toast.message}
                             type={toast.type}
+                            digest={(toast as any).digest}
                             onClose={() => setToasts(prev => prev.filter(t => t.id !== toast.id))}
                         />
                     ))}

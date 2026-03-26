@@ -38,7 +38,7 @@ export function useRegistryAgents() {
         };
 
         fetchAgents();
-        const interval = setInterval(fetchAgents, 60000); // 1m refresh
+        const interval = setInterval(fetchAgents, 15000); // 15s refresh for real-time sync
         return () => clearInterval(interval);
     }, []);
 

@@ -27,6 +27,7 @@ import { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import Lenis from 'lenis';
 import { useRegistryStats } from '@/hooks/use-one-chain';
+import { GravityStarsBackground } from '@/components/ui/gravity-stars';
 
 export default function LandingPage() {
   const account = useCurrentAccount();
@@ -110,105 +111,112 @@ function Navbar({ isScrolled }: { isScrolled: boolean }) {
 
 function HeroSection({ account }: { account: any }) {
   return (
-    <section className="relative min-h-screen pt-32 pb-20 flex flex-col items-center justify-center overflow-hidden px-6">
-      <div className="absolute inset-0 bg-grid-white radial-mask opacity-20" />
-      <div className="absolute inset-0 bg-gradient-neural" />
-
-      {/* Animated Orbs */}
-      <motion.div
-        animate={{
-          x: [0, 40, -20, 0],
-          y: [0, -30, 20, 0],
-        }}
-        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-        className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-cyan-500/10 blur-[120px] rounded-full"
-      />
-      <motion.div
-        animate={{
-          x: [0, -50, 30, 0],
-          y: [0, 40, -30, 0],
-        }}
-        transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-        className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-purple-600/10 blur-[150px] rounded-full"
-      />
-
-      <div className="relative z-10 max-w-5xl text-center">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-cyan-500/20 bg-cyan-500/5 mb-8"
-        >
-          <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse" />
-          <span className="text-[10px] font-mono tracking-[0.2em] text-cyan-400 uppercase">OneChain Testnet Live v1.1.1</span>
-        </motion.div>
-
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-7xl md:text-9xl font-bold tracking-tighter mb-8 leading-[0.9]"
-        >
-          ONEMIND <br />
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-white to-purple-500">INTELLIGENCE</span>
-        </motion.h1>
-
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4, duration: 0.8 }}
-          className="text-gray-400 text-lg md:text-2xl max-w-3xl mx-auto mb-12 font-light leading-relaxed"
-        >
-          Deploy fully autonomous AI agents on OneChain.
-          Owned by you, driven by LLMs, secured by smart vaults.
-          The next evolution of DeFi and On-chain Automation is here.
-        </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-6"
-        >
-          {account ? (
-            <Link
-              href="/dashboard"
-              className="group relative px-10 py-5 bg-white text-black font-black text-sm rounded-full overflow-hidden transition-all hover:scale-105 active:scale-95"
-            >
-              LAUNCH COMMAND CENTER
-              <div className="absolute inset-0 bg-cyan-400 translate-y-full group-hover:translate-y-0 transition-transform -z-10" />
-            </Link>
-          ) : (
-            <div className="flex flex-col items-center gap-4">
-              <CustomConnectButton />
-            </div>
-          )}
-          <button className="px-10 py-5 border border-white/10 rounded-full text-sm font-bold hover:bg-white/5 transition-all">
-            READ TECHNICAL WHITEPAPER
-          </button>
-        </motion.div>
-      </div>
-
-      {/* Hero Bottom Video Showcase */}
-      <motion.div
-        initial={{ opacity: 0, y: 100 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1, duration: 1 }}
-        className="mt-24 w-full max-w-6xl glass-card aspect-video border-b-0 rounded-b-none p-4 pb-0 bg-gradient-to-t from-transparent to-white/5 mask-fade-out"
+    <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
+      <GravityStarsBackground
+        starsCount={120}
+        starsSize={1.5}
+        starsOpacity={0.6}
+        glowIntensity={25}
+        mouseInfluence={150}
+        gravityStrength={100}
+        className="flex flex-col items-center justify-center text-white"
       >
-        <div className="w-full h-full rounded-t-xl bg-black/40 border-x border-t border-white/10 overflow-hidden relative">
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="w-full h-full object-cover"
+        <div className="absolute inset-0 bg-gradient-neural opacity-60" />
+
+        {/* Animated Orbs Overlay */}
+        <motion.div
+          animate={{
+            x: [0, 40, -20, 0],
+            y: [0, -30, 20, 0],
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-cyan-500/5 blur-[120px] rounded-full"
+        />
+        <motion.div
+          animate={{
+            x: [0, -50, 30, 0],
+            y: [0, 40, -30, 0],
+          }}
+          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+          className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-purple-600/5 blur-[150px] rounded-full"
+        />
+
+        <div className="relative z-10 w-full max-w-6xl mx-auto text-center px-6 pt-32 pb-20 flex flex-col items-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-cyan-500/20 bg-cyan-500/5 mb-8 backdrop-blur-sm mx-auto"
           >
-            <source src="/lv_0_20260301200602.mp4" type="video/mp4" />
-          </video>
-          {/* Optional overlay gradient for better blending */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+            <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse" />
+            <span className="text-[10px] font-mono tracking-[0.2em] text-cyan-400 uppercase">OneChain Testnet Live v1.1.1</span>
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-7xl md:text-[9vw] font-black tracking-tighter mb-8 leading-[0.85] uppercase text-center w-full"
+          >
+            ONE<span className="text-cyan-400">MIND</span> <br />
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-cyan-400 to-purple-500">INTELLIGENCE</span>
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.8 }}
+            className="text-gray-400 text-lg md:text-2xl max-w-2xl mx-auto mb-12 font-light leading-relaxed text-center"
+          >
+            Deploy fully autonomous AI agents on OneChain.
+            Owned by you, driven by LLMs, secured by smart vaults.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-6"
+          >
+            {account ? (
+              <Link
+                href="/dashboard"
+                className="group relative px-12 py-6 bg-white text-black font-black text-sm rounded-full overflow-hidden transition-all hover:scale-110 active:scale-95 shadow-[0_0_50px_rgba(255,255,255,0.2)]"
+              >
+                LAUNCH COMMAND CENTER
+                <div className="absolute inset-0 bg-cyan-400 translate-y-full group-hover:translate-y-0 transition-transform -z-10" />
+              </Link>
+            ) : (
+              <div className="flex flex-col items-center gap-4">
+                <CustomConnectButton />
+              </div>
+            )}
+            <button className="px-12 py-6 border border-white/10 rounded-full text-sm font-bold hover:bg-white/5 transition-all hover:border-white/20 backdrop-blur-md">
+              READ TECHNICAL WHITEPAPER
+            </button>
+          </motion.div>
         </div>
-      </motion.div>
+
+        {/* Hero Bottom Video Showcase */}
+        <motion.div
+          initial={{ opacity: 0, y: 100 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1, duration: 1 }}
+          className="mt-24 w-full max-w-6xl mx-auto glass-card aspect-video border-b-0 rounded-b-none p-4 pb-0 bg-gradient-to-t from-transparent to-white/5 mask-fade-out"
+        >
+          <div className="w-full h-full rounded-t-xl bg-black/40 border-x border-t border-white/10 overflow-hidden relative">
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover"
+            >
+              <source src="/lv_0_20260301200602.mp4" type="video/mp4" />
+            </video>
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent pointer-events-none" />
+          </div>
+        </motion.div>
+      </GravityStarsBackground>
     </section>
   );
 }

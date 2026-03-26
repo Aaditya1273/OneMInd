@@ -12,14 +12,26 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     const account = useCurrentAccount();
     const pathname = usePathname();
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+    const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
-        if (!account) {
+        setMounted(true);
+    }, []);
+
+    useEffect(() => {
+        if (mounted && !account) {
             redirect('/');
         }
-    }, [account]);
+    }, [account, mounted]);
 
-    if (!account) return null;
+    if (!mounted || !account) return (
+        <div className="min-h-screen bg-[#020203] flex items-center justify-center">
+            <div className="flex flex-col items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl border-2 border-cyan-400/20 border-t-cyan-400 animate-spin" />
+                <span className="text-[10px] text-white/40 font-black uppercase tracking-[0.2em] animate-pulse">Initializing Neural Link...</span>
+            </div>
+        </div>
+    );
 
     return (
         <div className="flex min-h-screen bg-[#020203] relative overflow-hidden text-white selection:bg-cyan-500/30">

@@ -55,7 +55,7 @@ export function SpawnAgentModal({ isOpen, onClose }: SpawnAgentModalProps) {
                 { transaction: tx },
                 {
                     onSuccess: (result) => {
-                        showToast(`${name} Successfully Synthesized!`, 'success');
+                        showToast(`${name} Successfully Synthesized!`, 'success', result.digest);
                         console.log('Spawn success:', result);
                         setIsSpawning(false);
                         onClose();

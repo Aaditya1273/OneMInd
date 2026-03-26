@@ -4,7 +4,7 @@ import { Transaction } from '@mysten/sui/transactions';
 
 // Initialize the real OneClient
 export const oneClient = new OneClient({
-    url: process.env.NEXT_PUBLIC_ONE_CHAIN_RPC || 'https://rpc-testnet.onelabs.cc:443',
+    url: process.env.NEXT_PUBLIC_RPC_URL || 'https://rpc-testnet.onelabs.cc:443',
     network: 'testnet'
 });
 
@@ -13,14 +13,17 @@ export const OneChainService = {
     REGISTRY_ID: process.env.NEXT_PUBLIC_REGISTRY_ID || '0xee678d03b49e4fb7f6a8299cbe4888fe228adecba8ce93d217fe47f44519386b',
 
     async getAgentBalance(address: string) {
+        if (!address) return BigInt(0);
         try {
+            if (!oneClient) throw new Error('OneClient not initialized');
             const coins = await oneClient.getCoins({
                 owner: address,
                 coinType: '0x2::oct::OCT'
             });
+            if (!coins || !Array.isArray(coins.data)) return BigInt(0);
             return coins.data.reduce((acc: bigint, coin: any) => acc + BigInt(coin.balance), BigInt(0));
-        } catch (error) {
-            console.error('Failed to fetch OneChain balance:', error);
+        } catch (error: any) {
+            console.warn(`[OneChain] Balance sync failed for ${address.substring(0, 6)}...: ${error.message}`);
             return BigInt(0);
         }
     },
@@ -49,7 +52,8 @@ export const OneChainService = {
 
             // In a real Sui/OneChain contract, agents are stored in a dynamic field or table
             // This is a simplified fetch for the demo object state
-            return (registry.data?.content as any)?.fields?.agents || [];
+            const agents = (registry.data?.content as any)?.fields?.agents;
+            return Array.isArray(agents) ? agents : [];
         } catch (error) {
             console.error('Failed to fetch registry agents:', error);
             return [];
@@ -68,6 +72,7 @@ export const OneChainService = {
                 },
                 options: { showContent: true }
             });
+            if (!objects || !Array.isArray(objects.data)) return [];
             return objects.data.map(obj => obj.data);
         } catch (error) {
             console.error(`Failed to fetch owned objects for ${typeSuffix}:`, error);

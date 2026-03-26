@@ -37,7 +37,7 @@ export function VaultAssets() {
                     <div className="text-[11px] text-white/40 mb-3 font-black uppercase tracking-[0.25em]">Liquid Assets</div>
                     <div className="flex items-baseline gap-4 flex-wrap">
                         <span className="text-5xl font-black tracking-tighter text-white uppercase">{displayBalance}</span>
-                        <span className="text-base text-cyan-400 font-black tracking-widest uppercase">ONE</span>
+                        <span className="text-base text-cyan-400 font-black tracking-widest uppercase">OCT</span>
                     </div>
                     <div className="text-[12px] text-white/60 mt-4 flex items-center gap-2 font-medium tracking-tight">
                         <TrendingUp className="w-5 h-5 text-emerald-400" />

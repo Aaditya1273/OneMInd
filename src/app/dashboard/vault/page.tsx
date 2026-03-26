@@ -36,7 +36,7 @@ export default function VaultPage() {
 
             const vaultId = vaults[0].objectId;
 
-            // Note: Real Sui/OneChain PTBs require finding coins. 
+            // Note: Real Sui/Chain PTBs require finding coins. 
             // We'll keep it simple for the user to see the popup.
             tx.moveCall({
                 target: `${OneChainService.PACKAGE_ID}::vault::deposit_one`,
@@ -47,7 +47,7 @@ export default function VaultPage() {
             });
 
             signAndExecute({ transaction: tx }, {
-                onSuccess: () => showToast('Deposit Finalized!', 'success'),
+                onSuccess: (result) => showToast('Deposit Finalized!', 'success', result.digest),
                 onError: (e) => showToast('Deposit Failed: ' + e.message, 'error'),
                 onSettled: () => setIsLoading(false)
             });
