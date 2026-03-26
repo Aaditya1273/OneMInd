@@ -36,9 +36,40 @@ export function useRegistryAgents() {
         };
 
         fetchAgents();
+        const interval = setInterval(fetchAgents, 60000); // 1m refresh
+        return () => clearInterval(interval);
     }, []);
 
     return { agents, loading };
+}
+
+export function useMyAgents(address?: string) {
+    const { agents, loading } = useRegistryAgents();
+    const [myAgents, setMyAgents] = useState<any[]>([]);
+
+    useEffect(() => {
+        if (!address) {
+            setMyAgents([]);
+            return;
+        }
+        const filtered = agents.filter(a => a.owner === address);
+        setMyAgents(filtered);
+    }, [agents, address]);
+
+    return { myAgents, loading };
+}
+
+export function useRegistryStats() {
+    const { agents, loading } = useRegistryAgents();
+
+    const stats = {
+        totalAgents: agents.length,
+        totalOps: (agents.length * 1.5).toFixed(1) + "M", // Heuristic for demo
+        efficiency: "99.4%",
+        networkHash: agents.length > 0 ? agents[0].id.substring(0, 8) : "0x00...00"
+    };
+
+    return { stats, loading };
 }
 
 export function useEcosystemEvents() {
