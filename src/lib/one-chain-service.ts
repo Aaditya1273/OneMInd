@@ -57,6 +57,25 @@ export const OneChainService = {
     },
 
     /**
+     * Fetch objects owned by the address and filter by type.
+     */
+    async fetchOwnedObjects(address: string, typeSuffix: string) {
+        try {
+            const objects = await oneClient.getOwnedObjects({
+                owner: address,
+                filter: {
+                    StructType: `${this.PACKAGE_ID}::${typeSuffix}`
+                },
+                options: { showContent: true }
+            });
+            return objects.data.map(obj => obj.data);
+        } catch (error) {
+            console.error(`Failed to fetch owned objects for ${typeSuffix}:`, error);
+            return [];
+        }
+    },
+
+    /**
      * Query live events from the package.
      */
     async fetchEcosystemEvents() {

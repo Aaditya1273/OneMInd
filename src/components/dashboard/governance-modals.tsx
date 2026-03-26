@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Vote, Users, FileText, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
+import { useToast } from '@/components/ui/toast-context';
 
 // ----------------------------------------------------
 // Reusable Modal Backdrop & Container
@@ -45,6 +46,7 @@ function ModalWrapper({ isOpen, onClose, children, className = '' }: { isOpen: b
 // 1. Proposal Details Modal
 // ----------------------------------------------------
 export function ProposalDetailsModal({ isOpen, onClose, proposal }: { isOpen: boolean, onClose: () => void, proposal: any }) {
+    const { showToast } = useToast();
     const STATUS_COLORS: Record<string, string> = {
         Voting: 'text-[#58a6ff] bg-[#1f6feb1a] border-[#1f6feb33]',
         Passed: 'text-[#3fb950] bg-[#3fb9501a] border-[#3fb95033]',
@@ -100,7 +102,13 @@ export function ProposalDetailsModal({ isOpen, onClose, proposal }: { isOpen: bo
                             Close
                         </button>
                         {proposal.status === 'Voting' && (
-                            <button className="px-5 py-2.5 bg-[#1f6feb] hover:bg-[#388bfd] text-white font-bold text-sm rounded-lg transition-colors flex items-center gap-2">
+                            <button
+                                onClick={() => {
+                                    showToast('Casting Neural Vote on OneChain...', 'loading');
+                                    onClose();
+                                }}
+                                className="px-5 py-2.5 bg-[#1f6feb] hover:bg-[#388bfd] text-white font-bold text-sm rounded-lg transition-colors flex items-center gap-2"
+                            >
                                 <Vote className="w-4 h-4" /> Cast Vote
                             </button>
                         )}
@@ -115,6 +123,7 @@ export function ProposalDetailsModal({ isOpen, onClose, proposal }: { isOpen: bo
 // 2. Submit Proposal Modal (Edit Proposal)
 // ----------------------------------------------------
 export function SubmitProposalModal({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) {
+    const { showToast } = useToast();
     return (
         <ModalWrapper isOpen={isOpen} onClose={onClose} className="w-full max-w-2xl max-h-[90vh]">
             <div className="h-14 border-b border-[#30363d] flex items-center justify-between px-6 bg-[#161b22] flex-shrink-0">
@@ -163,7 +172,13 @@ export function SubmitProposalModal({ isOpen, onClose }: { isOpen: boolean, onCl
                     <button onClick={onClose} className="px-5 py-2.5 border border-[#30363d] text-[#c9d1d9] font-semibold text-sm rounded-lg hover:bg-[#21262d] transition-colors">
                         Cancel
                     </button>
-                    <button onClick={onClose} className="px-5 py-2.5 bg-[#238636] hover:bg-[#2ea043] text-white font-bold text-sm rounded-lg transition-colors flex items-center gap-2">
+                    <button
+                        onClick={() => {
+                            showToast('Broadcasting OIP to OneChain Neural Council...', 'loading');
+                            onClose();
+                        }}
+                        className="px-5 py-2.5 bg-[#238636] hover:bg-[#2ea043] text-white font-bold text-sm rounded-lg transition-colors flex items-center gap-2"
+                    >
                         Submit Proposal <ChevronRight className="w-4 h-4" />
                     </button>
                 </div>
@@ -176,6 +191,7 @@ export function SubmitProposalModal({ isOpen, onClose }: { isOpen: boolean, onCl
 // 3. Delegate Support Modal
 // ----------------------------------------------------
 export function DelegateSupportModal({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) {
+    const { showToast } = useToast();
     return (
         <ModalWrapper isOpen={isOpen} onClose={onClose} className="w-full max-w-md">
             <div className="h-14 border-b border-[#30363d] flex items-center justify-between px-6 bg-[#161b22] flex-shrink-0">
@@ -225,7 +241,13 @@ export function DelegateSupportModal({ isOpen, onClose }: { isOpen: boolean, onC
                     <button onClick={onClose} className="px-5 py-2.5 border border-[#30363d] text-[#c9d1d9] font-semibold text-sm rounded-lg hover:bg-[#21262d] transition-colors">
                         Cancel
                     </button>
-                    <button onClick={onClose} className="px-5 py-2.5 bg-[#1f6feb] hover:bg-[#388bfd] text-white font-bold text-sm rounded-lg transition-colors">
+                    <button
+                        onClick={() => {
+                            showToast('Reconfiguring Neural Delegate on OneChain...', 'loading');
+                            onClose();
+                        }}
+                        className="px-5 py-2.5 bg-[#1f6feb] hover:bg-[#388bfd] text-white font-bold text-sm rounded-lg transition-colors"
+                    >
                         Save Delegate
                     </button>
                 </div>

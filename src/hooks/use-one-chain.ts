@@ -61,6 +61,28 @@ export function useMyAgents(address?: string) {
     return { myAgents, loading };
 }
 
+export function useMyVaults(address?: string) {
+    const [vaults, setVaults] = useState<any[]>([]);
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (!address) return;
+
+        const fetchVaults = async () => {
+            setLoading(true);
+            const list = await OneChainService.fetchOwnedObjects(address, 'vault::Vault');
+            setVaults(list);
+            setLoading(false);
+        };
+
+        fetchVaults();
+        const interval = setInterval(fetchVaults, 30000);
+        return () => clearInterval(interval);
+    }, [address]);
+
+    return { vaults, loading };
+}
+
 export function useRegistryStats() {
     const { agents, loading } = useRegistryAgents();
     const isArray = Array.isArray(agents);

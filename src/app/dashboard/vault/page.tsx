@@ -4,7 +4,8 @@ import { ArrowUpRight, ArrowDownLeft, TrendingUp, History, ShieldCheck, Landmark
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { useCurrentAccount } from '@mysten/dapp-kit';
-import { useOneBalance, useEcosystemEvents, useToast } from '@/hooks/use-one-chain';
+import { useOneBalance, useEcosystemEvents } from '@/hooks/use-one-chain';
+import { useToast } from '@/components/ui/toast-context';
 
 export default function VaultPage() {
     const account = useCurrentAccount();
@@ -23,10 +24,16 @@ export default function VaultPage() {
                     <p className="text-base text-white/60 font-medium tracking-tight">Manage the multi-asset treasury secured by your agent squad.</p>
                 </div>
                 <div className="flex gap-4">
-                    <button className="px-8 py-3 border border-white/10 text-white font-black text-sm rounded-full hover:bg-white/10 transition-all uppercase tracking-widest active:scale-95">
+                    <button
+                        onClick={() => showToast('Opening OneChain Bridge Portal for Deposit...', 'loading')}
+                        className="px-8 py-3 border border-white/10 text-white font-black text-sm rounded-full hover:bg-white/10 transition-all uppercase tracking-widest active:scale-95"
+                    >
                         Deposit Assets
                     </button>
-                    <button className="px-8 py-3 bg-white text-black font-black text-sm rounded-full hover:bg-cyan-400 hover:scale-105 transition-all shadow-[0_20px_40px_rgba(255,255,255,0.1)] uppercase tracking-widest active:scale-95">
+                    <button
+                        onClick={() => showToast('Initializing Bulk Withdrawal through OneChain Multi-Sig...', 'loading')}
+                        className="px-8 py-3 bg-white text-black font-black text-sm rounded-full hover:bg-cyan-400 hover:scale-105 transition-all shadow-[0_20px_40px_rgba(255,255,255,0.1)] uppercase tracking-widest active:scale-95"
+                    >
                         Withdraw All
                     </button>
                 </div>
@@ -77,7 +84,12 @@ export default function VaultPage() {
                                 <History className="w-4 h-4 text-white/20" />
                                 Settlement Ledger
                             </h3>
-                            <button className="text-[10px] text-cyan-400 hover:text-white transition-colors font-black uppercase tracking-widest border-b border-cyan-400/30 hover:border-white">View Explorer</button>
+                            <button
+                                onClick={() => showToast('Opening OneChain Block Explorer...', 'info')}
+                                className="text-[10px] text-cyan-400 hover:text-white transition-colors font-black uppercase tracking-widest border-b border-cyan-400/30 hover:border-white"
+                            >
+                                View Explorer
+                            </button>
                         </div>
                         <div className="divide-y divide-white/5">
                             {events.length > 0 ? (
@@ -125,7 +137,10 @@ export default function VaultPage() {
                             Based on squad level & market volatility, projected APR is{' '}
                             <span className="text-white font-black text-lg tracking-tighter">12.4%</span> this epoch.
                         </p>
-                        <button className="w-full py-3.5 bg-white text-black font-black text-xs rounded-full hover:bg-cyan-400 hover:scale-[1.02] transition-all uppercase tracking-widest shadow-xl active:scale-95">
+                        <button
+                            onClick={() => showToast('Connecting to OneChain Staking Pool... Calibrating Yield.', 'loading')}
+                            className="w-full py-3.5 bg-white text-black font-black text-xs rounded-full hover:bg-cyan-400 hover:scale-[1.02] transition-all uppercase tracking-widest shadow-xl active:scale-95"
+                        >
                             Boost Staking
                         </button>
                     </div>

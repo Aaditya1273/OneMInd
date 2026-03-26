@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ProposalDetailsModal, SubmitProposalModal, DelegateSupportModal } from '@/components/dashboard/governance-modals';
+import { useToast } from '@/components/ui/toast-context';
 
 import { useCurrentAccount } from '@mysten/dapp-kit';
 import { useOneBalance } from '@/hooks/use-one-chain';
@@ -36,6 +37,7 @@ export default function GovernancePage() {
 
     const account = useCurrentAccount();
     const { balance } = useOneBalance(account?.address);
+    const { showToast } = useToast();
     const votingWeight = (Number(balance) / 1e9).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
     return (

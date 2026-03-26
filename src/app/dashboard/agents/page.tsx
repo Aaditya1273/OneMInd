@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { Plus, Cpu, MoreHorizontal, ArrowUpRight, ArrowDownLeft, TrendingUp, History, ShieldCheck, Landmark, Zap, Loader2, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';

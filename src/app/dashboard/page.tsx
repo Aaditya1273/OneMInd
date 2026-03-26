@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 import { AgentStats } from '@/components/dashboard/agent-stats';
 import { NeuralFeed } from '@/components/dashboard/neural-feed';
