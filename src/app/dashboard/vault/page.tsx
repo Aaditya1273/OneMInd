@@ -9,59 +9,41 @@ import { useOneBalance, useEcosystemEvents, useMyVaults } from '@/hooks/use-one-
 import { useToast } from '@/components/ui/toast-context';
 import { Transaction } from '@mysten/sui/transactions';
 import { OneChainService } from '@/lib/one-chain-service';
+import { DepositModal, WithdrawModal } from '@/components/dashboard/vault-modals';
 
 export default function VaultPage() {
     const account = useCurrentAccount();
     const { balance, loading: balanceLoading } = useOneBalance(account?.address);
     const { events, loading: eventsLoading } = useEcosystemEvents();
     const { vaults, loading: vaultsLoading } = useMyVaults(account?.address);
-    const { mutate: signAndExecute } = useSignAndExecuteTransaction();
     const { showToast } = useToast();
+    const [isDepositOpen, setIsDepositOpen] = useState(false);
+    const [isWithdrawOpen, setIsWithdrawOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleDeposit = async () => {
-        if (!account || !vaults || vaults.length === 0) {
+    const handleDeposit = () => {
+        if (!account) {
+            showToast('Please connect your wallet first', 'error');
+            return;
+        }
+        if (vaults.length === 0) {
             showToast('No Active Vault Found. Spawn an agent first.', 'error');
             return;
         }
-
-        setIsLoading(true);
-        showToast('Preparing OneChain Deposit...', 'loading');
-
-        try {
-            const tx = new Transaction();
-            // In a real scenario, we'd find the user's OCT coin. For demo, we use a generic payment.
-            // Simplified: we'll call deposit_one and the wallet will handle gas/coins.
-            // But Move needs a Coin<OCT> object. This requires more complex PTB.
-            // For the 'Aha!' demo, we'll implement a clean Move call pattern.
-
-            const vaultId = vaults[0].objectId;
-
-            // Note: Real Sui/Chain PTBs require finding coins. 
-            // We'll keep it simple for the user to see the popup.
-            tx.moveCall({
-                target: `${OneChainService.PACKAGE_ID}::vault::deposit_one`,
-                arguments: [
-                    tx.object(vaultId),
-                    tx.gas, // Simplification: using gas as payment for demo if possible, or requiring selection
-                ],
-            });
-
-            signAndExecute({ transaction: tx }, {
-                onSuccess: (result) => showToast('Deposit Finalized!', 'success', result.digest),
-                onError: (e) => showToast('Deposit Failed: ' + e.message, 'error'),
-                onSettled: () => setIsLoading(false)
-            });
-        } catch (e: any) {
-            showToast('Transaction Error', 'error');
-            setIsLoading(false);
-        }
+        setIsDepositOpen(true);
     };
 
     const handleWithdraw = () => {
-        showToast('Withdrawal requires Neural Multi-Sig Authorization.', 'info');
+        if (!account) {
+            showToast('Please connect your wallet first', 'error');
+            return;
+        }
+        if (vaults.length === 0) {
+            showToast('No Active Vault Found.', 'error');
+            return;
+        }
+        setIsWithdrawOpen(true);
     };
-
-    const [isLoading, setIsLoading] = useState(false);
 
     const formattedBalance = (Number(balance) / 1e9).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const usdValue = (Number(balance) / 1e9 * 1.14).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -202,6 +184,17 @@ export default function VaultPage() {
                     </div>
                 </div>
             </div>
+
+            <DepositModal
+                isOpen={isDepositOpen}
+                onClose={() => setIsDepositOpen(false)}
+                vault={vaults[0]}
+            />
+            <WithdrawModal
+                isOpen={isWithdrawOpen}
+                onClose={() => setIsWithdrawOpen(false)}
+                vault={vaults[0]}
+            />
         </div>
     );
 }

@@ -91,4 +91,21 @@ module onemind::main {
         registry::unregister(registry, agent_id);
         agent::destroy(agent);
     }
+
+    public fun deposit_to_vault(
+        vault: &mut vault::Vault,
+        payment: one::coin::Coin<one::oct::OCT>,
+        ctx: &mut TxContext
+    ) {
+        vault::deposit_one(vault, payment, ctx);
+    }
+
+    public fun withdraw_from_vault(
+        vault: &mut vault::Vault,
+        amount: u64,
+        ctx: &mut TxContext
+    ) {
+        let recipient = ctx.sender();
+        vault::withdraw_internal(vault, amount, recipient, ctx);
+    }
 }

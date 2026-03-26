@@ -11,9 +11,9 @@ export const oneClient = new OneClient({
 });
 
 // Diagnostic fallbacks for latest deployment
-const DEFAULT_PACKAGE_ID = "0xb3c331312a85abe818a3c91648f9bbfc19334ce6671fee19fd85540b422518c3";
-const DEFAULT_REGISTRY_ID = "0xfa2fd27014c4937eded4608e2ccd648ecf95d54ef8767025ac7b3db391c1a4c7";
-const DEFAULT_GOV_HUB_ID = "0xb80c933fc8818b864223b51e76948b991f9f064003bdcbd51de6c851171dcb45";
+const DEFAULT_PACKAGE_ID = "0xf4f626d7c628fa08ea03bab973ec6e64ce6c9e8742007ade870540e61fa64252";
+const DEFAULT_REGISTRY_ID = "0x58b9ebc1117077772022b2e13d7197ab5e1c716531d2b8a25449104645cd0b21";
+const DEFAULT_GOV_HUB_ID = "0xc25c5e8262b156b521aabaacfde6579a56d44fc2cdfebd8de1d77d88091e7ab9";
 
 export const OneChainService = {
     PACKAGE_ID: process.env.NEXT_PUBLIC_PACKAGE_ID || DEFAULT_PACKAGE_ID,
