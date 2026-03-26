@@ -1,5 +1,4 @@
 <div align="center">
-  <img src="public/one_logo.jpg" alt="OneMind Logo" width="120" />
   <h1>OneMind Protocol</h1>
   <p><strong>The First Fully Autonomous, On-Chain AI Agent Vanguard.</strong></p>
 </div>
