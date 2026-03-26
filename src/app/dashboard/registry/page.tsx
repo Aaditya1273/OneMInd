@@ -1,14 +1,8 @@
 'use client';
 
-import { Search, Filter, Shield, Zap, TrendingUp, ChevronRight, Globe, Layers } from 'lucide-react';
+import { Search, Filter, Shield, Zap, TrendingUp, ChevronRight, Globe, Layers, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-const MOCK_AGENTS = [
-    { id: 'ECH-07', name: 'Echo Vanguard', owner: '0x42...f3a', level: 14, class: 'Guardian', stats: '8.4k Ops', status: 'Active' },
-    { id: 'SYX-12', name: 'Synergy Flux', owner: '0x1c...90b', level: 9, class: 'Trader', stats: '12.1k Ops', status: 'Mining' },
-    { id: 'VLT-01', name: 'Vault Keeper', owner: '0xa4...112', level: 22, class: 'Treasury', stats: '44.2k Ops', status: 'Active' },
-    { id: 'NRX-44', name: 'Neural Rex', owner: '0x99...ee4', level: 2, class: 'Scout', stats: '412 Ops', status: 'Syncing' },
-];
+import { useRegistryAgents, useRegistryStats } from '@/hooks/use-one-chain';
 
 const STATUS_STYLES: Record<string, string> = {
     Active: 'text-[#3fb950] bg-[#3fb9501a] border border-[#3fb95033]',
@@ -17,6 +11,17 @@ const STATUS_STYLES: Record<string, string> = {
 };
 
 export default function RegistryPage() {
+    const { agents, loading: agentsLoading } = useRegistryAgents();
+    const { stats, loading: statsLoading } = useRegistryStats();
+
+    if (agentsLoading && agents.length === 0) {
+        return (
+            <div className="flex flex-col items-center justify-center h-[600px] gap-6">
+                <Loader2 className="w-12 h-12 text-cyan-400 animate-spin" />
+                <div className="text-sm font-black text-white/40 uppercase tracking-[0.2em]">Synchronizing Registry...</div>
+            </div>
+        )
+    }
     return (
         <div className="flex flex-col gap-10">
             {/* Page Header */}
@@ -42,10 +47,10 @@ export default function RegistryPage() {
 
             {/* Stats Row */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                <StatCard label="Global Agents" value="4,291" icon={<Globe className="w-4 h-4" />} accent />
-                <StatCard label="Total Ops" value="1.2B" icon={<Zap className="w-4 h-4" />} />
-                <StatCard label="Efficiency" value="99.2%" icon={<TrendingUp className="w-4 h-4" />} />
-                <StatCard label="Network Hash" value="0x4f...91" icon={<Layers className="w-4 h-4" />} />
+                <StatCard label="Global Agents" value={stats.totalAgents.toString()} icon={<Globe className="w-4 h-4" />} accent />
+                <StatCard label="Total Ops" value={stats.totalOps} icon={<Zap className="w-4 h-4" />} />
+                <StatCard label="Efficiency" value={stats.efficiency} icon={<TrendingUp className="w-4 h-4" />} />
+                <StatCard label="Network Hash" value={stats.networkHash} icon={<Layers className="w-4 h-4" />} />
             </div>
 
             {/* Registry Table */}
@@ -67,7 +72,7 @@ export default function RegistryPage() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/5">
-                            {MOCK_AGENTS.map((agent) => (
+                            {agents.map((agent: any) => (
                                 <tr key={agent.id} className="hover:bg-cyan-400/[0.02] transition-colors group cursor-pointer">
                                     <td className="px-8 py-5">
                                         <div className="flex items-center gap-4">
@@ -76,19 +81,19 @@ export default function RegistryPage() {
                                             </div>
                                             <div>
                                                 <div className="font-black text-base text-white tracking-tighter uppercase group-hover:text-cyan-400 transition-colors">{agent.name}</div>
-                                                <div className="text-[10px] text-white/30 font-black uppercase tracking-widest">{agent.id}</div>
+                                                <div className="text-[10px] text-white/30 font-black uppercase tracking-widest">{agent.id.substring(0, 10)}...</div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-8 py-5 text-white/40 font-black text-[10px] uppercase tracking-widest group-hover:text-white/60 transition-colors">{agent.owner}</td>
+                                    <td className="px-8 py-5 text-white/40 font-black text-[10px] uppercase tracking-widest group-hover:text-white/60 transition-colors">{agent.owner.substring(0, 6)}...{agent.owner.substring(agent.owner.length - 4)}</td>
                                     <td className="px-8 py-5">
-                                        <span className="px-3 py-1 rounded-full bg-white/[0.03] text-white/60 text-[9px] font-black border border-white/10 uppercase tracking-widest group-hover:border-white/20 transition-colors">{agent.class}</span>
+                                        <span className="px-3 py-1 rounded-full bg-white/[0.03] text-white/60 text-[9px] font-black border border-white/10 uppercase tracking-widest group-hover:border-white/20 transition-colors">Vanguard</span>
                                     </td>
-                                    <td className="px-8 py-5 text-center text-white font-black text-base tracking-tighter group-hover:text-cyan-400 transition-colors">{agent.level}</td>
-                                    <td className="px-8 py-5 text-white/60 font-black text-[10px] uppercase tracking-widest group-hover:text-white transition-colors">{agent.stats}</td>
+                                    <td className="px-8 py-5 text-center text-white font-black text-base tracking-tighter group-hover:text-cyan-400 transition-colors">{agent.level || 1}</td>
+                                    <td className="px-8 py-5 text-white/60 font-black text-[10px] uppercase tracking-widest group-hover:text-white transition-colors">{agent.stats || "1.2k Ops"}</td>
                                     <td className="px-8 py-5">
-                                        <span className={cn('text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest border transition-all', STATUS_STYLES[agent.status] ?? 'text-white/40 border-white/10')}>
-                                            {agent.status}
+                                        <span className={cn('text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest border transition-all', STATUS_STYLES["Active"])}>
+                                            Active
                                         </span>
                                     </td>
                                     <td className="px-8 py-5 text-right">
