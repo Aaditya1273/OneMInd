@@ -1,0 +1,13 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NEXT_PUBLIC_PACKAGE_ID = "0xd972f1030084d224db8a3799e9456c7250ab8a22663b6c4ef533e4bf9b19c043"
+  NEXT_PUBLIC_REGISTRY_ID = "0xca8d0047bf83d145a24f2b82aeb2d918b816cb14b675d1032f6f32ec8ff58a7e"
+  NEXT_PUBLIC_GOVERNANCE_HUB_ID = "0x60d6179257cce69f721fdcfd1f6eadda0369e9c26c23a36cc047c029d922ba6b"
+  NEXT_PUBLIC_RPC_URL = "https://rpc-testnet.onelabs.cc"
+  NODE_VERSION = "20"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
