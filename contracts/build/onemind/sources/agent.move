@@ -98,6 +98,17 @@ module onemind::agent {
         };
     }
 
+    /// Update the agent's designation (name).
+    public fun rename(agent: &mut Agent, new_name: String) {
+        agent.name = new_name;
+    }
+
+    /// Decommission the agent and destroy its on-chain identity.
+    public fun destroy(agent: Agent) {
+        let Agent { id, name: _, xp: _, level: _, energy: _, memory_hash: _, owner: _ } = agent;
+        object::delete(id);
+    }
+
     // --- Accessors ---
 
     public fun id(agent: &Agent): ID { object::id(agent) }

@@ -37,6 +37,11 @@ module onemind::registry {
         table::add(&mut registry.agents, agent_id, owner);
     }
 
+    public fun unregister(registry: &mut GlobalRegistry, agent_id: ID) {
+        registry.total_agents = registry.total_agents - 1;
+        table::remove(&mut registry.agents, agent_id);
+    }
+
     // --- Accessors ---
 
     public fun total_agents(registry: &GlobalRegistry): u64 { registry.total_agents }

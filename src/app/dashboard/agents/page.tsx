@@ -7,11 +7,27 @@ import { motion } from 'framer-motion';
 import { useCurrentAccount } from '@mysten/dapp-kit';
 import { useMyAgents } from '@/hooks/use-one-chain';
 import { SpawnAgentModal } from '@/components/dashboard/spawn-modal';
+import { AgentDetailsModal, AgentMenuModal } from '@/components/dashboard/registry-modals';
+import { useToast } from '@/components/ui/toast-context';
 
 export default function AgentsPage() {
     const account = useCurrentAccount();
     const { myAgents, loading } = useMyAgents(account?.address);
+    const { showToast } = useToast();
     const [isSpawnModalOpen, setIsSpawnModalOpen] = useState(false);
+    const [selectedAgent, setSelectedAgent] = useState<any>(null);
+    const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    const handleSyncControl = (agent: any) => {
+        setSelectedAgent(agent);
+        setIsDetailsOpen(true);
+    };
+
+    const handleMoreOptions = (agent: any) => {
+        setSelectedAgent(agent);
+        setIsMenuOpen(true);
+    };
 
     if (loading && myAgents.length === 0) {
         return (
@@ -75,6 +91,8 @@ export default function AgentsPage() {
                             brain="Gemini 1.5 Pro"
                             ops={agent.stats || "1.2k"}
                             isMain={index === 0}
+                            onSyncClick={() => handleSyncControl(agent)}
+                            onMoreClick={() => handleMoreOptions(agent)}
                         />
                     ))
                 ) : null}
@@ -82,14 +100,17 @@ export default function AgentsPage() {
                 {/* Spawn Slot */}
                 <button
                     onClick={() => setIsSpawnModalOpen(true)}
-                    className="border-2 border-dashed border-white/5 hover:border-cyan-400/30 rounded-[2rem] p-10 flex flex-col items-center justify-center gap-6 transition-all group min-h-[380px] bg-white/[0.01] hover:bg-white/[0.03] active:scale-[0.98]"
+                    className="border-2 border-dashed border-white/10 hover:border-cyan-400/40 rounded-[2rem] p-10 flex flex-col items-center justify-center gap-6 transition-all group min-h-[380px] bg-white/[0.02] hover:bg-cyan-400/[0.03] active:scale-[0.98] relative overflow-hidden"
                 >
-                    <div className="w-20 h-20 rounded-full bg-white/[0.03] border border-white/5 group-hover:border-cyan-400/30 flex items-center justify-center transition-all shadow-inner">
-                        <Plus className="w-10 h-10 text-white/10 group-hover:text-cyan-400 transition-all group-hover:scale-110" />
+                    {/* Subtle Background Portal Effect */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/0 via-cyan-500/0 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+
+                    <div className="w-20 h-20 rounded-full bg-white/[0.03] border border-white/10 group-hover:border-cyan-400/50 flex items-center justify-center transition-all shadow-inner relative z-10">
+                        <Plus className="w-10 h-10 text-white/20 group-hover:text-cyan-400 transition-all group-hover:scale-110 group-hover:rotate-90 duration-500" />
                     </div>
-                    <div className="text-center">
-                        <div className="text-sm font-black text-white/40 group-hover:text-white transition-colors uppercase tracking-[0.2em]">Unit Slot Empty</div>
-                        <div className="text-xs text-white/30 mt-2 font-medium tracking-tight group-hover:text-white/60 transition-colors uppercase tracking-widest">Sync with Registry to expand squad</div>
+                    <div className="text-center relative z-10">
+                        <div className="text-sm font-black text-white/60 group-hover:text-cyan-400 transition-colors uppercase tracking-[0.2em]">Unit Slot Empty</div>
+                        <div className="text-xs text-white/40 mt-2 font-medium tracking-tight group-hover:text-white/80 transition-colors uppercase tracking-widest">Sync with Registry to expand squad</div>
                     </div>
                 </button>
             </div>
@@ -97,6 +118,18 @@ export default function AgentsPage() {
             <SpawnAgentModal
                 isOpen={isSpawnModalOpen}
                 onClose={() => setIsSpawnModalOpen(false)}
+            />
+
+            <AgentDetailsModal
+                isOpen={isDetailsOpen}
+                onClose={() => setIsDetailsOpen(false)}
+                agent={selectedAgent}
+            />
+
+            <AgentMenuModal
+                isOpen={isMenuOpen}
+                onClose={() => setIsMenuOpen(false)}
+                agent={selectedAgent}
             />
         </div>
     );
@@ -110,9 +143,11 @@ interface AgentProps {
     brain: string;
     ops: string;
     isMain?: boolean;
+    onSyncClick?: () => void;
+    onMoreClick?: () => void;
 }
 
-function AgentCard({ name, status, level, energy, brain, ops, isMain = false }: AgentProps) {
+function AgentCard({ name, status, level, energy, brain, ops, isMain = false, onSyncClick, onMoreClick }: AgentProps) {
     const isHealthy = status === 'Operational';
 
     return (
@@ -181,10 +216,16 @@ function AgentCard({ name, status, level, energy, brain, ops, isMain = false }: 
 
             {/* Card Footer */}
             <div className="px-8 pb-8 flex gap-3">
-                <button className="flex-1 py-3 px-6 bg-white/[0.03] border border-white/5 hover:border-cyan-400/30 hover:bg-cyan-400/10 text-white font-black text-[10px] rounded-full transition-all uppercase tracking-widest active:scale-95">
+                <button
+                    onClick={onSyncClick}
+                    className="flex-1 py-3 px-6 bg-white/[0.03] border border-white/5 hover:border-cyan-400/30 hover:bg-cyan-400/10 text-white font-black text-[10px] rounded-full transition-all uppercase tracking-widest active:scale-95"
+                >
                     Sync Control
                 </button>
-                <button className="p-3 bg-white/[0.03] border border-white/5 hover:border-rose-400/30 hover:bg-rose-400/10 rounded-full transition-all group/btn active:scale-95">
+                <button
+                    onClick={onMoreClick}
+                    className="p-3 bg-white/[0.03] border border-white/5 hover:border-rose-400/30 hover:bg-rose-400/10 rounded-full transition-all group/btn active:scale-95"
+                >
                     <MoreHorizontal className="w-4 h-4 text-white/40 group-hover/btn:text-rose-400 transition-colors" />
                 </button>
             </div>

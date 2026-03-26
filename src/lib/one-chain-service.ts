@@ -2,16 +2,37 @@
 import { SuiJsonRpcClient as OneClient } from '@mysten/sui/jsonRpc';
 import { Transaction } from '@mysten/sui/transactions';
 
+const RPC_URL = process.env.NEXT_PUBLIC_RPC_URL || 'https://rpc-testnet.onelabs.cc';
+
 // Initialize the real OneClient
 export const oneClient = new OneClient({
-    url: process.env.NEXT_PUBLIC_RPC_URL || 'https://rpc-testnet.onelabs.cc:443',
+    url: RPC_URL,
     network: 'testnet'
 });
 
+// Diagnostic fallbacks for latest deployment
+const DEFAULT_PACKAGE_ID = "0xb3c331312a85abe818a3c91648f9bbfc19334ce6671fee19fd85540b422518c3";
+const DEFAULT_REGISTRY_ID = "0xfa2fd27014c4937eded4608e2ccd648ecf95d54ef8767025ac7b3db391c1a4c7";
+const DEFAULT_GOV_HUB_ID = "0xb80c933fc8818b864223b51e76948b991f9f064003bdcbd51de6c851171dcb45";
+
 export const OneChainService = {
-    PACKAGE_ID: process.env.NEXT_PUBLIC_PACKAGE_ID || '',
-    REGISTRY_ID: process.env.NEXT_PUBLIC_REGISTRY_ID || '',
-    GOVERNANCE_HUB_ID: process.env.NEXT_PUBLIC_GOVERNANCE_HUB_ID || '',
+    PACKAGE_ID: process.env.NEXT_PUBLIC_PACKAGE_ID || DEFAULT_PACKAGE_ID,
+    REGISTRY_ID: process.env.NEXT_PUBLIC_REGISTRY_ID || DEFAULT_REGISTRY_ID,
+    GOVERNANCE_HUB_ID: process.env.NEXT_PUBLIC_GOVERNANCE_HUB_ID || DEFAULT_GOV_HUB_ID,
+
+    _checkConfig() {
+        if (typeof window !== 'undefined') {
+            console.log('[OneChain] Active Config:', {
+                rpc: RPC_URL,
+                package: this.PACKAGE_ID,
+                registry: this.REGISTRY_ID,
+                gov: this.GOVERNANCE_HUB_ID
+            });
+            if (this.PACKAGE_ID === DEFAULT_PACKAGE_ID) {
+                console.warn('[OneChain] Using DEFAULT_PACKAGE_ID. Check .env.local if this is unexpected.');
+            }
+        }
+    },
 
     async getAgentBalance(address: string) {
         if (!address) return BigInt(0);
@@ -104,15 +125,17 @@ export const OneChainService = {
      * Query live events from the package.
      */
     async fetchEcosystemEvents() {
+        this._checkConfig();
         try {
+            if (!this.PACKAGE_ID) return [];
             const events = await oneClient.queryEvents({
                 query: { MoveModule: { package: this.PACKAGE_ID, module: 'main' } },
                 limit: 10,
                 order: 'descending'
             });
             return events.data;
-        } catch (error) {
-            console.error('Failed to fetch ecosystem events:', error);
+        } catch (error: any) {
+            console.error('[OneChain] Failed to fetch ecosystem events:', error.message);
             return [];
         }
     },

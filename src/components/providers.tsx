@@ -6,13 +6,16 @@ import '@mysten/dapp-kit/dist/index.css';
 
 import { ToastProvider } from './ui/toast-context';
 
+const DEFAULT_RPC = 'https://rpc-testnet.onelabs.cc';
+const RPC_URL = process.env.NEXT_PUBLIC_RPC_URL || DEFAULT_RPC;
+
 const { networkConfig } = createNetworkConfig({
 	testnet: {
-		url: 'https://rpc-testnet.onelabs.cc:443',
+		url: RPC_URL,
 		network: 'testnet' as any,
 	},
 	mainnet: {
-		url: 'https://rpc-mainnet.onelabs.cc:443',
+		url: 'https://rpc-mainnet.onelabs.cc',
 		network: 'mainnet' as any,
 	},
 });

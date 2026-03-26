@@ -4,6 +4,7 @@ module onemind::main {
     use onemind::vault;
     use onemind::access_control;
     use onemind::registry::{Self, GlobalRegistry};
+    use onemind::mock_dex;
     use one::event;
     use one::clock::{Self, Clock};
 
@@ -49,5 +50,45 @@ module onemind::main {
             agent_id,
             timestamp: clock::timestamp_ms(clock),
         });
+    }
+
+    public struct YieldOptimized has copy, drop {
+        agent_id: ID,
+        spread_captured: u64,
+        timestamp: u64,
+    }
+
+    public fun optimize_yield(
+        agent_id: ID,
+        spread: u64,
+        clock: &Clock,
+        ctx: &mut TxContext
+    ) {
+        // Mock DEX interaction
+        mock_dex::place_order(spread, 1000, ctx);
+        
+        event::emit(YieldOptimized {
+            agent_id,
+            spread_captured: spread,
+            timestamp: clock::timestamp_ms(clock),
+        });
+    }
+
+    public fun update_designation(
+        agent: &mut agent::Agent,
+        new_name: String,
+        _ctx: &mut TxContext
+    ) {
+        agent::rename(agent, new_name);
+    }
+
+    public fun decommission_agent(
+        registry: &mut GlobalRegistry,
+        agent: agent::Agent,
+        _ctx: &mut TxContext
+    ) {
+        let agent_id = agent::id(&agent);
+        registry::unregister(registry, agent_id);
+        agent::destroy(agent);
     }
 }

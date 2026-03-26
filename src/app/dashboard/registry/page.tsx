@@ -18,9 +18,31 @@ export default function RegistryPage() {
     const { agents, loading: agentsLoading } = useRegistryAgents();
     const { stats, loading: statsLoading } = useRegistryStats();
     const { showToast } = useToast();
+    const [searchQuery, setSearchQuery] = useState('');
     const [selectedAgent, setSelectedAgent] = useState<any>(null);
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
     const [isLinkOpen, setIsLinkOpen] = useState(false);
+
+    const filteredAgents = (agents || []).filter((agent: any) =>
+        agent.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        agent.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    const highlightMatch = (text: string, query: string) => {
+        if (!query) return text;
+        const parts = text.split(new RegExp(`(${query})`, 'gi'));
+        return (
+            <span>
+                {parts.map((part, i) =>
+                    part.toLowerCase() === query.toLowerCase() ? (
+                        <span key={i} className="text-cyan-400 border-b border-cyan-400/50 bg-cyan-400/10 px-0.5 rounded-sm">{part}</span>
+                    ) : (
+                        <span key={i}>{part}</span>
+                    )
+                )}
+            </span>
+        );
+    };
 
     if (agentsLoading && agents.length === 0) {
         return (
@@ -50,6 +72,8 @@ export default function RegistryPage() {
                         <input
                             type="text"
                             placeholder="Search agent ID..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
                             className="bg-white/[0.02] border border-white/5 rounded-full pl-11 pr-6 py-3 text-sm text-white placeholder:text-white/30 w-80 focus:border-cyan-400/30 focus:outline-none transition-all shadow-inner focus:bg-white/[0.04]"
                         />
                     </div>
@@ -86,8 +110,8 @@ export default function RegistryPage() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/5">
-                            {Array.isArray(agents) && agents.length > 0 ? (
-                                agents.map((agent: any) => (
+                            {Array.isArray(filteredAgents) && filteredAgents.length > 0 ? (
+                                filteredAgents.map((agent: any) => (
                                     <tr key={agent.id} className="hover:bg-cyan-400/[0.02] transition-colors group cursor-pointer">
                                         <td className="px-8 py-5">
                                             <div className="flex items-center gap-4">
@@ -95,8 +119,12 @@ export default function RegistryPage() {
                                                     <Shield className="w-5 h-5 text-cyan-400/40 group-hover:text-cyan-400 group-hover:scale-110 transition-all" />
                                                 </div>
                                                 <div>
-                                                    <div className="font-black text-base text-white tracking-tighter uppercase group-hover:text-cyan-400 transition-colors">{agent.name}</div>
-                                                    <div className="text-[10px] text-white/30 font-black uppercase tracking-widest">{agent.id.substring(0, 10)}...</div>
+                                                    <div className="font-black text-base text-white tracking-tighter uppercase group-hover:text-cyan-400 transition-colors">
+                                                        {highlightMatch(agent.name, searchQuery)}
+                                                    </div>
+                                                    <div className="text-[10px] text-white/30 font-black uppercase tracking-widest font-mono">
+                                                        {highlightMatch(agent.id, searchQuery)}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </td>
@@ -143,7 +171,7 @@ export default function RegistryPage() {
                                     <td colSpan={7} className="px-8 py-20 text-center">
                                         <div className="flex flex-col items-center gap-4">
                                             <div className="w-12 h-12 rounded-full border-2 border-dashed border-white/10 animate-spin" />
-                                            <div className="text-xs font-black text-white/20 uppercase tracking-[0.2em]">Scanning OneChain Registry...</div>
+                                            <div className="text-xs font-black text-white/20 uppercase tracking-[0.2em]">{searchQuery ? "No matching agents found" : "Scanning OneChain Registry..."}</div>
                                         </div>
                                     </td>
                                 </tr>

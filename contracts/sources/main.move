@@ -50,6 +50,8 @@ module onemind::main {
             agent_id,
             timestamp: clock::timestamp_ms(clock),
         });
+    }
+
     public struct YieldOptimized has copy, drop {
         agent_id: ID,
         spread_captured: u64,
@@ -70,5 +72,40 @@ module onemind::main {
             spread_captured: spread,
             timestamp: clock::timestamp_ms(clock),
         });
+    }
+
+    public fun update_designation(
+        agent: &mut agent::Agent,
+        new_name: String,
+        _ctx: &mut TxContext
+    ) {
+        agent::rename(agent, new_name);
+    }
+
+    public fun decommission_agent(
+        registry: &mut GlobalRegistry,
+        agent: agent::Agent,
+        _ctx: &mut TxContext
+    ) {
+        let agent_id = agent::id(&agent);
+        registry::unregister(registry, agent_id);
+        agent::destroy(agent);
+    }
+
+    public fun deposit_to_vault(
+        vault: &mut vault::Vault,
+        payment: one::coin::Coin<one::oct::OCT>,
+        ctx: &mut TxContext
+    ) {
+        vault::deposit_one(vault, payment, ctx);
+    }
+
+    public fun withdraw_from_vault(
+        vault: &mut vault::Vault,
+        amount: u64,
+        ctx: &mut TxContext
+    ) {
+        let recipient = ctx.sender();
+        vault::withdraw_internal(vault, amount, recipient, ctx);
     }
 }

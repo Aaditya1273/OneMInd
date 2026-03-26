@@ -1,16 +1,62 @@
 'use client';
 
+import React, { useState } from 'react';
 import { ArrowUpRight, TrendingUp, Landmark, ShieldCheck, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useCurrentAccount } from '@mysten/dapp-kit';
 import { useOneBalance } from '@/hooks/use-one-chain';
 import { useToast } from '@/components/ui/toast-context';
+import { useSignAndExecuteTransaction } from '@mysten/dapp-kit';
+import { Transaction } from '@mysten/sui/transactions';
+import { OneChainService } from '@/lib/one-chain-service';
 
 export function VaultAssets() {
     const account = useCurrentAccount();
     const { balance, loading } = useOneBalance(account?.address);
     const { showToast } = useToast();
+
+    const { mutate: signAndExecute } = useSignAndExecuteTransaction();
+    const [isOptimizing, setIsOptimizing] = useState(false);
+
+    const handleOptimize = async () => {
+        if (!account) {
+            showToast('Please connect your wallet first', 'error');
+            return;
+        }
+
+        setIsOptimizing(true);
+        showToast('Analyzing OneDEX Arbitrage... Optimizing Yield.', 'loading');
+
+        try {
+            const tx = new Transaction();
+            tx.moveCall({
+                target: `${OneChainService.PACKAGE_ID}::main::optimize_yield`,
+                arguments: [
+                    tx.pure.address('0x' + '0'.repeat(64)), // Dummy agent ID for rebalance proof
+                    tx.pure.u64(82), // 0.82% spread captured
+                    tx.object('0x6'), // Clock
+                ],
+            });
+
+            signAndExecute(
+                { transaction: tx },
+                {
+                    onSuccess: (result) => {
+                        showToast('Yield Optimized! Alpha-01 has repositioned liquidity for maximum spread capture.', 'success', result.digest);
+                        setIsOptimizing(false);
+                    },
+                    onError: (error) => {
+                        showToast('Optimization Failed: ' + error.message, 'error');
+                        setIsOptimizing(false);
+                    },
+                }
+            );
+        } catch (error: any) {
+            showToast('Transaction Error: ' + error.message, 'error');
+            setIsOptimizing(false);
+        }
+    };
 
     const displayBalance = account ? (Number(balance) / 1e9).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "1,482.00";
 
@@ -57,15 +103,11 @@ export function VaultAssets() {
                         </div>
                     </div>
                     <button
-                        onClick={() => {
-                            showToast('Analyzing OneDEX Arbitrage... Optimizing Yield.', 'loading');
-                            setTimeout(() => {
-                                showToast('Yield Optimized! Alpha-01 has repositioned liquidity for maximum spread capture.', 'success');
-                            }, 3000);
-                        }}
-                        className="w-full py-4 px-8 bg-white text-black font-black text-[13px] rounded-full hover:bg-cyan-400 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 uppercase tracking-widest shadow-[0_20px_40px_rgba(255,255,255,0.15)]"
+                        onClick={handleOptimize}
+                        disabled={isOptimizing}
+                        className="w-full py-4 px-8 bg-white text-black font-black text-[13px] rounded-full hover:bg-cyan-400 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 uppercase tracking-widest shadow-[0_20px_40px_rgba(255,255,255,0.15)] disabled:opacity-50"
                     >
-                        Optimize Yield
+                        {isOptimizing ? 'Optimizing...' : 'Optimize Yield'}
                         <ArrowUpRight className="w-5 h-5" />
                     </button>
                     <button

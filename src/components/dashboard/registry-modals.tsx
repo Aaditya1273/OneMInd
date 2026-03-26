@@ -50,7 +50,7 @@ export function AgentDetailsModal({ isOpen, onClose, agent }: { isOpen: boolean,
                                                     Vanguard-7 Class
                                                 </span>
                                                 <span className="text-[10px] font-black text-white/30 tracking-widest uppercase">
-                                                    ID: {agent.id.substring(0, 12)}...
+                                                    ID: {String(agent.id).substring(0, 12)}...
                                                 </span>
                                             </div>
                                         </div>
@@ -223,5 +223,168 @@ export function NeuralLinkModal({ isOpen, onClose, agent }: { isOpen: boolean, o
                 </>
             )}
         </AnimatePresence>
+    );
+}
+// ----------------------------------------------------
+// Agent Menu Modal (More Options)
+// ----------------------------------------------------
+export function AgentMenuModal({ isOpen, onClose, agent }: { isOpen: boolean, onClose: () => void, agent: any }) {
+    const { showToast } = useToast();
+    const { mutate: signAndExecute } = useSignAndExecuteTransaction();
+    const [isExecuting, setIsExecuting] = useState(false);
+
+    if (!agent) return null;
+
+    const handleDecommission = async () => {
+        setIsExecuting(true);
+        showToast(`Initiating Decommission Protocol for ${agent.name}...`, 'loading');
+
+        try {
+            const tx = new Transaction();
+            tx.moveCall({
+                target: `${OneChainService.PACKAGE_ID}::main::decommission_agent`,
+                arguments: [
+                    tx.object(OneChainService.REGISTRY_ID),
+                    tx.object(agent.id),
+                ],
+            });
+
+            signAndExecute(
+                { transaction: tx },
+                {
+                    onSuccess: (result) => {
+                        showToast('Unit Decommissioned Successfully', 'success', result.digest);
+                        setIsExecuting(false);
+                        onClose();
+                    },
+                    onError: (err) => {
+                        showToast('Protocol Failed: ' + err.message, 'error');
+                        setIsExecuting(false);
+                    }
+                }
+            );
+        } catch (error) {
+            setIsExecuting(false);
+            showToast('Protocol Interrupted', 'error');
+        }
+    };
+
+    const handleRename = async () => {
+        const newName = prompt(`Enter new designation for ${agent.name}:`, agent.name);
+        if (!newName || newName === agent.name) return;
+
+        setIsExecuting(true);
+        showToast(`Updating Designation to ${newName}...`, 'loading');
+
+        try {
+            const tx = new Transaction();
+            tx.moveCall({
+                target: `${OneChainService.PACKAGE_ID}::main::update_designation`,
+                arguments: [
+                    tx.object(agent.id),
+                    tx.pure.string(newName),
+                ],
+            });
+
+            signAndExecute(
+                { transaction: tx },
+                {
+                    onSuccess: (result) => {
+                        showToast('Designation Updated!', 'success', result.digest);
+                        setIsExecuting(false);
+                        onClose();
+                    },
+                    onError: (err) => {
+                        showToast('Update Failed: ' + err.message, 'error');
+                        setIsExecuting(false);
+                    }
+                }
+            );
+        } catch (error) {
+            setIsExecuting(false);
+            showToast('Update Interrupted', 'error');
+        }
+    };
+
+    return (
+        <AnimatePresence>
+            {isOpen && (
+                <>
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={onClose}
+                        className="fixed inset-0 bg-black/40 z-[220] backdrop-blur-sm"
+                    />
+                    <div className="fixed inset-0 z-[220] pointer-events-none flex items-center justify-center p-4">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                            className="w-full max-w-xs bg-[#0d1117]/95 border border-[#30363d] rounded-2xl overflow-hidden pointer-events-auto shadow-2xl backdrop-blur-md"
+                        >
+                            <div className="p-4 border-b border-[#30363d] bg-white/[0.02]">
+                                <div className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em]">Neural Protocol Menu</div>
+                            </div>
+                            <div className="p-2 space-y-1">
+                                <MenuButton
+                                    disabled={isExecuting}
+                                    icon={<Activity className="w-4 h-4" />}
+                                    label="Update Designation"
+                                    onClick={handleRename}
+                                />
+                                <MenuButton
+                                    disabled={isExecuting}
+                                    icon={<Globe className="w-4 h-4" />}
+                                    label="Transfer Neural Link"
+                                    onClick={() => showToast('Transfer Protocol requires Secondary Signature.', 'info')}
+                                />
+                                <div className="h-px bg-[#30363d] my-1 mx-2" />
+                                <MenuButton
+                                    disabled={isExecuting}
+                                    icon={isExecuting ? <Loader2 className="w-4 h-4 animate-spin" /> : <X className="w-4 h-4" />}
+                                    label={isExecuting ? "Broadcasting..." : "Decommission Unit"}
+                                    variant="danger"
+                                    onClick={handleDecommission}
+                                />
+                            </div>
+                            <div className="p-2">
+                                <button
+                                    disabled={isExecuting}
+                                    onClick={onClose}
+                                    className="w-full py-2.5 text-[10px] font-black text-white/40 hover:text-white uppercase tracking-widest transition-colors disabled:opacity-50"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </motion.div>
+                    </div>
+                </>
+            )}
+        </AnimatePresence>
+    );
+}
+
+function MenuButton({ icon, label, onClick, variant = 'default', disabled = false }: { icon: any, label: string, onClick: () => void, variant?: 'default' | 'danger', disabled?: boolean }) {
+    return (
+        <button
+            disabled={disabled}
+            onClick={onClick}
+            className={cn(
+                "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all group active:scale-95 disabled:opacity-50 disabled:pointer-events-none",
+                variant === 'danger'
+                    ? "hover:bg-rose-500/10 text-rose-400 hover:text-rose-300"
+                    : "hover:bg-white/5 text-white/60 hover:text-white"
+            )}
+        >
+            <div className={cn(
+                "transition-transform group-hover:scale-110",
+                variant === 'danger' ? "text-rose-500" : "text-cyan-400/60 group-hover:text-cyan-400"
+            )}>
+                {icon}
+            </div>
+            <span className="text-[11px] font-black uppercase tracking-widest">{label}</span>
+        </button>
     );
 }
