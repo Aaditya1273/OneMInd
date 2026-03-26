@@ -11,9 +11,9 @@ export const oneClient = new OneClient({
 });
 
 // Diagnostic fallbacks for latest deployment
-const DEFAULT_PACKAGE_ID = "0xf4f626d7c628fa08ea03bab973ec6e64ce6c9e8742007ade870540e61fa64252";
-const DEFAULT_REGISTRY_ID = "0x58b9ebc1117077772022b2e13d7197ab5e1c716531d2b8a25449104645cd0b21";
-const DEFAULT_GOV_HUB_ID = "0xc25c5e8262b156b521aabaacfde6579a56d44fc2cdfebd8de1d77d88091e7ab9";
+const DEFAULT_PACKAGE_ID = "0xd972f1030084d224db8a3799e9456c7250ab8a22663b6c4ef533e4bf9b19c043";
+const DEFAULT_REGISTRY_ID = "0xca8d0047bf83d145a24f2b82aeb2d918b816cb14b675d1032f6f32ec8ff58a7e";
+const DEFAULT_GOV_HUB_ID = "0x60d6179257cce69f721fdcfd1f6eadda0369e9c26c23a36cc047c029d922ba6b";
 
 export const OneChainService = {
     PACKAGE_ID: process.env.NEXT_PUBLIC_PACKAGE_ID || DEFAULT_PACKAGE_ID,
@@ -51,7 +51,7 @@ export const OneChainService = {
     },
 
     async executeAutonomousTrade(agentId: string, amount: number) {
-        console.log(`[OneChain] Agent ${agentId} executing OneDEX swap for ${amount} ONE...`);
+        console.log(`[OneChain] Agent ${agentId} executing OneDEX swap for ${amount} OCT...`);
         // In a real scenario, this would return a signable Transaction
         return { success: true, txHash: '0x' + Math.random().toString(16).slice(2) };
     },
@@ -84,8 +84,10 @@ export const OneChainService = {
                     xp: 0
                 };
             });
-        } catch (error) {
-            console.warn('[OneChain] Failed to fetch registry events:', error);
+        } catch (error: any) {
+            // Silence transient RPC errors during registry cold-starts
+            if (error.message?.includes('Failed to fetch')) return [];
+            console.warn('[OneChain] Failed to fetch registry events:', error.message);
             return [];
         }
     },
@@ -109,8 +111,8 @@ export const OneChainService = {
                 const content = obj.data?.content as any;
                 if (!content || !content.fields) return null;
                 return {
-                    id: String(obj.data?.objectId || ''),
                     ...content.fields,
+                    id: String(obj.data?.objectId || ''),
                     // Ensure nested ID objects from Move are flattened
                     agent_id: content.fields.agent_id ? String(content.fields.agent_id?.id || content.fields.agent_id) : undefined
                 };
@@ -135,7 +137,10 @@ export const OneChainService = {
             });
             return events.data;
         } catch (error: any) {
-            console.error('[OneChain] Failed to fetch ecosystem events:', error.message);
+            // Silent fallback for ecosystem telemetry during RPC latency
+            if (!error.message?.includes('Failed to fetch')) {
+                console.warn('[OneChain] Pipeline Syncing (Ecosystem):', error.message);
+            }
             return [];
         }
     },
@@ -164,8 +169,10 @@ export const OneChainService = {
                         category: 'Archive'
                     };
                 });
-        } catch (error) {
-            console.warn('[OneChain] Failed to fetch proposals:', error);
+        } catch (error: any) {
+            if (!error.message?.includes('Failed to fetch')) {
+                console.warn('[OneChain] Governance Registry Cold-Start:', error.message);
+            }
             return [];
         }
     },

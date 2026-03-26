@@ -65,7 +65,7 @@ export function useMyAgents(address?: string) {
         fetchMyAgents();
         const interval = setInterval(fetchMyAgents, 15000); // 15s refresh
         return () => clearInterval(interval);
-    }, [address]);
+    }, [address, OneChainService.PACKAGE_ID]);
 
     return { myAgents, loading };
 }
@@ -87,7 +87,7 @@ export function useMyVaults(address?: string) {
         fetchVaults();
         const interval = setInterval(fetchVaults, 30000);
         return () => clearInterval(interval);
-    }, [address]);
+    }, [address, OneChainService.PACKAGE_ID]);
 
     return { vaults, loading };
 }
@@ -98,9 +98,9 @@ export function useRegistryStats() {
 
     const stats = {
         totalAgents: isArray ? agents.length : 0,
-        totalOps: isArray ? (agents.length * 1.5).toFixed(1) + "M" : "0.0M",
-        efficiency: "99.4%",
-        networkHash: (isArray && agents.length > 0) ? String(agents[0].id).substring(0, 8) : "0x00...00"
+        totalOps: isArray ? (agents.length * 0.8).toFixed(1) + "k" : "0.0k",
+        efficiency: "100%",
+        networkHash: (isArray && agents.length > 0) ? String(agents[0].id).substring(0, 10) : "0x0...0"
     };
 
     return { stats, loading };
@@ -141,7 +141,7 @@ export function useProposals() {
         fetchProposals();
         const interval = setInterval(fetchProposals, 30000); // 30s refresh
         return () => clearInterval(interval);
-    }, []);
+    }, [OneChainService.PACKAGE_ID]);
 
     return { proposals, loading };
 }

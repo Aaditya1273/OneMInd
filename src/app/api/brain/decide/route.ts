@@ -9,7 +9,7 @@ You have a Vault on OneChain that only you and your human owner can access.
 Rules:
 1. Every action consumes 5-10 energy.
 2. Resting restores 20 energy.
-3. Gains include XP and native ONE tokens.
+3. Gains include XP and native OCT tokens.
 4. Decisions must be in JSON: { "action": "TRADE" | "REST" | "SYNC", "reasoning": "string", "amount": number }
 `;
 

@@ -150,7 +150,7 @@ export function VaultAssets() {
                     </div>
 
                     <div className="flex-1 space-y-3">
-                        <AssetRow name="ONE" amount={account ? displayBalance : "1,482"} percent={account ? 100 : 70} color="bg-cyan-400" />
+                        <AssetRow name="OCT" amount={account ? displayBalance : "1,482"} percent={account ? 100 : 70} color="bg-cyan-400" />
                         <AssetRow name="Mind" amount="420" percent={20} color="bg-purple-500" />
                         <AssetRow name="Staked" amount="12" percent={10} color="bg-emerald-400" />
                     </div>

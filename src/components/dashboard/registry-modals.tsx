@@ -64,7 +64,7 @@ export function AgentDetailsModal({ isOpen, onClose, agent }: { isOpen: boolean,
                                     <DetailCard icon={<Zap className="w-4 h-4 text-yellow-400" />} label="Throughput" value="1.5k OPS/sec" />
                                     <DetailCard icon={<Activity className="w-4 h-4 text-emerald-400" />} label="Uptime" value="99.98%" />
                                     <DetailCard icon={<Cpu className="w-4 h-4 text-cyan-400" />} label="Core Level" value={`Level ${agent.level || 1}`} />
-                                    <DetailCard icon={<Globe className="w-4 h-4 text-indigo-400" />} label="Network Weight" value="4.2M ONE" />
+                                    <DetailCard icon={<Globe className="w-4 h-4 text-indigo-400" />} label="Network Weight" value="4.2M OCT" />
                                 </div>
 
                                 <div className="space-y-4 mb-10">

@@ -5,9 +5,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, ArrowDownLeft, ArrowUpRight, Loader2, Coins, ShieldCheck, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/components/ui/toast-context';
-import { useSignAndExecuteTransaction } from '@mysten/dapp-kit';
+import { useSignAndExecuteTransaction, useCurrentAccount } from '@mysten/dapp-kit';
 import { Transaction } from '@mysten/sui/transactions';
 import { OneChainService } from '@/lib/one-chain-service';
+import { useOneBalance } from '@/hooks/use-one-chain';
 
 interface VaultModalProps {
     isOpen: boolean;
@@ -16,6 +17,8 @@ interface VaultModalProps {
 }
 
 export function DepositModal({ isOpen, onClose, vault }: VaultModalProps) {
+    const account = useCurrentAccount();
+    const { balance: walletBalanceRaw } = useOneBalance(account?.address);
     const [amount, setAmount] = useState('');
     const [isExecuting, setIsExecuting] = useState(false);
     const { mutate: signAndExecute } = useSignAndExecuteTransaction();
@@ -23,26 +26,44 @@ export function DepositModal({ isOpen, onClose, vault }: VaultModalProps) {
 
     if (!vault) return null;
 
+    const walletBalance = Number(walletBalanceRaw) / 1e9;
+    // Leave 0.05 OCT for gas
+    const maxDeposit = Math.max(0, walletBalance - 0.05);
+
     const handleDeposit = async () => {
         if (!amount || isNaN(Number(amount)) || Number(amount) <= 0) {
             showToast('Enter a valid amount', 'error');
             return;
         }
 
-        setIsExecuting(true);
-        showToast(`Initiating Deposit Protocol: ${amount} OCT...`, 'loading');
+        if (Number(amount) > maxDeposit) {
+            showToast(`Insufficient Balance. Max allowed (inc. gas): ${maxDeposit.toFixed(3)} OCT`, 'error');
+            return;
+        }
 
         try {
             const tx = new Transaction();
             const amountRaw = BigInt(Math.floor(Number(amount) * 1e9));
 
-            // Split the gas coin to get the deposit amount
-            const [coin] = tx.splitCoins(tx.gas, [amountRaw]);
+            console.log('[OneChain] Constructing Deposit PTB:', {
+                vaultId: vault.id,
+                amount: amountRaw.toString()
+            });
 
+            // 1. Define the vault object input first to ensure it is Input 0
+            const vaultArg = tx.object(vault.id);
+
+            // 2. Define the pure amount input (Input 1)
+            const amountArg = tx.pure.u64(amountRaw);
+
+            // 3. Command: Split the gas coin
+            const [coin] = tx.splitCoins(tx.gas, [amountArg]);
+
+            // 4. Command: Call the deposit function
             tx.moveCall({
                 target: `${OneChainService.PACKAGE_ID}::main::deposit_to_vault`,
                 arguments: [
-                    tx.object(vault.id),
+                    vaultArg,
                     coin,
                 ],
             });
@@ -50,13 +71,13 @@ export function DepositModal({ isOpen, onClose, vault }: VaultModalProps) {
             signAndExecute(
                 { transaction: tx },
                 {
-                    onSuccess: (result) => {
+                    onSuccess: (result: any) => {
                         showToast(`Successfully deposited ${amount} OCT`, 'success', result.digest);
                         setIsExecuting(false);
                         onClose();
                         setAmount('');
                     },
-                    onError: (err) => {
+                    onError: (err: any) => {
                         showToast('Deposit Failed: ' + err.message, 'error');
                         setIsExecuting(false);
                     }
@@ -112,10 +133,22 @@ export function DepositModal({ isOpen, onClose, vault }: VaultModalProps) {
                                         placeholder="0.00"
                                         className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-6 py-5 text-2xl font-black text-white placeholder:text-white/10 focus:outline-none focus:border-emerald-400/50 transition-all"
                                     />
-                                    <div className="absolute right-6 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                                        <Coins className="w-5 h-5 text-white/20" />
-                                        <span className="text-xs font-black text-white/40 uppercase tracking-widest">OCT</span>
+                                    <div className="absolute right-6 top-1/2 -translate-y-1/2 flex items-center gap-4">
+                                        <button
+                                            onClick={() => setAmount(maxDeposit.toFixed(3))}
+                                            className="text-[10px] font-black text-emerald-400 hover:text-white transition-colors uppercase tracking-widest px-2 py-1 bg-emerald-400/10 rounded-md border border-emerald-400/20"
+                                        >
+                                            MAX
+                                        </button>
+                                        <div className="flex items-center gap-2">
+                                            <Coins className="w-5 h-5 text-white/20" />
+                                            <span className="text-xs font-black text-white/40 uppercase tracking-widest">OCT</span>
+                                        </div>
                                     </div>
+                                </div>
+                                <div className="flex justify-between px-2 text-[9px] font-black uppercase tracking-widest text-white/20">
+                                    <span>Wallet Balance</span>
+                                    <span>{walletBalance.toFixed(3)} OCT</span>
                                 </div>
                             </div>
 
@@ -179,24 +212,33 @@ export function WithdrawModal({ isOpen, onClose, vault }: VaultModalProps) {
             const tx = new Transaction();
             const amountRaw = BigInt(Math.floor(Number(amount) * 1e9));
 
+            console.log('[OneChain] Constructing Withdrawal PTB:', {
+                vaultId: vault.id,
+                amount: amountRaw.toString()
+            });
+
+            // 1. Explicit inputs for predictable ordering
+            const vaultArg = tx.object(vault.id);
+            const amountArg = tx.pure.u64(amountRaw);
+
             tx.moveCall({
                 target: `${OneChainService.PACKAGE_ID}::main::withdraw_from_vault`,
                 arguments: [
-                    tx.object(vault.id),
-                    tx.pure.u64(amountRaw),
+                    vaultArg,
+                    amountArg,
                 ],
             });
 
             signAndExecute(
                 { transaction: tx },
                 {
-                    onSuccess: (result) => {
+                    onSuccess: (result: any) => {
                         showToast(`Successfully withdrawn ${amount} OCT`, 'success', result.digest);
                         setIsExecuting(false);
                         onClose();
                         setAmount('');
                     },
-                    onError: (err) => {
+                    onError: (err: any) => {
                         showToast('Withdrawal Failed: ' + err.message, 'error');
                         setIsExecuting(false);
                     }

@@ -92,7 +92,7 @@ function Navbar({ isScrolled }: { isScrolled: boolean }) {
           alt="OneMind Logo"
           className="w-7 h-7 object-contain"
         />
-        <span className="text-xl font-bold tracking-tighter text-white">ONE<span className="text-cyan-400 font-bold">MIND</span></span>
+        <span className="text-xl font-bold tracking-tighter text-white">OCT<span className="text-cyan-400 font-bold">MIND</span></span>
       </div>
 
       <div className="hidden md:flex items-center gap-8 text-xs font-medium uppercase tracking-[0.2em] text-gray-400">

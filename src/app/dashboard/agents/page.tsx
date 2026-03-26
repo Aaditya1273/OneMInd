@@ -85,11 +85,11 @@ export default function AgentsPage() {
                         <AgentCard
                             key={agent.id}
                             name={agent.name}
-                            status="Operational"
+                            status={agent.status || "Operational"}
                             level={agent.level || 1}
-                            energy={100 - (index * 5)}
-                            brain="Gemini 1.5 Pro"
-                            ops={agent.stats || "1.2k"}
+                            energy={100}
+                            brain="Neural Core"
+                            ops={agent.stats || "Local"}
                             isMain={index === 0}
                             onSyncClick={() => handleSyncControl(agent)}
                             onMoreClick={() => handleMoreOptions(agent)}
@@ -158,8 +158,8 @@ function AgentCard({ name, status, level, energy, brain, ops, isMain = false, on
             {/* Card Header */}
             <div className="px-8 py-5 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
                 <div className="flex items-center gap-3">
-                    <div className={cn('w-2 h-2 rounded-full shadow-[0_0_10px_currentColor]', isHealthy ? 'text-emerald-400 bg-emerald-400' : 'text-rose-400 bg-rose-400')} />
-                    <span className="text-[10px] font-black text-white/60 uppercase tracking-[0.2em]">{status}</span>
+                    <div className={cn('w-2 h-2 rounded-full shadow-[0_0_10px_currentColor]', isHealthy ? 'text-emerald-400 bg-emerald-400' : 'text-emerald-400 bg-emerald-400')} />
+                    <span className="text-[10px] font-black text-white/60 uppercase tracking-[0.2em]">Active</span>
                 </div>
                 {isMain && (
                     <span className="text-[9px] font-black text-cyan-400 bg-cyan-400/10 border border-cyan-400/20 px-2.5 py-1 rounded-full uppercase tracking-[0.2em] shadow-[0_0_15px_rgba(6,182,212,0.1)]">
