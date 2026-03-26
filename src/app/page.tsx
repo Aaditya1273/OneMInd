@@ -92,7 +92,7 @@ function Navbar({ isScrolled }: { isScrolled: boolean }) {
           alt="OneMind Logo"
           className="w-7 h-7 object-contain"
         />
-        <span className="text-xl font-bold tracking-tighter text-white">OCT<span className="text-cyan-400 font-bold">MIND</span></span>
+        <span className="text-xl font-bold tracking-tighter text-white">ONE<span className="text-cyan-400 font-bold">MIND</span></span>
       </div>
 
       <div className="hidden md:flex items-center gap-8 text-xs font-medium uppercase tracking-[0.2em] text-gray-400">
@@ -384,7 +384,7 @@ function TiersSection() {
         </motion.h2>
         <div ref={ref} className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <TierCard name="Vanguard" type="Entry Level" price="FREE" features={["1 Concurrent Agent", "Standard Analytics", "Gemini 1.5 Flash"]} delay={0} isInView={isInView} />
-          <TierCard name="Overseer" type="Professional" price="499 ONE" featured features={["5 Concurrent Agents", "Advanced Memory", "Gemini 1.5 Pro", "Priority Support"]} delay={0.15} isInView={isInView} />
+          <TierCard name="Overseer"  type="Professional" price="499 OCT" featured features={["5 Concurrent Agents", "Advanced Memory", "Gemini 1.5 Pro", "Priority Support"]} delay={0.15} isInView={isInView} />
           <TierCard name="Sovereign" type="Enterprise" price="Contact Us" features={["Unlimited Agents", "Custom LLM Integrations", "Sub-Millisecond Execution"]} delay={0.3} isInView={isInView} />
         </div>
       </div>
