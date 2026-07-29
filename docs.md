@@ -3132,3 +3132,7 @@ txb.moveCall({
     arguments: [ assetManager, asset, borrow ],
 });
 ...
+
+
+
+  src="https://github.com/user-attachments/assets/1f9e424d-e94a-44c8-8ded-4fa48723bf63"
