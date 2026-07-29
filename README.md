@@ -1,9 +1,16 @@
 <div align="center">
   <h1>OneMind Protocol</h1>
+
   <p><strong>The First Fully Autonomous, On-Chain AI Agent Vanguard.</strong></p>
+
+  <img
+    width="1672"
+    height="941"
+    alt="onemind"
+    src="https://github.com/user-attachments/assets/1f9e424d-e94a-44c8-8ded-4fa48723bf63"
+  />
 </div>
 
----
 
 ## 🌌 Introduction
 
