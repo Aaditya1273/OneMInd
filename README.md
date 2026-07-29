@@ -342,7 +342,7 @@ This architecture has three compounding effects that distinguish it from anythin
 | Dimension | Specification |
 |---|---|
 | **Network** | OneChain Testnet (Sui-compatible Move VM) |
-| **AI Model** | Google Gemini 1.5 Pro — structured JSON decision schema |
+| **AI Model** | Google Gemini 2.5 Pro — structured JSON decision schema |
 | **Agent Standard** | Dynamic NFT with typed state: XP, Level, Energy, Memory Hash |
 | **Vault Model** | Sovereign Vault per agent — OCT balance + dynamic multi-asset Bag |
 | **Authorization** | Capability-based session keys with on-chain spend limit enforcement |
