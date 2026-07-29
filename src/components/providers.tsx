@@ -10,12 +10,8 @@ const DEFAULT_RPC = 'https://fullnode.testnet.sui.io:443';
 const RPC_URL = process.env.NEXT_PUBLIC_RPC_URL || DEFAULT_RPC;
 
 const { networkConfig } = createNetworkConfig({
-	testnet: {
-		url: RPC_URL,
-	},
-	mainnet: {
-		url: 'https://fullnode.mainnet.sui.io:443',
-	},
+	testnet: { url: RPC_URL, network: 'testnet' as const },
+	mainnet: { url: 'https://fullnode.mainnet.sui.io:443', network: 'mainnet' as const },
 });
 
 const queryClient = new QueryClient();

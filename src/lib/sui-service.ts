@@ -1,10 +1,10 @@
-import { SuiClient } from '@mysten/sui/client';
+import { SuiJsonRpcClient } from '@mysten/sui/jsonRpc';
 import { Transaction } from '@mysten/sui/transactions';
 
 const RPC_URL = process.env.NEXT_PUBLIC_RPC_URL || 'https://fullnode.testnet.sui.io:443';
 
 // Initialize the Sui RPC client
-export const suiClient = new SuiClient({ url: RPC_URL });
+export const suiClient = new SuiJsonRpcClient({ url: RPC_URL, network: 'testnet' });
 
 // Fallback addresses — replace these after deploying to Sui testnet
 const DEFAULT_PACKAGE_ID = process.env.NEXT_PUBLIC_PACKAGE_ID || '';

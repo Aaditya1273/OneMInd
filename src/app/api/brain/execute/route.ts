@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { SuiClient } from '@mysten/sui/client';
+import { SuiJsonRpcClient } from '@mysten/sui/jsonRpc';
 import { Transaction } from '@mysten/sui/transactions';
 
 const RPC_URL = process.env.NEXT_PUBLIC_RPC_URL || 'https://fullnode.testnet.sui.io:443';
-const suiClient = new SuiClient({ url: RPC_URL });
+const suiClient = new SuiJsonRpcClient({ url: RPC_URL, network: 'testnet' });
 
 export async function POST(req: Request) {
     try {
@@ -17,8 +17,6 @@ export async function POST(req: Request) {
             );
         }
 
-        // Build an inspectable transaction for server-side simulation/dry-run.
-        // Full execution requires a signer — in production the client signs via dapp-kit.
         const tx = new Transaction();
         tx.moveCall({
             target: `${packageId}::${module}::${func}`,
@@ -26,7 +24,7 @@ export async function POST(req: Request) {
         });
 
         const dryRun = await suiClient.dryRunTransactionBlock({
-            transactionBlock: await tx.build({ client: suiClient }),
+            transactionBlock: await tx.build({ client: suiClient as any }),
         });
 
         if (dryRun.effects.status.status !== 'success') {

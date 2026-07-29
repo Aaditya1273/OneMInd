@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import { SuiClient } from '@mysten/sui/client';
+import { SuiJsonRpcClient } from '@mysten/sui/jsonRpc';
 
 const RPC_URL = process.env.NEXT_PUBLIC_RPC_URL || 'https://fullnode.testnet.sui.io:443';
-const suiClient = new SuiClient({ url: RPC_URL });
+const suiClient = new SuiJsonRpcClient({ url: RPC_URL, network: 'testnet' });
 
 export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
