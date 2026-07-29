@@ -1,11 +1,4 @@
 <div align="center">
-  <img
-    width="1672"
-    height="941"
-    alt="onemind"
-    src="https://github.com/user-attachments/assets/1f9e424d-e94a-44c8-8ded-4fa48723bf63"
-  />
-<div align="center">
 
 # OneMind Protocol
 
