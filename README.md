@@ -321,44 +321,50 @@ See [SECURITY.md](./SECURITY.md) for responsible disclosure policy.
 
 ---
 
-## Roadmap
+## Why OneMind Changes Everything
 
-### Phase 1 — Foundation ✅
+The dominant paradigm of Web3 has always been **reactive** — humans signing transactions, humans voting, humans moving funds. OneMind breaks this by introducing a new primitive: an on-chain entity that is **both an asset and an actor**.
 
-- [x] Agent NFT with XP / Level / Energy / Memory Hash
-- [x] Sovereign Vault with OCT deposit and withdrawal
-- [x] AccessControl with session keys and spend limits
-- [x] GlobalRegistry shared object
-- [x] Gemini 1.5 Pro autonomous decision loop
-- [x] Neural Council (Governance) — proposals and voting
-- [x] Full Next.js 16 dashboard — Agents, Vault, Registry, Governance
-- [x] Deployed to OneChain Testnet
+A Vanguard Agent is not a chatbot wrapper. It is a sovereign on-chain identity — holding a typed vault, accruing verifiable XP, and operating under cryptographically enforced spend limits — that reasons over live blockchain state using a frontier AI model and executes its conclusions as signed Move transactions. No custodian. No cron job owned by a third party. No human hand-holding.
 
-### Phase 2 — Autonomous DeFi
+This architecture has three compounding effects that distinguish it from anything currently deployed on OneChain or any Sui-compatible network:
 
-- [ ] Real DEX integration (replace mock_dex with live OneChain AMM)
-- [ ] Actual OCT transfer on vault withdrawal (replace virtual balance with `one::balance::withdraw`)
-- [ ] Multi-asset vault support via dynamic Bag — NFT staking, LP tokens
-- [ ] Cron-driven autonomous loop (Vercel Cron / Netlify Scheduled Functions)
+**Persistent Ecosystem Liveness.** Every deployed agent generates continuous on-chain activity — events, state mutations, vault interactions — regardless of whether the human owner is online. The network is never empty.
 
-### Phase 3 — Intelligence Layer
+**Self-Reinforcing Capital Efficiency.** Agents that execute successfully gain XP and level up. Higher levels translate directly to greater `vOCT` voting weight in the Neural Council. Governance power is earned by the protocol's most active participants, not just the largest token holders.
 
-- [ ] IPFS / Arweave memory persistence — write `memory_hash` after every action
-- [ ] RAG (Retrieval-Augmented Generation) over agent's historical on-chain actions
-- [ ] Multi-agent coordination — agent squads sharing a collective strategy
-- [ ] Zero-Knowledge execution proofs for private strategy parameters
+**Composable Intelligence as Infrastructure.** The `brain_interface` module and `AccessControl` session key system are designed as general primitives. Any Move module on OneChain can be made agent-addressable by accepting `AccessControl` authorization — turning OneMind from a standalone DApp into an **Autonomous Intelligence Layer** that other protocols can build on top of.
 
-### Phase 4 — Ecosystem
+---
 
-- [ ] Mobile wallet support (WalletConnect v2)
-- [ ] Mainnet deployment with formal security audit
-- [ ] Agent marketplace — buy, sell, and delegate Vanguard agents
-- [ ] DAO-controlled treasury for protocol-level yield distribution
+## Protocol at a Glance
+
+| Dimension | Specification |
+|---|---|
+| **Network** | OneChain Testnet (Sui-compatible Move VM) |
+| **AI Model** | Google Gemini 1.5 Pro — structured JSON decision schema |
+| **Agent Standard** | Dynamic NFT with typed state: XP, Level, Energy, Memory Hash |
+| **Vault Model** | Sovereign Vault per agent — OCT balance + dynamic multi-asset Bag |
+| **Authorization** | Capability-based session keys with on-chain spend limit enforcement |
+| **Governance** | Token-weighted voting — `vOCT` derived from level × staked balance |
+| **Execution Model** | Programmable Transaction Blocks — atomic multi-step operations |
+| **Frontend** | Next.js 16 + React 19, deployed on Netlify |
+| **Autonomy Loop** | Gemini decide → PTB execute → state sync → repeat |
 
 ---
 
 <div align="center">
-  <p><i>Reclaiming Sovereignty. Neural by Design.</i></p>
-  <br/>
-  <a href="https://github.com/Aaditya1273/OneMInd">GitHub</a> · <a href="./SECURITY.md">Security</a> · <a href="./LICENSE">License</a>
+
+### The agents are already running.
+
+*Every block, a decision. Every decision, a transaction. Every transaction, a step toward a fully autonomous on-chain economy.*
+
+<br/>
+
+**[Launch App](https://onemind.netlify.app) · [Read Security Policy](./SECURITY.md) · [View License](./LICENSE)**
+
+<br/>
+
+<sub><i>Reclaiming Sovereignty. Neural by Design.</i></sub>
+
 </div>
