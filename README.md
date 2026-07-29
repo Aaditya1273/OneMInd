@@ -7,7 +7,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
 [![Build](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/Aaditya1273/OneMInd)
 [![Security](https://img.shields.io/badge/security-audited-blue)](./SECURITY.md)
-[![Live App](https://img.shields.io/badge/Live%20App-Testnet-cyan)](https://one-mind-protocol.netlify.app/)
+[![Live App](https://img.shields.io/badge/Live%20App-Testnet-cyan)](https://one-mind-sui.netlify.app/)
 [![Network](https://img.shields.io/badge/Network-Sui%20Testnet-blue)](https://fullnode.testnet.sui.io)
 
 <br/>
