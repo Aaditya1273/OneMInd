@@ -5,10 +5,10 @@ import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useCurrentAccount, useSignAndExecuteTransaction } from '@mysten/dapp-kit';
-import { useOneBalance, useEcosystemEvents, useMyVaults } from '@/hooks/use-one-chain';
+import { useOneBalance, useEcosystemEvents, useMyVaults } from '@/hooks/use-sui';
 import { useToast } from '@/components/ui/toast-context';
 import { Transaction } from '@mysten/sui/transactions';
-import { OneChainService } from '@/lib/one-chain-service';
+import { SuiService } from '@/lib/sui-service';
 import { DepositModal, WithdrawModal } from '@/components/dashboard/vault-modals';
 
 export default function VaultPage() {
@@ -73,7 +73,7 @@ export default function VaultPage() {
         try {
             const tx = new Transaction();
             tx.moveCall({
-                target: `${OneChainService.PACKAGE_ID}::main::optimize_yield`,
+                target: `${SuiService.PACKAGE_ID}::main::optimize_yield`,
                 arguments: [
                     tx.pure.address(agentId),
                     tx.pure.u64(500), // 500 bps spread
@@ -138,7 +138,7 @@ export default function VaultPage() {
 
                         <div className="flex items-baseline gap-4 mb-4">
                             <span className="text-7xl font-black tracking-tighter text-white uppercase">{formattedTotal}</span>
-                            <span className="text-xl text-cyan-400 font-black tracking-[0.2em] uppercase">OCT</span>
+                            <span className="text-xl text-cyan-400 font-black tracking-[0.2em] uppercase">SUI</span>
                         </div>
 
                         <div className="flex items-center gap-5 text-xs text-white/60 mb-10 font-bold tracking-tight">
@@ -153,9 +153,9 @@ export default function VaultPage() {
                         </div>
 
                         <div className="grid grid-cols-3 gap-6">
-                            <BalanceMetric label="Available for AI" value={formattedWallet} sub="OCT" />
-                            <BalanceMetric label="Locked Staking" value={formattedLocked} sub="OCT" color="text-purple-400" />
-                            <BalanceMetric label="Treasury Yield" value="0.00" sub="OCT" color="text-emerald-400" />
+                            <BalanceMetric label="Available for AI" value={formattedWallet} sub="SUI" />
+                            <BalanceMetric label="Locked Staking" value={formattedLocked} sub="SUI" color="text-purple-400" />
+                            <BalanceMetric label="Treasury Yield" value="0.00" sub="SUI" color="text-emerald-400" />
                         </div>
                     </div>
 
@@ -167,7 +167,7 @@ export default function VaultPage() {
                                 Settlement Ledger
                             </h3>
                             <button
-                                onClick={() => showToast('Opening OneChain Block Explorer...', 'info')}
+                                onClick={() => showToast('Opening Sui Block Explorer...', 'info')}
                                 className="text-[10px] text-cyan-400 hover:text-white transition-colors font-black uppercase tracking-widest border-b border-cyan-400/30 hover:border-white"
                             >
                                 View Explorer
@@ -183,7 +183,7 @@ export default function VaultPage() {
                                             key={event.id.txDigest}
                                             type={isWithdrawal ? 'out' : 'in'}
                                             amount={(Number(event.parsedJson?.amount || 0) / 1e9).toFixed(2)}
-                                            asset="OCT"
+                                            asset="SUI"
                                             date="Just now"
                                             label={eventName}
                                         />
@@ -204,7 +204,7 @@ export default function VaultPage() {
                     <div className="glass-card p-8">
                         <h3 className="text-[10px] font-black text-white/40 mb-8 uppercase tracking-[0.2em]">Asset Diversification</h3>
                         <div className="space-y-6">
-                            <DiversificationItem name="Native OCT" percent={70} color="bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.5)]" />
+                            <DiversificationItem name="Native SUI" percent={70} color="bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.5)]" />
                             <DiversificationItem name="MindNodes (NFT)" percent={20} color="bg-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.5)]" />
                             <DiversificationItem name="In-Game Assets" percent={10} color="bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.5)]" />
                         </div>
@@ -220,7 +220,7 @@ export default function VaultPage() {
                             Yield Projection
                         </h3>
                         <p className="text-sm text-white/40 leading-relaxed mb-8 font-medium tracking-tight">
-                            Activate Neural Staking to optimize your squad's yield on the OneChain network.
+                            Activate Neural Staking to optimize your squad's yield on the Sui network.
                         </p>
                         <button
                             onClick={handleBoostStaking}

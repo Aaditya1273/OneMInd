@@ -1,7 +1,7 @@
 import { Zap, Award, Database, Cpu, Loader2, Plus } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useCurrentAccount } from '@mysten/dapp-kit';
-import { useMyAgents } from '@/hooks/use-one-chain';
+import { useMyAgents } from '@/hooks/use-sui';
 
 export function AgentStats({ onSpawnClick }: { onSpawnClick: () => void }) {
     const account = useCurrentAccount();

@@ -7,8 +7,8 @@ import { cn } from '@/lib/utils';
 import { useToast } from '@/components/ui/toast-context';
 import { useSignAndExecuteTransaction, useCurrentAccount } from '@mysten/dapp-kit';
 import { Transaction } from '@mysten/sui/transactions';
-import { OneChainService } from '@/lib/one-chain-service';
-import { useOneBalance } from '@/hooks/use-one-chain';
+import { SuiService } from '@/lib/sui-service';
+import { useOneBalance } from '@/hooks/use-sui';
 
 interface VaultModalProps {
     isOpen: boolean;
@@ -27,7 +27,7 @@ export function DepositModal({ isOpen, onClose, vault }: VaultModalProps) {
     if (!vault) return null;
 
     const walletBalance = Number(walletBalanceRaw) / 1e9;
-    // Leave 0.05 OCT for gas
+    // Leave 0.05 SUI for gas
     const maxDeposit = Math.max(0, walletBalance - 0.05);
 
     const handleDeposit = async () => {
@@ -37,7 +37,7 @@ export function DepositModal({ isOpen, onClose, vault }: VaultModalProps) {
         }
 
         if (Number(amount) > maxDeposit) {
-            showToast(`Insufficient Balance. Max allowed (inc. gas): ${maxDeposit.toFixed(3)} OCT`, 'error');
+            showToast(`Insufficient Balance. Max allowed (inc. gas): ${maxDeposit.toFixed(3)} SUI`, 'error');
             return;
         }
 
@@ -45,7 +45,7 @@ export function DepositModal({ isOpen, onClose, vault }: VaultModalProps) {
             const tx = new Transaction();
             const amountRaw = BigInt(Math.floor(Number(amount) * 1e9));
 
-            console.log('[OneChain] Constructing Deposit PTB:', {
+            console.log('[Sui] Constructing Deposit PTB:', {
                 vaultId: vault.id,
                 amount: amountRaw.toString()
             });
@@ -61,7 +61,7 @@ export function DepositModal({ isOpen, onClose, vault }: VaultModalProps) {
 
             // 4. Command: Call the deposit function
             tx.moveCall({
-                target: `${OneChainService.PACKAGE_ID}::main::deposit_to_vault`,
+                target: `${SuiService.PACKAGE_ID}::main::deposit_to_vault`,
                 arguments: [
                     vaultArg,
                     coin,
@@ -72,7 +72,7 @@ export function DepositModal({ isOpen, onClose, vault }: VaultModalProps) {
                 { transaction: tx },
                 {
                     onSuccess: (result: any) => {
-                        showToast(`Successfully deposited ${amount} OCT`, 'success', result.digest);
+                        showToast(`Successfully deposited ${amount} SUI`, 'success', result.digest);
                         setIsExecuting(false);
                         onClose();
                         setAmount('');
@@ -124,7 +124,7 @@ export function DepositModal({ isOpen, onClose, vault }: VaultModalProps) {
 
                         <div className="p-8 space-y-8">
                             <div className="space-y-3">
-                                <label className="text-[10px] text-white/40 font-black uppercase tracking-[0.2em] px-1">Amount to Lock (OCT)</label>
+                                <label className="text-[10px] text-white/40 font-black uppercase tracking-[0.2em] px-1">Amount to Lock (SUI)</label>
                                 <div className="relative">
                                     <input
                                         type="number"
@@ -142,13 +142,13 @@ export function DepositModal({ isOpen, onClose, vault }: VaultModalProps) {
                                         </button>
                                         <div className="flex items-center gap-2">
                                             <Coins className="w-5 h-5 text-white/20" />
-                                            <span className="text-xs font-black text-white/40 uppercase tracking-widest">OCT</span>
+                                            <span className="text-xs font-black text-white/40 uppercase tracking-widest">SUI</span>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="flex justify-between px-2 text-[9px] font-black uppercase tracking-widest text-white/20">
                                     <span>Wallet Balance</span>
-                                    <span>{walletBalance.toFixed(3)} OCT</span>
+                                    <span>{walletBalance.toFixed(3)} SUI</span>
                                 </div>
                             </div>
 
@@ -206,13 +206,13 @@ export function WithdrawModal({ isOpen, onClose, vault }: VaultModalProps) {
         }
 
         setIsExecuting(true);
-        showToast(`Initiating Withdrawal: ${amount} OCT...`, 'loading');
+        showToast(`Initiating Withdrawal: ${amount} SUI...`, 'loading');
 
         try {
             const tx = new Transaction();
             const amountRaw = BigInt(Math.floor(Number(amount) * 1e9));
 
-            console.log('[OneChain] Constructing Withdrawal PTB:', {
+            console.log('[Sui] Constructing Withdrawal PTB:', {
                 vaultId: vault.id,
                 amount: amountRaw.toString()
             });
@@ -222,7 +222,7 @@ export function WithdrawModal({ isOpen, onClose, vault }: VaultModalProps) {
             const amountArg = tx.pure.u64(amountRaw);
 
             tx.moveCall({
-                target: `${OneChainService.PACKAGE_ID}::main::withdraw_from_vault`,
+                target: `${SuiService.PACKAGE_ID}::main::withdraw_from_vault`,
                 arguments: [
                     vaultArg,
                     amountArg,
@@ -233,7 +233,7 @@ export function WithdrawModal({ isOpen, onClose, vault }: VaultModalProps) {
                 { transaction: tx },
                 {
                     onSuccess: (result: any) => {
-                        showToast(`Successfully withdrawn ${amount} OCT`, 'success', result.digest);
+                        showToast(`Successfully withdrawn ${amount} SUI`, 'success', result.digest);
                         setIsExecuting(false);
                         onClose();
                         setAmount('');
@@ -286,7 +286,7 @@ export function WithdrawModal({ isOpen, onClose, vault }: VaultModalProps) {
                         <div className="p-8 space-y-8">
                             <div className="flex justify-between items-center px-4 py-3 bg-white/[0.03] border border-white/10 rounded-2xl">
                                 <span className="text-[10px] text-white/40 font-black uppercase tracking-widest">Vault Balance</span>
-                                <span className="text-sm font-black text-white uppercase tracking-widest">{vaultBalance.toFixed(2)} OCT</span>
+                                <span className="text-sm font-black text-white uppercase tracking-widest">{vaultBalance.toFixed(2)} SUI</span>
                             </div>
 
                             <div className="space-y-3">

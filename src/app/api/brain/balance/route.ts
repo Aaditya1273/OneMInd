@@ -1,33 +1,36 @@
 import { NextResponse } from 'next/server';
-import { execSync } from 'child_process';
+import { SuiClient } from '@mysten/sui/client';
 
-const ONE_CLI = '/home/bajrangi/.cargo/bin/one';
+const RPC_URL = process.env.NEXT_PUBLIC_RPC_URL || 'https://fullnode.testnet.sui.io:443';
+const suiClient = new SuiClient({ url: RPC_URL });
 
-function executeOneCommand(args: string[]): any {
-    try {
-        const command = `${ONE_CLI} ${args.join(' ')} --json`;
-        const output = execSync(command, { encoding: 'utf8' });
-        return JSON.parse(output);
-    } catch (error: any) {
-        const stderr = error.stderr?.toString() || error.message;
-        throw new Error(`OneChain CLI Execution Failed: ${stderr}`);
-    }
-}
-
-export async function GET(req: Request, { params }: { params: any }) {
-    // Note: Next.js App Router uses searchParams or dynamic routes.
-    // Assuming /api/brain/balance?address=0x...
+export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const address = searchParams.get('address');
 
     if (!address) {
-        return NextResponse.json({ error: 'Address is required' }, { status: 400 });
+        return NextResponse.json({ error: 'address query parameter is required' }, { status: 400 });
     }
 
     try {
-        const result = executeOneCommand(['client', 'objects', '--address', address]);
-        return NextResponse.json(result);
+        const [coins, objects] = await Promise.all([
+            suiClient.getCoins({ owner: address, coinType: '0x2::sui::SUI' }),
+            suiClient.getOwnedObjects({ owner: address, options: { showType: true } }),
+        ]);
+
+        const totalBalance = coins.data.reduce(
+            (acc: bigint, coin: any) => acc + BigInt(coin.balance),
+            BigInt(0)
+        );
+
+        return NextResponse.json({
+            address,
+            suiBalance: totalBalance.toString(),
+            objectCount: objects.data.length,
+            coins: coins.data,
+        });
     } catch (error: any) {
+        console.error('[OneMind] Balance route error:', error);
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }

@@ -1,47 +1,47 @@
 import { NextResponse } from 'next/server';
-import { execSync } from 'child_process';
+import { SuiClient } from '@mysten/sui/client';
+import { Transaction } from '@mysten/sui/transactions';
 
-const ONE_CLI = '/home/bajrangi/.cargo/bin/one';
-
-function executeOneCommand(args: string[]): any {
-    try {
-        const command = `${ONE_CLI} ${args.join(' ')} --json`;
-        console.log(`Executing OneChain CLI: ${command}`);
-        const output = execSync(command, { encoding: 'utf8' });
-
-        if (!output || output.trim() === '') {
-            return { success: true, message: 'Command executed successfully with no output' };
-        }
-
-        return JSON.parse(output);
-    } catch (error: any) {
-        const stderr = error.stderr?.toString() || error.message;
-        console.error('OneChain CLI Error:', stderr);
-        throw new Error(`OneChain CLI Execution Failed: ${stderr}`);
-    }
-}
+const RPC_URL = process.env.NEXT_PUBLIC_RPC_URL || 'https://fullnode.testnet.sui.io:443';
+const suiClient = new SuiClient({ url: RPC_URL });
 
 export async function POST(req: Request) {
     try {
         const { module, function: func, args = [] } = await req.json();
-        const packageId = process.env.NEXT_PUBLIC_PACKAGE_ID || process.env.PACKAGE_ID || '';
+        const packageId = process.env.NEXT_PUBLIC_PACKAGE_ID || '';
 
-        const cliArgs = [
-            'client', 'call',
-            '--package', packageId,
-            '--module', module,
-            '--function', func,
-            '--gas-budget', '10000000'
-        ];
-
-        if (args.length > 0) {
-            cliArgs.push('--args');
-            args.forEach((arg: any) => cliArgs.push(`"${arg}"`));
+        if (!packageId) {
+            return NextResponse.json(
+                { error: 'NEXT_PUBLIC_PACKAGE_ID is not configured.' },
+                { status: 500 }
+            );
         }
 
-        const result = executeOneCommand(cliArgs);
-        return NextResponse.json({ success: true, result });
+        // Build an inspectable transaction for server-side simulation/dry-run.
+        // Full execution requires a signer — in production the client signs via dapp-kit.
+        const tx = new Transaction();
+        tx.moveCall({
+            target: `${packageId}::${module}::${func}`,
+            arguments: args.map((arg: string) => tx.pure.address(arg)),
+        });
+
+        const dryRun = await suiClient.dryRunTransactionBlock({
+            transactionBlock: await tx.build({ client: suiClient }),
+        });
+
+        if (dryRun.effects.status.status !== 'success') {
+            return NextResponse.json(
+                { error: 'Dry-run failed', details: dryRun.effects.status.error },
+                { status: 400 }
+            );
+        }
+
+        return NextResponse.json({ success: true, effects: dryRun.effects });
     } catch (error: any) {
-        return NextResponse.json({ error: 'OneChain Transaction failed', details: error.message }, { status: 500 });
+        console.error('[OneMind] Execute route error:', error);
+        return NextResponse.json(
+            { error: 'Transaction execution failed', details: error.message },
+            { status: 500 }
+        );
     }
 }

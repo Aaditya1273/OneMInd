@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Terminal } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
-import { useEcosystemEvents } from '@/hooks/use-one-chain';
+import { useEcosystemEvents } from '@/hooks/use-sui';
 
 const TYPE_COLORS: Record<string, string> = {
     thought: 'text-purple-400',
@@ -30,8 +30,7 @@ export function NeuralFeed() {
     useEffect(() => {
         if (events && events.length > 0) {
             const mappedEvents = events.map(event => ({
-                type: event.type.split('::').pop()?.toLowerCase() || 'status',
-                message: `OneChain Event: ${JSON.stringify(event.parsedJson)}`,
+                type: event.type.split('::').pop()?.toLowerCase() || 'status',                        message: `Sui Event: ${JSON.stringify(event.parsedJson)}`,
                 time: new Date(Number(event.timestampMs)).toLocaleTimeString('en-US', { hour12: false })
             }));
             setLogs(prev => [...prev.slice(-10), ...mappedEvents]);

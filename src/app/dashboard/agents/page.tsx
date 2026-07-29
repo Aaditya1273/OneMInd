@@ -5,7 +5,7 @@ import { Plus, Cpu, MoreHorizontal, ArrowUpRight, ArrowDownLeft, TrendingUp, His
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { useCurrentAccount } from '@mysten/dapp-kit';
-import { useMyAgents } from '@/hooks/use-one-chain';
+import { useMyAgents } from '@/hooks/use-sui';
 import { SpawnAgentModal } from '@/components/dashboard/spawn-modal';
 import { AgentDetailsModal, AgentMenuModal } from '@/components/dashboard/registry-modals';
 import { useToast } from '@/components/ui/toast-context';
@@ -49,7 +49,7 @@ export default function AgentsPage() {
                 </div>
                 <h1 className="text-5xl font-black tracking-tighter text-white mb-4 uppercase">No Vanguard Detected</h1>
                 <p className="text-lg text-white/40 font-medium tracking-tight mb-12 max-w-md mx-auto leading-relaxed">
-                    Your wallet is connected, but your squad is currently offline. Synchronize with the OneChain Registry to deploy your first autonomous agent.
+                    Your wallet is connected, but your squad is currently offline. Synchronize with the Sui Registry to deploy your first autonomous agent.
                 </p>
                 <button
                     onClick={() => setIsSpawnModalOpen(true)}

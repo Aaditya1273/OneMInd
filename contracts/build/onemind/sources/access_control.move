@@ -1,5 +1,5 @@
 module onemind::access_control {
-    use one::event;
+    use sui::event;
 
     // --- Errors ---
     const ENotOwner: u64 = 0;
@@ -15,9 +15,9 @@ module onemind::access_control {
         owner: address,
         /// The current authorized session key (off-chain brain address).
         session_key: address,
-        /// When the session expires (mocked duration).
+        /// When the session expires (tirmestamp ms).
         expires_at: u64,
-        /// Maximum amount the session key can spend/withdraw.
+        /// Maximum amount the session key can spend/withdraw (in MIST).
         active_limit: u64,
         /// How much has already been spent in this session.
         spent_so_far: u64,
@@ -61,9 +61,9 @@ module onemind::access_control {
         ctx: &mut TxContext
     ) {
         assert!(ctx.sender() == ac.owner, ENotOwner);
-        
+
         ac.session_key = session_key;
-        ac.expires_at = duration; 
+        ac.expires_at = duration;
         ac.active_limit = limit;
         ac.spent_so_far = 0;
 
@@ -78,7 +78,7 @@ module onemind::access_control {
     /// Revoke a session key immediately.
     public fun revoke_session(ac: &mut AccessControl, ctx: &mut TxContext) {
         assert!(ctx.sender() == ac.owner, ENotOwner);
-        
+
         let old_key = ac.session_key;
         ac.session_key = @0x0;
         ac.expires_at = 0;
@@ -92,17 +92,14 @@ module onemind::access_control {
     /// Validates if a caller is authorized to act on behalf of the agent.
     public fun authorize(ac: &mut AccessControl, amount: u64, ctx: &TxContext) {
         let caller = ctx.sender();
-        
-        // If owner is calling, always authorized
+
+        // Owner always has full access
         if (caller == ac.owner) { return };
-        
-        // Check if caller is the authorized session key
+
+        // Check session key and spend limits
         assert!(caller == ac.session_key, EInvalidSession);
-        
-        // Check limits
         assert!(ac.spent_so_far + amount <= ac.active_limit, EExceedsLimit);
-        
-        // Update consumption
+
         ac.spent_so_far = ac.spent_so_far + amount;
     }
 

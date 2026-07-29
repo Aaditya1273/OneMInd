@@ -10,7 +10,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { useCurrentAccount } from '@mysten/dapp-kit';
-import { useMyAgents } from '@/hooks/use-one-chain';
+import { useMyAgents } from '@/hooks/use-sui';
 
 const MENU_ITEMS = [
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard, desc: 'Command Center' },

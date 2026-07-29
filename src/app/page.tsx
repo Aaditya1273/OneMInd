@@ -26,7 +26,7 @@ import { Brain, Shield, Zap, ChevronRight, Activity, Database, Globe, Layers, Lo
 import { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import Lenis from 'lenis';
-import { useRegistryStats } from '@/hooks/use-one-chain';
+import { useRegistryStats } from '@/hooks/use-sui';
 import { GravityStarsBackground } from '@/components/ui/gravity-stars';
 
 export default function LandingPage() {
@@ -147,8 +147,7 @@ function HeroSection({ account }: { account: any }) {
             animate={{ opacity: 1, scale: 1 }}
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-cyan-500/20 bg-cyan-500/5 mb-8 backdrop-blur-sm mx-auto"
           >
-            <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse" />
-            <span className="text-[10px] font-mono tracking-[0.2em] text-cyan-400 uppercase">OneChain Testnet Live v1.1.1</span>
+            <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse" />                            <span className="text-[10px] font-mono tracking-[0.2em] text-cyan-400 uppercase">Sui Testnet Live v1.1.1</span>
           </motion.div>
 
           <motion.h1
@@ -167,7 +166,7 @@ function HeroSection({ account }: { account: any }) {
             transition={{ delay: 0.4, duration: 0.8 }}
             className="text-gray-400 text-lg md:text-2xl max-w-2xl mx-auto mb-12 font-light leading-relaxed text-center"
           >
-            Deploy fully autonomous AI agents on OneChain.
+            Deploy fully autonomous AI agents on Sui.
             Owned by you, driven by LLMs, secured by smart vaults.
           </motion.p>
 
@@ -311,7 +310,7 @@ function FeaturesSection() {
           <FeatureCard
             icon={<Shield className="w-6 h-6 text-amber-400" />}
             title="Sovereign Settlement"
-            description="All transactions settled on OneChain's high-throughput ledger with absolute finality."
+            description="All transactions settled on Sui's high-throughput ledger with absolute finality."
             delay={0.5}
             isInView={isInView}
           />
@@ -384,7 +383,7 @@ function TiersSection() {
         </motion.h2>
         <div ref={ref} className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <TierCard name="Vanguard" type="Entry Level" price="FREE" features={["1 Concurrent Agent", "Standard Analytics", "Gemini 1.5 Flash"]} delay={0} isInView={isInView} />
-          <TierCard name="Overseer"  type="Professional" price="499 OCT" featured features={["5 Concurrent Agents", "Advanced Memory", "Gemini 1.5 Pro", "Priority Support"]} delay={0.15} isInView={isInView} />
+          <TierCard name="Overseer"  type="Professional" price="499 SUI" featured features={["5 Concurrent Agents", "Advanced Memory", "Gemini 1.5 Pro", "Priority Support"]} delay={0.15} isInView={isInView} />
           <TierCard name="Sovereign" type="Enterprise" price="Contact Us" features={["Unlimited Agents", "Custom LLM Integrations", "Sub-Millisecond Execution"]} delay={0.3} isInView={isInView} />
         </div>
       </div>
@@ -449,7 +448,7 @@ function Footer() {
               <h3 className="text-4xl font-black tracking-tighter text-white uppercase italic">OneMind</h3>
               <p className="text-gray-500 text-sm max-w-[320px] leading-relaxed font-medium">
                 Optimized autonomous yield strategies for the sovereign digital era.
-                Secured by OneChain, driven by intelligence.
+                Secured by Sui, driven by intelligence.
               </p>
             </div>
             <p className="text-[10px] text-gray-700 font-mono tracking-[0.2em] uppercase">
@@ -474,7 +473,7 @@ function Footer() {
             <Activity className="w-5 h-5 text-white" />
           </div>
           <div className="text-[10px] text-gray-600 font-mono tracking-[0.3em] uppercase">
-            Built on OneChain Layer 1 • Secured by Neural Proof
+            Built on Sui • Secured by Neural Proof
           </div>
         </div>
       </div>

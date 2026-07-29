@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { useToast } from '@/components/ui/toast-context';
 import { useSignAndExecuteTransaction } from '@mysten/dapp-kit';
 import { Transaction } from '@mysten/sui/transactions';
-import { OneChainService } from '@/lib/one-chain-service';
+import { SuiService } from '@/lib/sui-service';
 
 // ----------------------------------------------------
 // Agent Details Modal
@@ -64,7 +64,7 @@ export function AgentDetailsModal({ isOpen, onClose, agent }: { isOpen: boolean,
                                     <DetailCard icon={<Zap className="w-4 h-4 text-yellow-400" />} label="Throughput" value="1.5k OPS/sec" />
                                     <DetailCard icon={<Activity className="w-4 h-4 text-emerald-400" />} label="Uptime" value="99.98%" />
                                     <DetailCard icon={<Cpu className="w-4 h-4 text-cyan-400" />} label="Core Level" value={`Level ${agent.level || 1}`} />
-                                    <DetailCard icon={<Globe className="w-4 h-4 text-indigo-400" />} label="Network Weight" value="4.2M OCT" />
+                                    <DetailCard icon={<Globe className="w-4 h-4 text-indigo-400" />} label="Network Weight" value="4.2M SUI" />
                                 </div>
 
                                 <div className="space-y-4 mb-10">
@@ -147,7 +147,7 @@ export function NeuralLinkModal({ isOpen, onClose, agent }: { isOpen: boolean, o
             const tx = new Transaction();
             // Simulate a "Link" call to the registry/main module
             tx.moveCall({
-                target: `${OneChainService.PACKAGE_ID}::main::link_agent`,
+                target: `${SuiService.PACKAGE_ID}::main::link_agent`,
                 arguments: [
                     tx.pure.address(agent.id),
                     tx.object('0x6'), // Clock object for timestamping
@@ -242,9 +242,9 @@ export function AgentMenuModal({ isOpen, onClose, agent }: { isOpen: boolean, on
         try {
             const tx = new Transaction();
             tx.moveCall({
-                target: `${OneChainService.PACKAGE_ID}::main::decommission_agent`,
+                target: `${SuiService.PACKAGE_ID}::main::decommission_agent`,
                 arguments: [
-                    tx.object(OneChainService.REGISTRY_ID),
+                    tx.object(SuiService.REGISTRY_ID),
                     tx.object(agent.id),
                 ],
             });
@@ -279,7 +279,7 @@ export function AgentMenuModal({ isOpen, onClose, agent }: { isOpen: boolean, on
         try {
             const tx = new Transaction();
             tx.moveCall({
-                target: `${OneChainService.PACKAGE_ID}::main::update_designation`,
+                target: `${SuiService.PACKAGE_ID}::main::update_designation`,
                 arguments: [
                     tx.object(agent.id),
                     tx.pure.string(newName),

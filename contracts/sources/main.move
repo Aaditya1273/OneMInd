@@ -5,8 +5,8 @@ module onemind::main {
     use onemind::access_control;
     use onemind::registry::{Self, GlobalRegistry};
     use onemind::mock_dex;
-    use one::event;
-    use one::clock::{Self, Clock};
+    use sui::event;
+    use sui::clock::{Self, Clock};
 
     // --- Public Functions ---
 
@@ -17,18 +17,18 @@ module onemind::main {
         ctx: &mut TxContext
     ) {
         let owner = ctx.sender();
-        
+
         let agent_obj = agent::mint(name, ctx);
         let agent_id = agent::id(&agent_obj);
-        
+
         let vault_obj = vault::create(agent_id, ctx);
         let ac_obj = access_control::create(agent_id, ctx);
-        
+
         registry::register(registry, agent_id, owner);
-        
-        one::transfer::public_transfer(agent_obj, owner);
-        one::transfer::public_transfer(vault_obj, owner);
-    one::transfer::public_transfer(ac_obj, owner);
+
+        sui::transfer::public_transfer(agent_obj, owner);
+        sui::transfer::public_transfer(vault_obj, owner);
+        sui::transfer::public_transfer(ac_obj, owner);
     }
 
     // --- Neural Connectivity ---
@@ -64,9 +64,8 @@ module onemind::main {
         clock: &Clock,
         ctx: &mut TxContext
     ) {
-        // Mock DEX interaction
         mock_dex::place_order(spread, 1000, ctx);
-        
+
         event::emit(YieldOptimized {
             agent_id,
             spread_captured: spread,
@@ -94,10 +93,10 @@ module onemind::main {
 
     public fun deposit_to_vault(
         vault: &mut vault::Vault,
-        payment: one::coin::Coin<one::oct::OCT>,
+        payment: sui::coin::Coin<sui::sui::SUI>,
         ctx: &mut TxContext
     ) {
-        vault::deposit_one(vault, payment, ctx);
+        vault::deposit_sui(vault, payment, ctx);
     }
 
     public fun withdraw_from_vault(

@@ -6,7 +6,7 @@ module onemind::brain_interface {
 
     // --- Public Functions ---
 
-    /// The primary entry point for the AI Brain to execute a withdrawal.
+    /// Primary entry point for the AI Brain to execute a withdrawal.
     public fun execute_withdrawal(
         agent: &mut Agent,
         vault: &mut Vault,
@@ -15,18 +15,18 @@ module onemind::brain_interface {
         recipient: address,
         ctx: &mut TxContext
     ) {
-        // 1. Authorize the call via AccessControl
+        // 1. Authorize via AccessControl (enforces session key + spend limit)
         access_control::authorize(ac, amount, ctx);
-        
+
         // 2. Execute the withdrawal from the vault
         vault::withdraw_internal(vault, amount, recipient, ctx);
-        
-        // 3. Update agent progression
+
+        // 3. Update agent state
         agent::use_energy(agent, 5);
         agent::gain_xp(agent, 1);
     }
 
-    /// Update the Agent's mental state on-chain.
+    /// Update the Agent's mental state on-chain (memory hash sync).
     public fun sync_memory(
         agent: &mut Agent,
         ac: &mut AccessControl,
@@ -38,7 +38,7 @@ module onemind::brain_interface {
         agent::use_energy(agent, 1);
     }
 
-    /// Allow agent progression via resting.
+    /// Allow agent to rest and restore energy.
     public fun rest(
         agent: &mut Agent,
         ac: &mut AccessControl,

@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { useToast } from '@/components/ui/toast-context';
 import { useSignAndExecuteTransaction, useCurrentAccount } from '@mysten/dapp-kit';
 import { Transaction } from '@mysten/sui/transactions';
-import { OneChainService } from '@/lib/one-chain-service';
+import { SuiService } from '@/lib/sui-service';
 
 interface SpawnAgentModalProps {
     isOpen: boolean;
@@ -60,18 +60,18 @@ export function SpawnAgentModal({ isOpen, onClose }: SpawnAgentModalProps) {
         showToast(`Requesting Synthesis for ${name}...`, 'loading');
 
         try {
-            OneChainService._checkConfig();
-            console.log('[OneChain] Building Spawn PTB:', {
-                target: `${OneChainService.PACKAGE_ID}::main::spawn_agent`,
-                registry: OneChainService.REGISTRY_ID,
+            SuiService._checkConfig();
+            console.log('[Sui] Building Spawn PTB:', {
+                target: `${SuiService.PACKAGE_ID}::main::spawn_agent`,
+                registry: SuiService.REGISTRY_ID,
                 name
             });
 
             const tx = new Transaction();
             tx.moveCall({
-                target: `${OneChainService.PACKAGE_ID}::main::spawn_agent`,
+                target: `${SuiService.PACKAGE_ID}::main::spawn_agent`,
                 arguments: [
-                    tx.object(OneChainService.REGISTRY_ID),
+                    tx.object(SuiService.REGISTRY_ID),
                     tx.pure.string(name),
                 ],
             });
@@ -217,7 +217,7 @@ export function SpawnAgentModal({ isOpen, onClose }: SpawnAgentModalProps) {
                                 ) : (
                                     <>
                                         <Zap className="w-5 h-5" />
-                                        Spawn Agent via OneClient
+                                        Spawn Agent on Sui
                                     </>
                                 )}
                             </button>

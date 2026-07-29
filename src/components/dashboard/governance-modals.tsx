@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { useToast } from '@/components/ui/toast-context';
 import { Transaction } from '@mysten/sui/transactions';
 import { useSignAndExecuteTransaction, useCurrentAccount } from '@mysten/dapp-kit';
-import { OneChainService } from '@/lib/one-chain-service';
+import { SuiService } from '@/lib/sui-service';
 import { Loader2 } from 'lucide-react';
 
 // ----------------------------------------------------
@@ -112,9 +112,9 @@ export function ProposalDetailsModal({ isOpen, onClose, proposal }: { isOpen: bo
                                     showToast('Preparing Neural Vote...', 'loading');
                                     const tx = new Transaction();
                                     tx.moveCall({
-                                        target: `${OneChainService.PACKAGE_ID}::governance::cast_vote`,
+                                        target: `${SuiService.PACKAGE_ID}::governance::cast_vote`,
                                         arguments: [
-                                            tx.object(OneChainService.GOVERNANCE_HUB_ID),
+                                            tx.object(SuiService.GOVERNANCE_HUB_ID),
                                             tx.pure.u64(proposal.id || 1),
                                             tx.pure.u64(1000), // Weight placeholder (should be from hook)
                                             tx.pure.bool(true), // Support
@@ -161,9 +161,9 @@ export function SubmitProposalModal({ isOpen, onClose }: { isOpen: boolean, onCl
         try {
             const tx = new Transaction();
             tx.moveCall({
-                target: `${OneChainService.PACKAGE_ID}::governance::submit_proposal`,
+                target: `${SuiService.PACKAGE_ID}::governance::submit_proposal`,
                 arguments: [
-                    tx.object(OneChainService.GOVERNANCE_HUB_ID),
+                    tx.object(SuiService.GOVERNANCE_HUB_ID),
                     tx.pure.string(title),
                     tx.pure.string(description),
                     tx.pure.u64(604800000), // 7 days in ms
@@ -273,7 +273,7 @@ export function DelegateSupportModal({ isOpen, onClose }: { isOpen: boolean, onC
 
             <div className="p-6 space-y-5">
                 <p className="text-sm text-[#8b949e] leading-relaxed">
-                    Choose an entity to represent your vOCT voting weight in council decisions. You can change your delegate at any time.
+                    Choose an entity to represent your vSUI voting weight in council decisions. You can change your delegate at any time.
                 </p>
 
                 <div className="space-y-3">
@@ -313,9 +313,9 @@ export function DelegateSupportModal({ isOpen, onClose }: { isOpen: boolean, onC
                     </button>
                     <button
                         onClick={() => {
-                            showToast('Reconfiguring Neural Delegate on OneChain...', 'loading');
+                            showToast('Reconfiguring Neural Delegate on Sui...', 'loading');
                             setTimeout(() => {
-                                showToast('Delegation Successful! Your vOCT weight is now represented by the chosen entity.', 'success');
+                                showToast('Delegation Successful! Your vSUI weight is now represented by the chosen entity.', 'success');
                             }, 2500);
                             onClose();
                         }}

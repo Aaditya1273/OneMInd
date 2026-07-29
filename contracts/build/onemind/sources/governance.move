@@ -1,8 +1,8 @@
 module onemind::governance {
     use std::string::String;
-    use one::table::{Self, Table};
-    use one::event;
-    use one::clock::{Self, Clock};
+    use sui::table::{Self, Table};
+    use sui::event;
+    use sui::clock::{Self, Clock};
 
     // --- Errors ---
     const EPROPOSAL_NOT_FOUND: u64 = 0;
@@ -50,7 +50,7 @@ module onemind::governance {
             proposals: table::new(ctx),
             next_id: 1,
         };
-        one::transfer::share_object(hub);
+        sui::transfer::share_object(hub);
     }
 
     public fun submit_proposal(
@@ -70,7 +70,7 @@ module onemind::governance {
         let proposal = Proposal {
             id,
             creator,
-            title: title,
+            title,
             description,
             votes_for: 0,
             votes_against: 0,
@@ -96,7 +96,7 @@ module onemind::governance {
         ctx: &mut TxContext
     ) {
         assert!(table::contains(&hub.proposals, proposal_id), EPROPOSAL_NOT_FOUND);
-        
+
         let proposal = table::borrow_mut(&mut hub.proposals, proposal_id);
         assert!(clock::timestamp_ms(clock) < proposal.end_time, EVOTING_CLOSED);
 
@@ -115,6 +115,6 @@ module onemind::governance {
     }
 
     // --- Accessors ---
-    
+
     public fun next_proposal_id(hub: &GovernanceHub): u64 { hub.next_id }
 }

@@ -1,6 +1,6 @@
 module onemind::registry {
-    use one::table::{Self, Table};
-    use one::event;
+    use sui::table::{Self, Table};
+    use sui::event;
 
     // --- Structs ---
 
@@ -21,14 +21,14 @@ module onemind::registry {
     fun init(ctx: &mut TxContext) {
         let id = object::new(ctx);
         let registry_id = object::uid_to_inner(&id);
-        
+
         let registry = GlobalRegistry {
             id,
             total_agents: 0,
             agents: table::new(ctx),
         };
-        
-        one::transfer::share_object(registry);
+
+        sui::transfer::share_object(registry);
         event::emit(RegistryInitializedEvent { registry_id });
     }
 
@@ -45,5 +45,7 @@ module onemind::registry {
     // --- Accessors ---
 
     public fun total_agents(registry: &GlobalRegistry): u64 { registry.total_agents }
-    public fun is_registered(registry: &GlobalRegistry, agent_id: ID): bool { table::contains(&registry.agents, agent_id) }
+    public fun is_registered(registry: &GlobalRegistry, agent_id: ID): bool {
+        table::contains(&registry.agents, agent_id)
+    }
 }

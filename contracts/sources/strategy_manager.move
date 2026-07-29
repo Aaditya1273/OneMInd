@@ -1,16 +1,16 @@
 module onemind::strategy_manager {
-    use one::event;
+    use sui::event;
 
     /// Resource representing a strategy manager for an agent.
     public struct StrategyManager has key, store {
         id: UID,
         /// Owner address of the manager (authorized to call execution).
         owner: address,
-        /// List of strategy data blocks (e.g., serialized parameters).
+        /// List of serialized strategy parameter blocks.
         strategies: vector<vector<u8>>,
     }
 
-    /// Event emitted when a strategy is successfully executed.
+    /// Event emitted when a strategy is executed.
     public struct StrategyExecuted has copy, drop {
         owner: address,
         index: u64,
@@ -24,9 +24,9 @@ module onemind::strategy_manager {
         let manager = StrategyManager {
             id: object::new(ctx),
             owner,
-            strategies: vector::empty(),
+            strategies: vector[],
         };
-        one::transfer::public_transfer(manager, owner);
+        sui::transfer::public_transfer(manager, owner);
     }
 
     /// Register a new strategy data block.
@@ -38,9 +38,9 @@ module onemind::strategy_manager {
     public fun execute_strategy(manager: &mut StrategyManager, index: u64, _ctx: &mut TxContext) {
         let len = vector::length(&manager.strategies);
         assert!(index < len, 0); // EIndexOutOfBounds
-        
+
         let strategy_data = vector::borrow(&manager.strategies, index);
-        
+
         event::emit(StrategyExecuted {
             owner: manager.owner,
             index,

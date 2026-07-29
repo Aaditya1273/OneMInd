@@ -1,7 +1,7 @@
 module onemind::mock_dex {
-    use one::event;
+    use sui::event;
 
-    /// Simple DEX placeholder for autonomous agents.
+    /// Simple DEX placeholder for autonomous agent trading.
     public struct Order has key, store {
         id: UID,
         owner: address,
@@ -25,17 +25,17 @@ module onemind::mock_dex {
     #[allow(lint(self_transfer))]
     public fun place_order(amount_a: u64, amount_b: u64, ctx: &mut TxContext) {
         let owner = ctx.sender();
-        let order = Order { 
+        let order = Order {
             id: object::new(ctx),
-            owner, 
-            amount_a, 
-            amount_b 
+            owner,
+            amount_a,
+            amount_b,
         };
-        one::transfer::public_transfer(order, owner);
+        sui::transfer::public_transfer(order, owner);
         event::emit(OrderPlaced { owner, amount_a, amount_b });
     }
 
-    /// Consume an order (effectively cancelling/deleting it for this mock).
+    /// Cancel and delete an order.
     public fun cancel_order(order: Order, ctx: &mut TxContext) {
         let Order { id, owner, amount_a: _, amount_b: _ } = order;
         assert!(owner == ctx.sender(), 0); // ENotOwner

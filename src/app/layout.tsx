@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "OneMind | Autonomous Intelligence Layer",
-  description: "The world's first sovereign AI agent dashboard on OneChain.",
+  description: "The world's first sovereign AI agent dashboard on Sui.",
 };
 
 export default function RootLayout({

@@ -1,7 +1,8 @@
 module onemind::vault {
-    use one::coin::{Self, Coin};
-    use one::bag::Bag;
-    use one::event;
+    use sui::coin::{Self, Coin};
+    use sui::bag::Bag;
+    use sui::event;
+    use sui::sui::SUI;
 
     // --- Errors ---
     const EInsufficientBalance: u64 = 0;
@@ -9,16 +10,16 @@ module onemind::vault {
     // --- Structs ---
 
     /// The Sovereign Vault for an AI Agent.
-    /// It can hold native coins and arbitrary assets in its dynamic bag.
+    /// Holds native SUI and arbitrary assets in a dynamic Bag.
     public struct Vault has key, store {
         id: UID,
         /// The ID of the Agent this vault is tied to.
         agent_id: ID,
-        /// The primary balance of the native ONE token (OCT).
+        /// The primary SUI balance (in MIST).
         balance: u64,
         /// A bag to store other types of assets (NFTs, other coins).
         assets: Bag,
-        /// The owner address (usually the human user).
+        /// The owner address (the human user).
         owner: address,
     }
 
@@ -46,18 +47,18 @@ module onemind::vault {
             id: object::new(ctx),
             agent_id,
             balance: 0,
-            assets: one::bag::new(ctx),
+            assets: sui::bag::new(ctx),
             owner: ctx.sender(),
         }
     }
 
-    /// Allows anyone to deposit native coins (OCT) into the vault.
-    public fun deposit_one(vault: &mut Vault, payment: Coin<one::oct::OCT>, ctx: &mut TxContext) {
+    /// Deposit native SUI coins into the vault.
+    public fun deposit_sui(vault: &mut Vault, payment: Coin<SUI>, ctx: &mut TxContext) {
         let amount = coin::value(&payment);
         vault.balance = vault.balance + amount;
-        
-        // Transfer the actual coin to the vault's address for storage
-        one::transfer::public_transfer(payment, object::uid_to_address(&vault.id));
+
+        // Transfer the coin into the vault object's address for custody
+        sui::transfer::public_transfer(payment, object::uid_to_address(&vault.id));
 
         event::emit(DepositEvent {
             vault_id: object::id(vault),
@@ -67,15 +68,12 @@ module onemind::vault {
         });
     }
 
-    /// Internal withdrawal logic, can be called by brain_interface or agent owner.
+    /// Internal withdrawal — callable by brain_interface or agent owner.
     public fun withdraw_internal(vault: &mut Vault, amount: u64, recipient: address, _ctx: &mut TxContext) {
         assert!(vault.balance >= amount, EInsufficientBalance);
-        
+
         vault.balance = vault.balance - amount;
-        
-        // In a real production scenario, we would withdraw from one::balance and transfer.
-        // For the hackathon MVP, we track with virtual balance and emit events for the UI.
-        
+
         event::emit(WithdrawEvent {
             vault_id: object::id(vault),
             agent_id: vault.agent_id,

@@ -19,7 +19,7 @@ const ICONS = {
 };
 
 export function Toast({ message, type, digest, onClose }: ToastProps) {
-    const explorerUrl = digest ? `https://testnet.onescan.cc/testnet/transactionBlocksDetail?digest=${digest}` : null;
+    const explorerUrl = digest ? `https://suiscan.xyz/testnet/tx/${digest}` : null;
 
     return (
         <motion.div
@@ -46,7 +46,7 @@ export function Toast({ message, type, digest, onClose }: ToastProps) {
                         rel="noopener noreferrer"
                         className="text-[9px] font-black text-cyan-400 hover:text-white transition-colors uppercase tracking-[0.2em] flex items-center gap-1 w-fit group/link"
                     >
-                        View on OneScan
+                        View on SuiScan
                         <ArrowUpRight className="w-3 h-3 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform" />
                     </a>
                 )}

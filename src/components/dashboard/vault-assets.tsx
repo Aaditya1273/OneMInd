@@ -5,11 +5,11 @@ import { ArrowUpRight, TrendingUp, Landmark, ShieldCheck, ChevronRight } from 'l
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useCurrentAccount } from '@mysten/dapp-kit';
-import { useOneBalance } from '@/hooks/use-one-chain';
+import { useOneBalance } from '@/hooks/use-sui';
 import { useToast } from '@/components/ui/toast-context';
 import { useSignAndExecuteTransaction } from '@mysten/dapp-kit';
 import { Transaction } from '@mysten/sui/transactions';
-import { OneChainService } from '@/lib/one-chain-service';
+import { SuiService } from '@/lib/sui-service';
 
 export function VaultAssets() {
     const account = useCurrentAccount();
@@ -26,12 +26,12 @@ export function VaultAssets() {
         }
 
         setIsOptimizing(true);
-        showToast('Analyzing OneDEX Arbitrage... Optimizing Yield.', 'loading');
+        showToast('Analyzing DEX Arbitrage... Optimizing Yield.', 'loading');
 
         try {
             const tx = new Transaction();
             tx.moveCall({
-                target: `${OneChainService.PACKAGE_ID}::main::optimize_yield`,
+                target: `${SuiService.PACKAGE_ID}::main::optimize_yield`,
                 arguments: [
                     tx.pure.address('0x' + '0'.repeat(64)), // Dummy agent ID for rebalance proof
                     tx.pure.u64(82), // 0.82% spread captured
@@ -71,11 +71,11 @@ export function VaultAssets() {
                 <div className="flex justify-between items-start mb-10">
                     <h3 className="text-[11px] font-black text-white/20 flex items-center gap-2 uppercase tracking-[0.25em]">
                         <Landmark className="w-4 h-4 text-cyan-400" />
-                        Sovereign OneVault
+                        Sovereign Vault
                     </h3>
                     <span className="text-[10px] text-cyan-400 bg-cyan-400/10 border border-cyan-400/20 px-3 py-1.5 rounded-full font-black flex items-center gap-1.5 uppercase tracking-widest shadow-[0_0_15px_rgba(6,182,212,0.15)]">
                         <ShieldCheck className="w-4 h-4" />
-                        OneChain Sync
+                        Sui Sync
                     </span>
                 </div>
 
@@ -83,7 +83,7 @@ export function VaultAssets() {
                     <div className="text-[11px] text-white/40 mb-3 font-black uppercase tracking-[0.25em]">Liquid Assets</div>
                     <div className="flex items-baseline gap-4 flex-wrap">
                         <span className="text-5xl font-black tracking-tighter text-white uppercase">{displayBalance}</span>
-                        <span className="text-base text-cyan-400 font-black tracking-widest uppercase">OCT</span>
+                        <span className="text-base text-cyan-400 font-black tracking-widest uppercase">SUI</span>
                     </div>
                     <div className="text-[12px] text-white/60 mt-4 flex items-center gap-2 font-medium tracking-tight">
                         <TrendingUp className="w-5 h-5 text-emerald-400" />
@@ -94,11 +94,11 @@ export function VaultAssets() {
                 <div className="flex flex-col gap-4">
                     <div className="flex items-center justify-between px-2 mb-2">
                         <div className="flex flex-col">
-                            <span className="text-[9px] text-white/20 font-black uppercase tracking-widest">OneDEX Spread</span>
+                            <span className="text-[9px] text-white/20 font-black uppercase tracking-widest">DEX Spread</span>
                             <span className="text-[11px] text-emerald-400 font-black tracking-tighter">+0.82% Arb</span>
                         </div>
                         <div className="flex flex-col text-right">
-                            <span className="text-[9px] text-white/20 font-black uppercase tracking-widest">OnePlay Win Rate</span>
+                            <span className="text-[9px] text-white/20 font-black uppercase tracking-widest">Game Win Rate</span>
                             <span className="text-[11px] text-purple-400 font-black tracking-tighter">74.2%</span>
                         </div>
                     </div>
@@ -112,8 +112,8 @@ export function VaultAssets() {
                     </button>
                     <button
                         onClick={() => {
-                            showToast('Opening OneChain Ecosystem Explorer...', 'info');
-                            window.open('https://testnet.onescan.cc/', '_blank');
+                            showToast('Opening Sui Ecosystem Explorer...', 'info');
+                            window.open('https://suiscan.xyz/testnet', '_blank');
                         }}
                         className="w-full py-4 px-8 border border-white/5 text-white/40 font-black text-[13px] rounded-full hover:bg-white/5 hover:text-white transition-all uppercase tracking-widest"
                     >
@@ -150,7 +150,7 @@ export function VaultAssets() {
                     </div>
 
                     <div className="flex-1 space-y-3">
-                        <AssetRow name="OCT" amount={account ? displayBalance : "1,482"} percent={account ? 100 : 70} color="bg-cyan-400" />
+                        <AssetRow name="SUI" amount={account ? displayBalance : "1,482"} percent={account ? 100 : 70} color="bg-cyan-400" />
                         <AssetRow name="Mind" amount="420" percent={20} color="bg-purple-500" />
                         <AssetRow name="Staked" amount="12" percent={10} color="bg-emerald-400" />
                     </div>

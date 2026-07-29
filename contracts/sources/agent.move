@@ -1,7 +1,6 @@
 module onemind::agent {
     use std::string::String;
-    use one::event;
-
+    use sui::event;
 
     // --- Structs ---
 
@@ -41,7 +40,7 @@ module onemind::agent {
         let id = object::new(ctx);
         let agent_id = object::uid_to_inner(&id);
         let owner = ctx.sender();
-        
+
         event::emit(AgentCreatedEvent {
             agent_id,
             name,
@@ -61,15 +60,13 @@ module onemind::agent {
 
     /// Update the agent's memory hash (brain synchronization).
     public fun update_memory(agent: &mut Agent, new_memory: String, _ctx: &mut TxContext) {
-        // Validation: Only the owner or an authorized session (handled by access_control) can update
-        // (In this modular design, access_control calls this function)
         agent.memory_hash = new_memory;
     }
 
     /// Gain XP and handle leveling up.
     public fun gain_xp(agent: &mut Agent, amount: u64) {
         agent.xp = agent.xp + amount;
-        
+
         // Simple leveling logic: level = floor(xp / 100) + 1
         let new_level = (agent.xp / 100) + 1;
         if (new_level > agent.level) {

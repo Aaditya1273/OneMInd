@@ -2,7 +2,7 @@
 
 import { Search, Filter, Shield, Zap, TrendingUp, ChevronRight, Globe, Layers, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useRegistryAgents, useRegistryStats } from '@/hooks/use-one-chain';
+import { useRegistryAgents, useRegistryStats } from '@/hooks/use-sui';
 import { useToast } from '@/components/ui/toast-context';
 import { useState } from 'react';
 import { AgentDetailsModal, NeuralLinkModal } from '@/components/dashboard/registry-modals';
@@ -53,7 +53,7 @@ export default function RegistryPage() {
                 </div>
                 <div className="flex flex-col items-center gap-2">
                     <div className="text-sm font-black text-white uppercase tracking-[0.2em] animate-pulse">Synchronizing Neural Registry</div>
-                    <div className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em]">Accessing OneChain Ledger...</div>
+                    <div className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em]">Accessing Sui Ledger...</div>
                 </div>
             </div>
         )
@@ -64,7 +64,7 @@ export default function RegistryPage() {
             <div className="flex flex-col md:flex-row justify-between items-end gap-6 pb-4 border-b border-white/5">
                 <div>
                     <h1 className="text-5xl font-black tracking-tighter text-white mb-2">Neural Registry</h1>
-                    <p className="text-base text-white/60 font-medium tracking-tight">Real-time explorer of all autonomous agents on OneChain.</p>
+                    <p className="text-base text-white/60 font-medium tracking-tight">Real-time explorer of all autonomous agents on Sui.</p>
                 </div>
                 <div className="flex items-center gap-3">
                     <div className="relative group">
@@ -171,7 +171,7 @@ export default function RegistryPage() {
                                     <td colSpan={7} className="px-8 py-20 text-center">
                                         <div className="flex flex-col items-center gap-4">
                                             <div className="w-12 h-12 rounded-full border-2 border-dashed border-white/10 animate-spin" />
-                                            <div className="text-xs font-black text-white/20 uppercase tracking-[0.2em]">{searchQuery ? "No matching agents found" : "Scanning OneChain Registry..."}</div>
+                                            <div className="text-xs font-black text-white/20 uppercase tracking-[0.2em]">{searchQuery ? "No matching agents found" : "Scanning Sui Registry..."}</div>
                                         </div>
                                     </td>
                                 </tr>
